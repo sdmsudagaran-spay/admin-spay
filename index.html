@@ -1843,16 +1843,18 @@
         function buildDetailedTable(doc, txs, title, yPos, margin) {
             doc.setFontSize(11);
             doc.setFont("helvetica", "bold");
-            doc.text(title, margin, yPos);
+            
+            // Menengahkan judul tabel secara presisi di tengah kertas F4 (Lebar 330)
+            doc.text(title, 165, yPos, { align: "center" });
             
             let body = [];
             
-            // Variabel Akumulasi Total
+            // Variabel Akumulasi Total Keseluruhan
             let tBps=0, tSpp=0, tDu1=0, tDu2=0, tDu3=0, tTahfidzPlus=0, tTahfidz=0, tIcp=0, tTanggungan=0, tAll=0;
 
             txs.forEach((tx, index) => {
                 let dSplit = tx.date ? tx.date.split(',') : ['-'];
-                let tgl = dSplit[0].trim(); // Hanya ambil tanggalnya saja untuk menghemat tempat
+                let tgl = dSplit[0].trim(); 
                 
                 let nama = tx.nama || '-';
                 let kelas = tx.kelas || '-';
@@ -1870,17 +1872,19 @@
                 let tanggungan = parseInt(tx.tanggungan) || 0;
                 let kasir = tx.kasir || '-';
                 
-                // Tambah ke total
+                // Hitung Total Per Baris Siswa (Kolom Baru)
+                let rowTotal = bps + spp + du1 + du2 + du3 + tahfidzPlus + tahfidz + icp + tanggungan;
+
                 tBps += bps; tSpp += spp; tDu1 += du1; tDu2 += du2; tDu3 += du3; 
                 tTahfidzPlus += tahfidzPlus; tTahfidz += tahfidz; tIcp += icp; tTanggungan += tanggungan;
+                tAll += rowTotal;
 
-                // Format Nominal (Hilangkan "Rp " agar muat di kolom kecil)
                 const f = (num) => num > 0 ? formatCurrency(num).replace('Rp ', '') : '-';
 
                 body.push([
                     index + 1, tgl, nama, kelas, 
                     f(bps), f(spp), ketSpp, f(du1), f(du2), f(du3), 
-                    f(tahfidzPlus), ketTahfidzPlus, f(tahfidz), f(icp), f(tanggungan), kasir
+                    f(tahfidzPlus), ketTahfidzPlus, f(tahfidz), f(icp), f(tanggungan), kasir, f(rowTotal)
                 ]);
             });
 
@@ -1888,46 +1892,66 @@
 
             // Baris Total
             body.push([
-                { content: 'TOTAL KESELURUHAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold', fillColor: [240, 245, 250] } },
-                { content: fT(tBps), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
-                { content: fT(tSpp), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
-                { content: '', styles: { fillColor: [240, 245, 250] } }, // Ket SPP Kosong
-                { content: fT(tDu1), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
-                { content: fT(tDu2), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
-                { content: fT(tDu3), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
-                { content: fT(tTahfidzPlus), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
-                { content: '', styles: { fillColor: [240, 245, 250] } }, // Ket Tahfidz+ Kosong
-                { content: fT(tTahfidz), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
-                { content: fT(tIcp), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
-                { content: fT(tTanggungan), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
-                { content: '', styles: { fillColor: [240, 245, 250] } }  // Kasir Kosong
+                { content: 'TOTAL KESELURUHAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tBps), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tSpp), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: '', styles: { fillColor: [230, 240, 250] } }, 
+                { content: fT(tDu1), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tDu2), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tDu3), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tTahfidzPlus), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: '', styles: { fillColor: [230, 240, 250] } }, 
+                { content: fT(tTahfidz), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tIcp), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tTanggungan), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: '', styles: { fillColor: [230, 240, 250] } },
+                { content: fT(tAll), styles: { fontStyle: 'bold', fillColor: [210, 230, 250], textColor: [0, 0, 0] } }  // Kolom Grand Total
             ]);
 
+            // Tabel dengan lebar kolom matematis yang dipastikan jumlahnya tepat 300
+            // Agar otomatis simetris sempurna pada F4 (Lebar 330) dikurangi Margin (Kiri 15 + Kanan 15)
             doc.autoTable({
                 startY: yPos + 4,
-                head: [['No', 'Tanggal', 'Nama Siswa', 'Kelas', 'BPS', 'SPP', 'Ket SPP', 'DU 1', 'DU 2', 'DU 3', 'Tahfidz+', 'Ket Tahf+', 'Tahfidz', 'ICP', 'Tanggungan', 'Kasir']],
+                head: [['No', 'Tanggal', 'Nama Siswa', 'Kelas', 'BPS', 'SPP', 'Ket SPP', 'DU 1', 'DU 2', 'DU 3', 'Tahfidz+', 'Ket Tahf+', 'Tahfidz', 'ICP', 'Tanggungan', 'Kasir', 'Total']],
                 body: body,
-                theme: 'grid',
-                headStyles: { fillColor: [30, 58, 95], fontSize: 7, halign: 'center' }, 
-                margin: { left: margin, right: margin },
-                styles: { fontSize: 7, cellPadding: 1.5, overflow: 'linebreak' },
+                theme: 'grid', 
+                headStyles: { 
+                    fillColor: [30, 58, 95], 
+                    textColor: [255, 255, 255],
+                    fontSize: 7, 
+                    halign: 'center',
+                    lineColor: [0, 0, 0], 
+                    lineWidth: 0.1
+                }, 
+                margin: { left: 15, right: 15 },
+                styles: { 
+                    fontSize: 7, 
+                    cellPadding: 1.5, 
+                    overflow: 'linebreak',
+                    lineColor: [180, 180, 180], 
+                    lineWidth: 0.1 
+                },
+                alternateRowStyles: {
+                    fillColor: [248, 250, 252] 
+                },
                 columnStyles: {
-                    0: { cellWidth: 8, halign: 'center' },      // No
-                    1: { cellWidth: 16 },     // Tanggal
-                    2: { cellWidth: 35 },     // Nama
-                    3: { cellWidth: 12, halign: 'center' },     // Kelas
-                    4: { cellWidth: 18, halign: 'right' },      // BPS
-                    5: { cellWidth: 18, halign: 'right' },      // SPP
-                    6: { cellWidth: 20 },     // Ket SPP
-                    7: { cellWidth: 16, halign: 'right' },      // DU1
-                    8: { cellWidth: 16, halign: 'right' },      // DU2
-                    9: { cellWidth: 16, halign: 'right' },      // DU3
-                    10: { cellWidth: 16, halign: 'right' },     // Tahfidz+
-                    11: { cellWidth: 20 },    // Ket Tahfidz+
-                    12: { cellWidth: 16, halign: 'right' },     // Tahfidz
-                    13: { cellWidth: 16, halign: 'right' },     // ICP
-                    14: { cellWidth: 18, halign: 'right' },     // Tanggungan
-                    15: { cellWidth: 17 }     // Kasir
+                    0: { cellWidth: 7, halign: 'center' },      
+                    1: { cellWidth: 15 },     
+                    2: { cellWidth: 45 },     
+                    3: { cellWidth: 10, halign: 'center' },     
+                    4: { cellWidth: 17, halign: 'right' },      
+                    5: { cellWidth: 17, halign: 'right' },      
+                    6: { cellWidth: 22 },     
+                    7: { cellWidth: 15, halign: 'right' },      
+                    8: { cellWidth: 15, halign: 'right' },      
+                    9: { cellWidth: 15, halign: 'right' },      
+                    10: { cellWidth: 15, halign: 'right' },     
+                    11: { cellWidth: 22 },    
+                    12: { cellWidth: 15, halign: 'right' },     
+                    13: { cellWidth: 15, halign: 'right' },     
+                    14: { cellWidth: 19, halign: 'right' },     
+                    15: { cellWidth: 16, halign: 'center' },
+                    16: { cellWidth: 20, halign: 'right', fillColor: [235, 247, 255], fontStyle: 'bold' } // Kolom Total dg warna biru super soft
                 }
             });
 
