@@ -341,7 +341,10 @@
                         <h3 class="font-bold text-blue-800"><i class="fas fa-calendar-day mr-2"></i>Harian</h3>
                         <div class="flex items-center gap-2 w-full md:w-auto">
                             <input type="date" id="filter-date-daily" onchange="renderRekap()" class="text-sm px-3 py-1.5 rounded-lg border border-blue-200 text-blue-800 bg-white shadow-sm outline-none">
-                            <button onclick="downloadReport('harian')" class="bg-primary hover:bg-opacity-90 text-white px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm transition"><i class="fas fa-file-pdf mr-1"></i> Cetak</button>
+                            <div class="flex bg-gray-100 rounded-lg p-1 border border-gray-200">
+                                <button onclick="previewReport('harian')" class="text-gray-600 hover:text-primary px-3 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1 hover:bg-white shadow-sm"><i class="fas fa-eye"></i> Pratinjau</button>
+                                <button onclick="downloadReport('harian')" class="bg-primary text-white hover:bg-opacity-90 px-3 py-1.5 rounded-md text-xs font-bold shadow-sm transition flex items-center gap-1"><i class="fas fa-download"></i> Cetak</button>
+                            </div>
                         </div>
                     </div>
                     <div class="p-5 grid grid-cols-2 gap-4">
@@ -364,9 +367,12 @@
 
                 <!-- PEKAN INI -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-orange-50 px-5 py-3 border-b border-orange-100 flex justify-between items-center">
+                    <div class="bg-orange-50 px-5 py-3 border-b border-orange-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <h3 class="font-bold text-orange-800"><i class="fas fa-calendar-week mr-2"></i>Pekan Ini</h3>
-                        <button onclick="downloadReport('mingguan')" class="bg-primary hover:bg-opacity-90 text-white px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm transition"><i class="fas fa-file-pdf mr-1"></i> Cetak</button>
+                        <div class="flex bg-gray-100 rounded-lg p-1 border border-gray-200 w-full md:w-auto">
+                            <button onclick="previewReport('mingguan')" class="flex-1 md:flex-none text-gray-600 hover:text-primary px-3 py-1.5 rounded-md text-xs font-bold transition flex justify-center items-center gap-1 hover:bg-white shadow-sm"><i class="fas fa-eye"></i> Pratinjau</button>
+                            <button onclick="downloadReport('mingguan')" class="flex-1 md:flex-none bg-primary text-white hover:bg-opacity-90 px-3 py-1.5 rounded-md text-xs font-bold shadow-sm transition flex justify-center items-center gap-1"><i class="fas fa-download"></i> Cetak</button>
+                        </div>
                     </div>
                     <div class="p-5 grid grid-cols-2 gap-4">
                         <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
@@ -392,7 +398,10 @@
                         <h3 class="font-bold text-green-800"><i class="fas fa-calendar-alt mr-2"></i>Bulanan</h3>
                         <div class="flex items-center gap-2 w-full md:w-auto">
                             <input type="month" id="filter-date-monthly" onchange="renderRekap()" class="text-sm px-3 py-1.5 rounded-lg border border-green-200 text-green-800 bg-white shadow-sm outline-none">
-                            <button onclick="downloadReport('bulanan')" class="bg-primary hover:bg-opacity-90 text-white px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm transition"><i class="fas fa-file-pdf mr-1"></i> Cetak</button>
+                            <div class="flex bg-gray-100 rounded-lg p-1 border border-gray-200">
+                                <button onclick="previewReport('bulanan')" class="text-gray-600 hover:text-primary px-3 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1 hover:bg-white shadow-sm"><i class="fas fa-eye"></i> Pratinjau</button>
+                                <button onclick="downloadReport('bulanan')" class="bg-primary text-white hover:bg-opacity-90 px-3 py-1.5 rounded-md text-xs font-bold shadow-sm transition flex items-center gap-1"><i class="fas fa-download"></i> Cetak</button>
+                            </div>
                         </div>
                     </div>
                     <div class="p-5 grid grid-cols-2 gap-4">
@@ -416,67 +425,15 @@
             </div>
         </div>
 
-        <!-- MODAL: DETAIL TRANSAKSI & VERIFIKASI -->
-        <div id="modal-tx-detail" class="fixed inset-0 bg-black/60 z-50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-end md:items-center justify-center">
-            <div class="modal-inner-card bg-white w-full max-w-[480px] rounded-t-[2rem] p-0 transform translate-y-full md:translate-y-0 transition-transform duration-300 flex flex-col max-h-[90vh] md:max-h-[80vh] relative shadow-2xl" id="modal-tx-content">
-                
-                <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white rounded-t-[2rem] z-10">
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-800">Detail Pembayaran</h3>
-                        <p class="text-xs text-gray-500 font-mono" id="dtl-id">TX-123</p>
-                    </div>
-                    <button onclick="closeTxModal()" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200"><i class="fas fa-times"></i></button>
+        <!-- MODAL PREVIEW PDF REKAPITULASI -->
+        <div id="modal-pdf-preview" class="fixed inset-0 bg-black/80 z-[90] hidden opacity-0 transition-opacity duration-300 flex flex-col justify-center items-center backdrop-blur-sm p-4 md:p-8">
+            <div class="w-full max-w-7xl bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden h-[95vh] transform scale-95 transition-transform duration-300" id="modal-pdf-content">
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                    <h3 class="font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-file-pdf text-danger text-xl"></i> Pratinjau Laporan F4 Landscape</h3>
+                    <button onclick="closePdfPreview()" class="w-8 h-8 bg-gray-200 rounded-full text-gray-600 hover:bg-gray-300 flex items-center justify-center"><i class="fas fa-times"></i></button>
                 </div>
-                
-                <div class="overflow-y-auto p-5 md:p-6 no-scrollbar flex-1 pb-24">
-                    <!-- Area Bukti Transfer -->
-                    <div class="mb-6">
-                        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Bukti Transfer</h4>
-                        <div class="bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center min-h-[220px] border border-gray-200 relative group cursor-pointer" onclick="viewFullscreenImage(document.getElementById('dtl-img').src)">
-                            <img id="dtl-img" src="" alt="Bukti TF" class="w-full h-auto max-h-[300px] object-contain">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition pointer-events-none">
-                                <span class="text-white text-sm font-bold bg-black/50 px-4 py-2 rounded-full backdrop-blur-sm"><i class="fas fa-search-plus"></i> Perbesar</span>
-                            </div>
-                            <div id="dtl-no-img" class="hidden flex-col items-center text-gray-400 py-10">
-                                <i class="fas fa-money-bill-wave text-4xl mb-3 text-gray-300"></i>
-                                <span class="text-sm font-semibold">Transaksi Tunai</span>
-                                <span class="text-xs mt-1">Tidak ada bukti gambar</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Area Info Siswa -->
-                    <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 mb-5">
-                        <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary shadow-sm flex-shrink-0">
-                                <i class="fas fa-user-graduate"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-800 text-sm" id="dtl-nama">Nama Siswa</h4>
-                                <p class="text-xs text-gray-600 mt-0.5">NIS: <span id="dtl-nis" class="font-semibold">12345</span> | Kelas: <span id="dtl-kelas" class="font-semibold">1A</span></p>
-                                <p class="text-[10px] text-gray-500 mt-1"><i class="fas fa-calendar-alt"></i> <span id="dtl-date">Tgl</span></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Area Rincian -->
-                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 border-b pb-1">Rincian Dibayar</h4>
-                    <div class="space-y-2 mb-4" id="dtl-rincian"></div>
-                    
-                    <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-sm mt-4">
-                        <span class="text-sm font-bold text-gray-700">TOTAL</span>
-                        <span class="text-xl font-bold text-primary" id="dtl-total">Rp 0</span>
-                    </div>
-                </div>
-
-                <!-- Action Buttons (Sticky Bottom) -->
-                <div id="dtl-actions" class="absolute bottom-0 w-full bg-white border-t border-gray-100 p-5 rounded-b-[2rem] flex gap-3 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
-                    <button id="btn-reject" class="flex-1 bg-red-50 text-danger hover:bg-red-100 font-bold py-3.5 rounded-xl border border-red-100 flex items-center justify-center gap-2 transition">
-                        <i class="fas fa-times"></i> Tolak
-                    </button>
-                    <button id="btn-approve" class="flex-[2] bg-success hover:bg-green-600 text-white font-bold py-3.5 rounded-xl shadow-md flex items-center justify-center gap-2 transition">
-                        <i class="fas fa-check-double"></i> Konfirmasi Sukses
-                    </button>
+                <div class="flex-1 w-full bg-gray-500 relative">
+                    <iframe id="pdf-preview-frame" class="w-full h-full border-0 absolute inset-0"></iframe>
                 </div>
             </div>
         </div>
@@ -767,6 +724,173 @@
             } catch (e) {
                 console.error(e); showMessageBox('Error', 'Gagal memuat transaksi.', 'fa-wifi', 'bg-red-50 text-danger');
             }
+        }
+
+        // --- FITUR: MANAJEMEN MENU APLIKASI WALI MURID ---
+
+        async function fetchMenus() {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/menus?select=*&order=sortOrder.asc`, { headers: HEADERS });
+                if(res.ok) {
+                    const data = await res.json();
+                    adminData.menus = data;
+                } else {
+                    adminData.menus = [];
+                }
+            } catch (err) {
+                console.error(err);
+                adminData.menus = [];
+            }
+        }
+
+        function renderMenus() {
+            document.getElementById('admin-menu-count').innerText = `${adminData.menus.length} Menu Aktif`;
+            let al = document.getElementById('admin-menu-list'); 
+            al.innerHTML = '';
+            adminData.menus.forEach((m, idx) => {
+                let c = (m.color||'text-primary|bg-white').split('|');
+                let stat = m.isActive ? '<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold"><i class="fas fa-eye"></i> Publik</span>' : '<span class="text-[10px] bg-gray-200 text-gray-500 px-2 py-0.5 rounded font-bold"><i class="fas fa-eye-slash"></i> Sembunyi</span>';
+                
+                let upBtn = idx > 0 ? `<button onclick="moveMenu(${idx}, -1)" class="text-gray-400 hover:text-primary p-2"><i class="fas fa-chevron-up"></i></button>` : `<span class="w-8"></span>`;
+                let dnBtn = idx < adminData.menus.length-1 ? `<button onclick="moveMenu(${idx}, 1)" class="text-gray-400 hover:text-primary p-2"><i class="fas fa-chevron-down"></i></button>` : `<span class="w-8"></span>`;
+
+                al.innerHTML += `
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg ${c[1]} flex items-center justify-center ${c[0]}"><i class="fas ${m.icon} text-lg"></i></div>
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800">${m.title}</h4>
+                            <div class="mt-1">${stat}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex flex-col">${upBtn}${dnBtn}</div>
+                        <button onclick="editMenu('${m.id}')" class="text-xs font-bold text-primary px-3 py-2 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 transition">Edit</button>
+                    </div>
+                </div>`;
+            });
+        }
+
+        function openMenuModal() {
+            document.getElementById('modal-edit-menu-content').classList.remove('translate-y-full'); 
+            document.getElementById('modal-edit-menu').classList.remove('hidden');
+            setTimeout(()=>document.getElementById('modal-edit-menu').classList.remove('opacity-0'), 10);
+            
+            document.getElementById('edit-menu-id').value = ''; 
+            document.getElementById('edit-menu-name').value = '';
+            document.getElementById('edit-menu-url').value = ''; 
+            document.getElementById('edit-menu-active').checked = true;
+            document.getElementById('btn-delete-menu').classList.add('hidden'); 
+            renderIcons('fa-circle');
+        }
+        
+        function closeMenuModal() { 
+            document.getElementById('modal-edit-menu').classList.add('opacity-0'); 
+            document.getElementById('modal-edit-menu-content').classList.add('translate-y-full'); 
+            setTimeout(()=>document.getElementById('modal-edit-menu').classList.add('hidden'),300); 
+        }
+        
+        function renderIcons(sel) {
+            let ht = ''; 
+            PRESET_ICONS.forEach(i => { 
+                ht += `<div onclick="document.getElementById('edit-menu-icon').value='${i}'; renderIcons('${i}')" class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg border-2 cursor-pointer transition ${i===sel?'border-primary text-primary bg-blue-50':'border-gray-100 text-gray-400'}"><i class="fas ${i}"></i></div>`; 
+            });
+            document.getElementById('admin-icon-presets').innerHTML = ht; 
+            document.getElementById('edit-menu-icon').value = sel;
+        }
+
+        function editMenu(id) {
+            let m = adminData.menus.find(x=>x.id == id);
+            if(m){ 
+                openMenuModal(); 
+                document.getElementById('modal-menu-title').innerText='Edit Menu'; 
+                document.getElementById('edit-menu-id').value=m.id; 
+                document.getElementById('edit-menu-name').value=m.title; 
+                document.getElementById('edit-menu-color').value=m.color||'text-primary|bg-white'; 
+                document.getElementById('edit-menu-target').value=m.target||''; 
+                document.getElementById('edit-menu-url').value=m.url||''; 
+                document.getElementById('edit-menu-active').checked=m.isActive; 
+                renderIcons(m.icon); 
+                document.getElementById('btn-delete-menu').classList.remove('hidden'); 
+            }
+        }
+
+        async function syncMenuToServer() {
+            try {
+                const payload = adminData.menus.map((m, idx) => ({
+                    id: m.id.toString(), title: m.title, icon: m.icon, color: m.color,
+                    target: m.target, url: m.url, isActive: m.isActive, sortOrder: idx
+                }));
+                await fetch(`${SUPABASE_URL}/rest/v1/menus?on_conflict=id`, {
+                    method: 'POST',
+                    headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
+                    body: JSON.stringify(payload)
+                });
+            } catch(e) { console.log('Gagal sync menu', e); }
+        }
+
+        async function saveMenu() {
+            let id = document.getElementById('edit-menu-id').value;
+            let title = document.getElementById('edit-menu-name').value;
+            let icon = document.getElementById('edit-menu-icon').value;
+            let color = document.getElementById('edit-menu-color').value;
+            let target = document.getElementById('edit-menu-target').value;
+            let url = document.getElementById('edit-menu-url').value;
+            let isActive = document.getElementById('edit-menu-active').checked;
+            
+            if(!title) {
+                showMessageBox('Peringatan', 'Nama layanan harus diisi.', 'fa-exclamation-triangle', 'bg-orange-50 text-accent');
+                return;
+            }
+            
+            showMessageBox('Menyimpan...', 'Sinkronisasi menu ke Supabase...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            
+            if(id) { 
+                let ix = adminData.menus.findIndex(x=>x.id == id); 
+                adminData.menus[ix] = {id:id, title, icon, color, target, url, isActive}; 
+            } else { 
+                adminData.menus.push({id:'M-'+Date.now(), title, icon, color, target, url, isActive}); 
+            }
+            
+            await syncMenuToServer(); 
+            closeMessageBox();
+            closeMenuModal(); 
+            renderMenus();
+        }
+
+        async function deleteMenu() { 
+            let id = document.getElementById('edit-menu-id').value;
+            if(!confirm("Yakin ingin menghapus menu ini?")) return;
+
+            showMessageBox('Menghapus...', 'Menghapus menu dari Supabase...', 'fa-spinner fa-spin', 'text-danger bg-red-50', '', 'hidden');
+            
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/menus?id=eq.${id}`, { 
+                    method: 'DELETE', 
+                    headers: HEADERS 
+                });
+                
+                adminData.menus = adminData.menus.filter(x=>x.id != id); 
+                await syncMenuToServer();
+                
+                closeMessageBox();
+                closeMenuModal(); 
+                renderMenus(); 
+            } catch(e) { 
+                closeMessageBox();
+                showMessageBox('Gagal', 'Terjadi kesalahan saat menghapus.', 'fa-times', 'bg-red-50 text-danger'); 
+            }
+        }
+
+        async function moveMenu(index, dir) {
+            let temp = adminData.menus[index];
+            adminData.menus[index] = adminData.menus[index + dir];
+            adminData.menus[index + dir] = temp;
+            
+            showMessageBox('Menyimpan...', 'Mengupdate urutan di server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            await syncMenuToServer(); 
+            closeMessageBox();
+            renderMenus();
         }
 
         function updateBadgePending() {
@@ -1583,9 +1707,28 @@
         }
 
         // --- EXPORT PDF REPORTS ---
-        function downloadReport(period) {
+        
+        // Fungsi pembantu untuk memuat logo menjadi Base64
+        function getLogoBase64() {
+            return new Promise((resolve) => {
+                let img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.onload = function() {
+                    let canvas = document.createElement('canvas');
+                    canvas.width = img.width; canvas.height = img.height;
+                    let ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.onerror = function() { resolve(null); };
+                img.src = 'https://iili.io/nHwYAuV.png'; // Logo Sudagaran
+            });
+        }
+
+        async function generatePDFDoc(period) {
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ format: [210, 330], orientation: 'portrait' }); // Ukuran F4 = 210mm x 330mm
+            // Format F4 Landscape (330mm x 210mm)
+            const doc = new jsPDF({ format: [330, 210], orientation: 'landscape' });
             
             let txs = adminData.transactions.filter(t => t.status === 'success' || t.status === 'lunas');
             let filteredTxs = [];
@@ -1612,7 +1755,7 @@
                 let startOfWeek = new Date(dailyDate); startOfWeek.setDate(diff); startOfWeek.setHours(0,0,0,0);
                 let endOfWeek = new Date(startOfWeek); endOfWeek.setDate(endOfWeek.getDate() + 6); endOfWeek.setHours(23,59,59,999);
                 
-                periodStr = `Periode: ${startOfWeek.toLocaleDateString('id-ID')} - ${endOfWeek.toLocaleDateString('id-ID')}`;
+                periodStr = `Periode: ${startOfWeek.toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})} - ${endOfWeek.toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})}`;
                 filteredTxs = txs.filter(tx => {
                     let d = parseIdDate(tx.date);
                     return d >= startOfWeek && d <= endOfWeek;
@@ -1628,263 +1771,341 @@
                 });
             }
 
-            // Margin 15mm (1.5cm)
+            // Margin kiri kanan 15mm
             let margin = 15;
+            let yPos = margin;
 
-            // HEADER PDF
+            // HEADER PDF DENGAN LOGO
+            let logoData = await getLogoBase64();
+            if(logoData) {
+                // Gambar logo di kiri atas (x: 15, y: 12, width: 16, height: 16)
+                doc.addImage(logoData, 'PNG', margin, 12, 16, 16);
+            }
+            
             doc.setFontSize(14);
             doc.setFont("helvetica", "bold");
-            doc.text("SD MUHAMMADIYAH SUDAGARAN WONOSOBO", 105, margin + 5, { align: "center" });
+            doc.text("SD MUHAMMADIYAH SUDAGARAN WONOSOBO", 165, margin + 6, { align: "center" });
             doc.setFontSize(12);
-            doc.text(titleStr, 105, margin + 12, { align: "center" });
+            doc.text(titleStr, 165, margin + 13, { align: "center" });
             doc.setFontSize(10);
             doc.setFont("helvetica", "normal");
-            doc.text(periodStr, 105, margin + 18, { align: "center" });
+            doc.text(periodStr, 165, margin + 19, { align: "center" });
             
             doc.setLineWidth(0.5);
-            doc.line(margin, margin + 22, 210 - margin, margin + 22);
+            doc.line(margin, margin + 24, 330 - margin, margin + 24); // Garis header sepanjang F4 (330)
 
             // Pisahkan Data Tunai & Transfer
             let dataTunai = filteredTxs.filter(t => t.buktiTF === 'PEMBAYARAN_TUNAI');
             let dataTransfer = filteredTxs.filter(t => t.buktiTF !== 'PEMBAYARAN_TUNAI');
 
-            let yPos = margin + 30;
+            yPos = margin + 32;
 
-            if (period === 'harian') {
-                // Untuk Harian, cetak rincian per siswa
-                yPos = buildTableDaily(doc, dataTunai, "PEMBAYARAN TUNAI", yPos, margin);
+            // Cetak Tabel Tunai (Format Lengkap 16 Kolom)
+            if (dataTunai.length > 0) {
+                yPos = buildDetailedTable(doc, dataTunai, "RINCIAN PEMBAYARAN TUNAI", yPos, margin);
                 yPos += 15;
-                yPos = buildTableDaily(doc, dataTransfer, "PEMBAYARAN TRANSFER", yPos, margin);
-            } else {
-                // Untuk Mingguan/Bulanan, cetak agregat per hari
-                yPos = buildTableSummary(doc, dataTunai, "PENDAPATAN TUNAI PER HARI", yPos, margin);
+            }
+
+            // Cetak Tabel Transfer (Format Lengkap 16 Kolom)
+            if (dataTransfer.length > 0) {
+                if (yPos > 170) { doc.addPage(); yPos = margin + 10; } // Pindah halaman jika sisa ruang sedikit
+                yPos = buildDetailedTable(doc, dataTransfer, "RINCIAN PEMBAYARAN TRANSFER", yPos, margin);
+            }
+            
+            if (dataTunai.length === 0 && dataTransfer.length === 0) {
+                doc.setFont("helvetica", "italic");
+                doc.text("Tidak ada transaksi pada periode ini.", margin, yPos);
                 yPos += 15;
-                yPos = buildTableSummary(doc, dataTransfer, "PENDAPATAN TRANSFER PER HARI", yPos, margin);
             }
 
             // FOOTER TTD KASIR
             let finalY = yPos + 15;
-            if (finalY > 300) { doc.addPage(); finalY = margin + 10; } // Pindah halaman jika batas bawah sudah penuh
+            if (finalY > 170) { doc.addPage(); finalY = margin + 10; } // Pindah halaman jika batas bawah sudah penuh
             
             doc.setFont("helvetica", "normal");
             doc.setFontSize(10);
             let todayText = `Wonosobo, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}`;
             
-            // Tempatkan di sisi kanan laporan
-            doc.text(todayText, 210 - margin - doc.getTextWidth(todayText), finalY);
-            doc.text("Mengetahui,", 210 - margin - 25, finalY + 5, {align: "center"});
+            // Tempatkan di sisi kanan laporan (F4 width = 330)
+            doc.text(todayText, 330 - margin - doc.getTextWidth(todayText), finalY);
+            doc.text("Mengetahui,", 330 - margin - 25, finalY + 5, {align: "center"});
             
             doc.setFont("helvetica", "bold");
-            doc.text("Kasir 1", 210 - margin - 25, finalY + 25, {align: "center"});
+            doc.text(adminData.loggedInUser || "Kasir 1", 330 - margin - 25, finalY + 25, {align: "center"});
             
             doc.setLineWidth(0.2);
-            doc.line(210 - margin - 45, finalY + 26, 210 - margin - 5, finalY + 26); // Garis bawah nama/jabatan (opsional)
+            doc.line(330 - margin - 45, finalY + 26, 330 - margin - 5, finalY + 26); // Garis bawah nama/jabatan
 
-            // Simpan Berkas (Unduh)
-            doc.save(`${titleStr.replace(/ /g, "_")}.pdf`);
+            return { doc: doc, title: `${titleStr.replace(/ /g, "_")}_${period}.pdf` };
         }
 
-        // Fungsi Cetak Tabel PDF Rincian Harian Per Siswa
-        function buildTableDaily(doc, txs, title, yPos, margin) {
+        // Fungsi Cetak Tabel 16 Kolom F4 Landscape
+        function buildDetailedTable(doc, txs, title, yPos, margin) {
             doc.setFontSize(11);
             doc.setFont("helvetica", "bold");
             doc.text(title, margin, yPos);
             
             let body = [];
-            let total = 0;
+            
+            // Variabel Akumulasi Total
+            let tBps=0, tSpp=0, tDu1=0, tDu2=0, tDu3=0, tTahfidzPlus=0, tTahfidz=0, tIcp=0, tTanggungan=0, tAll=0;
+
             txs.forEach((tx, index) => {
-                let amt = calculateTxTotal(tx);
-                total += amt;
-                let time = tx.date ? tx.date.split(',')[1] || '-' : '-';
-                let desc = getTxDescriptionPreview(tx);
-                body.push([index + 1, time.trim(), tx.nis || '-', tx.nama || '-', tx.kelas || '-', desc, formatCurrency(amt)]);
+                let dSplit = tx.date ? tx.date.split(',') : ['-'];
+                let tgl = dSplit[0].trim(); // Hanya ambil tanggalnya saja untuk menghemat tempat
+                
+                let nama = tx.nama || '-';
+                let kelas = tx.kelas || '-';
+                
+                let bps = parseInt(tx.bps) || 0;
+                let spp = (parseInt(tx.spp) || 0) + (parseInt(tx.sppJuli) || 0);
+                let ketSpp = tx.ketSpp || '-';
+                let du1 = parseInt(tx.daftarUlang1) || 0;
+                let du2 = parseInt(tx.daftarUlang2) || 0;
+                let du3 = parseInt(tx.daftarUlang3) || 0;
+                let tahfidzPlus = parseInt(tx.tahfidzPlus) || 0;
+                let ketTahfidzPlus = tx.ketTahfidzPlus || '-';
+                let tahfidz = parseInt(tx.tahfidz) || 0;
+                let icp = (parseInt(tx.icp) || 0) + (parseInt(tx.icpSore) || 0);
+                let tanggungan = parseInt(tx.tanggungan) || 0;
+                let kasir = tx.kasir || '-';
+                
+                // Tambah ke total
+                tBps += bps; tSpp += spp; tDu1 += du1; tDu2 += du2; tDu3 += du3; 
+                tTahfidzPlus += tahfidzPlus; tTahfidz += tahfidz; tIcp += icp; tTanggungan += tanggungan;
+
+                // Format Nominal (Hilangkan "Rp " agar muat di kolom kecil)
+                const f = (num) => num > 0 ? formatCurrency(num).replace('Rp ', '') : '-';
+
+                body.push([
+                    index + 1, tgl, nama, kelas, 
+                    f(bps), f(spp), ketSpp, f(du1), f(du2), f(du3), 
+                    f(tahfidzPlus), ketTahfidzPlus, f(tahfidz), f(icp), f(tanggungan), kasir
+                ]);
             });
 
-            if(body.length === 0) {
-                body.push([{content: 'Tidak ada data transaksi.', colSpan: 7, styles: {halign: 'center', fontStyle: 'italic'}}]);
-            } else {
-                body.push([{ content: 'TOTAL', colSpan: 6, styles: { halign: 'right', fontStyle: 'bold' } }, { content: formatCurrency(total), styles: { fontStyle: 'bold' } }]);
-            }
+            const fT = (num) => num > 0 ? formatCurrency(num).replace('Rp ', '') : '-';
+
+            // Baris Total
+            body.push([
+                { content: 'TOTAL KESELURUHAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold', fillColor: [240, 245, 250] } },
+                { content: fT(tBps), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
+                { content: fT(tSpp), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
+                { content: '', styles: { fillColor: [240, 245, 250] } }, // Ket SPP Kosong
+                { content: fT(tDu1), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
+                { content: fT(tDu2), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
+                { content: fT(tDu3), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
+                { content: fT(tTahfidzPlus), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
+                { content: '', styles: { fillColor: [240, 245, 250] } }, // Ket Tahfidz+ Kosong
+                { content: fT(tTahfidz), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
+                { content: fT(tIcp), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
+                { content: fT(tTanggungan), styles: { fontStyle: 'bold', fillColor: [240, 245, 250] } },
+                { content: '', styles: { fillColor: [240, 245, 250] } }  // Kasir Kosong
+            ]);
 
             doc.autoTable({
                 startY: yPos + 4,
-                head: [['No', 'Waktu', 'NIS', 'Nama Siswa', 'Kelas', 'Rincian', 'Nominal']],
+                head: [['No', 'Tanggal', 'Nama Siswa', 'Kelas', 'BPS', 'SPP', 'Ket SPP', 'DU 1', 'DU 2', 'DU 3', 'Tahfidz+', 'Ket Tahf+', 'Tahfidz', 'ICP', 'Tanggungan', 'Kasir']],
                 body: body,
                 theme: 'grid',
-                headStyles: { fillColor: [30, 58, 95] }, // Warna brand (primary)
+                headStyles: { fillColor: [30, 58, 95], fontSize: 7, halign: 'center' }, 
                 margin: { left: margin, right: margin },
-                styles: { fontSize: 8, cellPadding: 2 },
+                styles: { fontSize: 7, cellPadding: 1.5, overflow: 'linebreak' },
                 columnStyles: {
-                    0: { cellWidth: 10 },
-                    1: { cellWidth: 20 },
-                    2: { cellWidth: 20 },
-                    4: { cellWidth: 15 },
-                    6: { cellWidth: 25, halign: 'right' }
+                    0: { cellWidth: 8, halign: 'center' },      // No
+                    1: { cellWidth: 16 },     // Tanggal
+                    2: { cellWidth: 35 },     // Nama
+                    3: { cellWidth: 12, halign: 'center' },     // Kelas
+                    4: { cellWidth: 18, halign: 'right' },      // BPS
+                    5: { cellWidth: 18, halign: 'right' },      // SPP
+                    6: { cellWidth: 20 },     // Ket SPP
+                    7: { cellWidth: 16, halign: 'right' },      // DU1
+                    8: { cellWidth: 16, halign: 'right' },      // DU2
+                    9: { cellWidth: 16, halign: 'right' },      // DU3
+                    10: { cellWidth: 16, halign: 'right' },     // Tahfidz+
+                    11: { cellWidth: 20 },    // Ket Tahfidz+
+                    12: { cellWidth: 16, halign: 'right' },     // Tahfidz
+                    13: { cellWidth: 16, halign: 'right' },     // ICP
+                    14: { cellWidth: 18, halign: 'right' },     // Tanggungan
+                    15: { cellWidth: 17 }     // Kasir
                 }
             });
 
             return doc.lastAutoTable.finalY;
         }
 
-        // Fungsi Cetak Tabel PDF Ringkasan Per Hari (Untuk Pekan/Bulan)
-        function buildTableSummary(doc, txs, title, yPos, margin) {
+        async function downloadReport(period) {
+            showMessageBox('Memproses...', 'Mempersiapkan PDF untuk diunduh...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            let pdfData = await generatePDFDoc(period);
+            pdfData.doc.save(pdfData.title);
+            closeMessageBox();
+        }
+
+        async function previewReport(period) {
+            showMessageBox('Memuat...', 'Membuat pratinjau PDF...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            
+            try {
+                let pdfData = await generatePDFDoc(period);
+                
+                // PERBAIKAN 1: Menggunakan Blob dan Object URL agar tidak diblokir oleh Chrome
+                const pdfBlob = pdfData.doc.output('blob');
+                const blobUrl = URL.createObjectURL(pdfBlob);
+                
+                document.getElementById('pdf-preview-frame').src = blobUrl;
+                closeMessageBox();
+                
+                // Tampilkan Modal
+                const modal = document.getElementById('modal-pdf-preview');
+                const content = document.getElementById('modal-pdf-content');
+                modal.classList.remove('hidden');
+                setTimeout(() => { 
+                    modal.classList.remove('opacity-0'); 
+                    content.classList.remove('scale-95'); 
+                }, 10);
+            } catch (e) {
+                closeMessageBox();
+                showMessageBox('Gagal', 'Terjadi kesalahan saat memuat pratinjau.', 'fa-times', 'bg-red-50 text-danger');
+            }
+        }
+
+        function closePdfPreview() {
+            const modal = document.getElementById('modal-pdf-preview');
+            const content = document.getElementById('modal-pdf-content');
+            modal.classList.add('opacity-0'); 
+            content.classList.add('scale-95');
+            setTimeout(() => { 
+                modal.classList.add('hidden'); 
+                // Bebaskan memori blob saat ditutup
+                URL.revokeObjectURL(document.getElementById('pdf-preview-frame').src);
+                document.getElementById('pdf-preview-frame').src = ''; 
+            }, 300);
+        }
+
+        // Fungsi Cetak Tabel 16 Kolom F4 Landscape
+        function buildDetailedTable(doc, txs, title, yPos, margin) {
             doc.setFontSize(11);
             doc.setFont("helvetica", "bold");
             doc.text(title, margin, yPos);
             
-            let summary = {};
-            txs.forEach(tx => {
-                let dStr = tx.date ? tx.date.split(',')[0].trim() : '-';
-                if(!summary[dStr]) summary[dStr] = 0;
-                summary[dStr] += calculateTxTotal(tx);
-            });
-
             let body = [];
-            let total = 0;
-            let index = 1;
             
-            let sortedDates = Object.keys(summary).sort((a,b) => parseIdDate(a) - parseIdDate(b));
-            
-            sortedDates.forEach(dStr => {
-                let amt = summary[dStr];
-                total += amt;
-                body.push([index++, dStr, formatCurrency(amt)]);
+            // Variabel Akumulasi Total
+            let tBps=0, tSpp=0, tDu1=0, tDu2=0, tDu3=0, tTahfidzPlus=0, tTahfidz=0, tIcp=0, tTanggungan=0, tAll=0;
+
+            txs.forEach((tx, index) => {
+                let dSplit = tx.date ? tx.date.split(',') : ['-'];
+                let tgl = dSplit[0].trim(); // Hanya ambil tanggalnya saja
+                
+                let nama = tx.nama || '-';
+                let kelas = tx.kelas || '-';
+                
+                let bps = parseInt(tx.bps) || 0;
+                let spp = (parseInt(tx.spp) || 0) + (parseInt(tx.sppJuli) || 0);
+                let ketSpp = tx.ketSpp || '-';
+                let du1 = parseInt(tx.daftarUlang1) || 0;
+                let du2 = parseInt(tx.daftarUlang2) || 0;
+                let du3 = parseInt(tx.daftarUlang3) || 0;
+                let tahfidzPlus = parseInt(tx.tahfidzPlus) || 0;
+                let ketTahfidzPlus = tx.ketTahfidzPlus || '-';
+                let tahfidz = parseInt(tx.tahfidz) || 0;
+                let icp = (parseInt(tx.icp) || 0) + (parseInt(tx.icpSore) || 0);
+                let tanggungan = parseInt(tx.tanggungan) || 0;
+                let kasir = tx.kasir || '-';
+                
+                tBps += bps; tSpp += spp; tDu1 += du1; tDu2 += du2; tDu3 += du3; 
+                tTahfidzPlus += tahfidzPlus; tTahfidz += tahfidz; tIcp += icp; tTanggungan += tanggungan;
+
+                const f = (num) => num > 0 ? formatCurrency(num).replace('Rp ', '') : '-';
+
+                body.push([
+                    index + 1, tgl, nama, kelas, 
+                    f(bps), f(spp), ketSpp, f(du1), f(du2), f(du3), 
+                    f(tahfidzPlus), ketTahfidzPlus, f(tahfidz), f(icp), f(tanggungan), kasir
+                ]);
             });
 
-            if(body.length === 0) {
-                body.push([{content: 'Tidak ada data transaksi.', colSpan: 3, styles: {halign: 'center', fontStyle: 'italic'}}]);
-            } else {
-                body.push([{ content: 'TOTAL KESELURUHAN', colSpan: 2, styles: { halign: 'right', fontStyle: 'bold' } }, { content: formatCurrency(total), styles: { fontStyle: 'bold' } }]);
-            }
+            const fT = (num) => num > 0 ? formatCurrency(num).replace('Rp ', '') : '-';
 
+            // Baris Total
+            body.push([
+                { content: 'TOTAL KESELURUHAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tBps), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tSpp), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: '', styles: { fillColor: [230, 240, 250] } }, 
+                { content: fT(tDu1), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tDu2), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tDu3), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tTahfidzPlus), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: '', styles: { fillColor: [230, 240, 250] } }, 
+                { content: fT(tTahfidz), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tIcp), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: fT(tTanggungan), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
+                { content: '', styles: { fillColor: [230, 240, 250] } }  
+            ]);
+
+            // PERBAIKAN 2: Penambahan styles eksplisit untuk garis tabel yang rapi
             doc.autoTable({
                 startY: yPos + 4,
-                head: [['No', 'Tanggal', 'Nominal Pendapatan']],
+                head: [['No', 'Tanggal', 'Nama Siswa', 'Kelas', 'BPS', 'SPP', 'Ket SPP', 'DU 1', 'DU 2', 'DU 3', 'Tahfidz+', 'Ket Tahf+', 'Tahfidz', 'ICP', 'Tanggungan', 'Kasir']],
                 body: body,
-                theme: 'grid',
-                headStyles: { fillColor: [30, 58, 95] },
+                theme: 'grid', // Memaksa mode grid (kotak-kotak)
+                headStyles: { 
+                    fillColor: [30, 58, 95], 
+                    textColor: [255, 255, 255],
+                    fontSize: 7, 
+                    halign: 'center',
+                    lineColor: [0, 0, 0], // Garis header lebih tegas
+                    lineWidth: 0.1
+                }, 
                 margin: { left: margin, right: margin },
-                styles: { fontSize: 9, cellPadding: 3 },
+                styles: { 
+                    fontSize: 7, 
+                    cellPadding: 1.5, 
+                    overflow: 'linebreak',
+                    lineColor: [180, 180, 180], // Garis tabel abu-abu jelas
+                    lineWidth: 0.1 // Ketebalan garis
+                },
+                alternateRowStyles: {
+                    fillColor: [248, 250, 252] // Zebra striping (selang-seling warna agar mudah dibaca ke samping)
+                },
                 columnStyles: {
-                    0: { cellWidth: 15 },
-                    2: { halign: 'right' }
+                    0: { cellWidth: 8, halign: 'center' },      
+                    1: { cellWidth: 16 },     
+                    2: { cellWidth: 35 },     
+                    3: { cellWidth: 12, halign: 'center' },     
+                    4: { cellWidth: 18, halign: 'right' },      
+                    5: { cellWidth: 18, halign: 'right' },      
+                    6: { cellWidth: 20 },     
+                    7: { cellWidth: 16, halign: 'right' },      
+                    8: { cellWidth: 16, halign: 'right' },      
+                    9: { cellWidth: 16, halign: 'right' },      
+                    10: { cellWidth: 16, halign: 'right' },     
+                    11: { cellWidth: 20 },    
+                    12: { cellWidth: 16, halign: 'right' },     
+                    13: { cellWidth: 16, halign: 'right' },     
+                    14: { cellWidth: 18, halign: 'right' },     
+                    15: { cellWidth: 17 }     
                 }
             });
 
             return doc.lastAutoTable.finalY;
         }
 
-        // --- MENU MANAGEMENT ---
-
-        async function fetchMenus() {
+        async function downloadReport(period) {
+            showMessageBox('Memproses...', 'Mempersiapkan PDF untuk diunduh...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/menus?select=*&order=sortOrder.asc`, { headers: HEADERS });
-                if(res.ok) adminData.menus = await res.json();
-            } catch (err) { console.error("Gagal load menu"); }
-        }
-
-        async function syncMenuToServer() {
-            try {
-                const payload = adminData.menus.map((m, idx) => ({
-                    id: m.id.toString(), title: m.title, icon: m.icon, color: m.color,
-                    target: m.target, url: m.url, isActive: m.isActive, sortOrder: idx
-                }));
-                await fetch(`${SUPABASE_URL}/rest/v1/menus?on_conflict=id`, {
-                    method: 'POST',
-                    headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
-                    body: JSON.stringify(payload)
-                });
-            } catch(e) { console.log('Gagal sync menu', e); }
-        }
-
-        function renderMenus() {
-            document.getElementById('admin-menu-count').innerText = `${adminData.menus.length} Menu Aplikasi`;
-            let al = document.getElementById('admin-menu-list'); al.innerHTML = '';
-            adminData.menus.forEach((m, idx) => {
-                let c = (m.color||'text-primary|bg-white').split('|');
-                let stat = m.isActive ? '<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold"><i class="fas fa-eye"></i> Publik</span>' : '<span class="text-[10px] bg-gray-200 text-gray-500 px-2 py-0.5 rounded font-bold"><i class="fas fa-eye-slash"></i> Sembunyi</span>';
-                
-                let upBtn = idx > 0 ? `<button onclick="moveMenu(${idx}, -1)" class="w-8 h-8 rounded hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-primary"><i class="fas fa-chevron-up"></i></button>` : `<span class="w-8"></span>`;
-                let dnBtn = idx < adminData.menus.length-1 ? `<button onclick="moveMenu(${idx}, 1)" class="w-8 h-8 rounded hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-primary"><i class="fas fa-chevron-down"></i></button>` : `<span class="w-8"></span>`;
-
-                al.innerHTML += `
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex items-center justify-between hover:border-gray-200 transition">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-xl ${c[1]} flex items-center justify-center ${c[0]} border border-gray-50"><i class="fas ${m.icon} text-xl"></i></div>
-                        <div>
-                            <h4 class="font-bold text-sm text-gray-800">${m.title}</h4>
-                            <div class="mt-1">${stat}</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="flex flex-col">${upBtn}${dnBtn}</div>
-                        <button onclick="editMenu('${m.id}')" class="text-xs font-bold text-primary px-3 py-2 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 transition ml-2">Edit</button>
-                    </div>
-                </div>`;
-            });
-        }
-
-        async function moveMenu(index, dir) {
-            let temp = adminData.menus[index]; adminData.menus[index] = adminData.menus[index + dir]; adminData.menus[index + dir] = temp;
-            showMessageBox('Menyimpan...', 'Mengupdate urutan di server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
-            await syncMenuToServer(); closeMessageBox(); renderMenus();
-        }
-
-        function openMenuModal() {
-            document.getElementById('modal-edit-menu-content').classList.remove('translate-y-full'); document.getElementById('modal-edit-menu').classList.remove('hidden');
-            setTimeout(()=>document.getElementById('modal-edit-menu').classList.remove('opacity-0'), 10);
-            document.getElementById('edit-menu-id').value = ''; document.getElementById('edit-menu-name').value = '';
-            document.getElementById('edit-menu-url').value = ''; document.getElementById('edit-menu-active').checked = true;
-            document.getElementById('btn-delete-menu').classList.add('hidden'); renderIcons('fa-circle');
-            document.getElementById('modal-menu-title').innerText='Tambah Fitur Baru';
-        }
-        
-        function closeMenuModal() { 
-            document.getElementById('modal-edit-menu').classList.add('opacity-0'); 
-            document.getElementById('modal-edit-menu-content').classList.add('translate-y-full'); 
-            setTimeout(()=>document.getElementById('modal-edit-menu').classList.add('hidden'),300); 
-        }
-        
-        function renderIcons(sel) {
-            let ht = ''; PRESET_ICONS.forEach(i => { ht += `<div onclick="document.getElementById('edit-menu-icon').value='${i}'; renderIcons('${i}')" class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl border-2 cursor-pointer transition ${i===sel?'border-primary text-primary bg-blue-50 shadow-sm':'border-gray-100 text-gray-400 hover:bg-gray-50'}"><i class="fas ${i}"></i></div>`; });
-            document.getElementById('admin-icon-presets').innerHTML = ht; document.getElementById('edit-menu-icon').value = sel;
-        }
-
-        function editMenu(id) {
-            let m = adminData.menus.find(x=>x.id == id);
-            if(m){ 
-                openMenuModal(); document.getElementById('modal-menu-title').innerText='Edit Menu'; 
-                document.getElementById('edit-menu-id').value=m.id; document.getElementById('edit-menu-name').value=m.title; 
-                document.getElementById('edit-menu-color').value=m.color||'text-primary|bg-white'; document.getElementById('edit-menu-target').value=m.target||''; 
-                document.getElementById('edit-menu-url').value=m.url||''; document.getElementById('edit-menu-active').checked=m.isActive; 
-                renderIcons(m.icon); document.getElementById('btn-delete-menu').classList.remove('hidden'); 
+                let pdfData = await generatePDFDoc(period);
+                pdfData.doc.save(pdfData.title);
+                closeMessageBox();
+            } catch (e) {
+                closeMessageBox();
+                showMessageBox('Gagal', 'Terjadi kesalahan saat mengunduh laporan PDF.', 'fa-times', 'bg-red-50 text-danger');
             }
         }
 
-        async function saveMenu() {
-            let id = document.getElementById('edit-menu-id').value, title = document.getElementById('edit-menu-name').value, 
-                icon = document.getElementById('edit-menu-icon').value, color = document.getElementById('edit-menu-color').value, 
-                target = document.getElementById('edit-menu-target').value, url = document.getElementById('edit-menu-url').value, 
-                isActive = document.getElementById('edit-menu-active').checked;
-            
-            if(!title) { alert("Nama menu wajib diisi"); return; }
-            showMessageBox('Menyimpan...', 'Sinkronisasi menu ke Supabase...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
-            
-            if(id) { let ix = adminData.menus.findIndex(x=>x.id == id); adminData.menus[ix] = {id:id, title, icon, color, target, url, isActive}; }
-            else { adminData.menus.push({id:'M-'+Date.now(), title, icon, color, target, url, isActive}); }
-            
-            await syncMenuToServer(); closeMessageBox(); closeMenuModal(); renderMenus();
-        }
-
-        async function deleteMenu() { 
-            let id = document.getElementById('edit-menu-id').value;
-            if(!confirm("Yakin ingin menghapus menu ini?")) return;
-            showMessageBox('Menghapus...', 'Menghapus menu dari Supabase...', 'fa-spinner fa-spin', 'text-danger bg-red-50', '', 'hidden');
-            try { await fetch(`${SUPABASE_URL}/rest/v1/menus?id=eq.${id}`, { method: 'DELETE', headers: HEADERS }); } catch(e) {}
-            adminData.menus = adminData.menus.filter(x=>x.id != id); 
-            await syncMenuToServer(); closeMessageBox(); closeMenuModal(); renderMenus(); 
-        }
-
+        window.onload = () => {
+            showAdminScreen('screen-login');
+        };
     </script>
 </body>
 </html>
