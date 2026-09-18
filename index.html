@@ -1839,12 +1839,12 @@
             return { doc: doc, title: `${titleStr.replace(/ /g, "_")}_${period}.pdf` };
         }
 
-        // Fungsi Cetak Tabel 16 Kolom F4 Landscape
+        // Fungsi Cetak Tabel 17 Kolom F4 Landscape (Presisi 300mm)
         function buildDetailedTable(doc, txs, title, yPos, margin) {
             doc.setFontSize(11);
             doc.setFont("helvetica", "bold");
             
-            // Menengahkan judul tabel secara presisi di tengah kertas F4 (Lebar 330)
+            // Menengahkan judul tabel secara presisi di tengah kertas F4 (Lebar 330 / 2 = 165)
             doc.text(title, 165, yPos, { align: "center" });
             
             let body = [];
@@ -1872,7 +1872,7 @@
                 let tanggungan = parseInt(tx.tanggungan) || 0;
                 let kasir = tx.kasir || '-';
                 
-                // Hitung Total Per Baris Siswa (Kolom Baru)
+                // Hitung Total Per Baris Siswa (Kolom ke-17)
                 let rowTotal = bps + spp + du1 + du2 + du3 + tahfidzPlus + tahfidz + icp + tanggungan;
 
                 tBps += bps; tSpp += spp; tDu1 += du1; tDu2 += du2; tDu3 += du3; 
@@ -1890,7 +1890,7 @@
 
             const fT = (num) => num > 0 ? formatCurrency(num).replace('Rp ', '') : '-';
 
-            // Baris Total
+            // Baris Total Bawah
             body.push([
                 { content: 'TOTAL KESELURUHAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
                 { content: fT(tBps), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
@@ -1908,8 +1908,7 @@
                 { content: fT(tAll), styles: { fontStyle: 'bold', fillColor: [210, 230, 250], textColor: [0, 0, 0] } }  // Kolom Grand Total
             ]);
 
-            // Tabel dengan lebar kolom matematis yang dipastikan jumlahnya tepat 300
-            // Agar otomatis simetris sempurna pada F4 (Lebar 330) dikurangi Margin (Kiri 15 + Kanan 15)
+            // Tabel dengan lebar kolom matematis yang dipastikan jumlahnya TEPAT 300mm
             doc.autoTable({
                 startY: yPos + 4,
                 head: [['No', 'Tanggal', 'Nama Siswa', 'Kelas', 'BPS', 'SPP', 'Ket SPP', 'DU 1', 'DU 2', 'DU 3', 'Tahfidz+', 'Ket Tahf+', 'Tahfidz', 'ICP', 'Tanggungan', 'Kasir', 'Total']],
@@ -1923,7 +1922,7 @@
                     lineColor: [0, 0, 0], 
                     lineWidth: 0.1
                 }, 
-                margin: { left: 15, right: 15 },
+                margin: { left: 15, right: 15 }, // Area 330 - 30 = 300mm
                 styles: { 
                     fontSize: 7, 
                     cellPadding: 1.5, 
@@ -1934,24 +1933,25 @@
                 alternateRowStyles: {
                     fillColor: [248, 250, 252] 
                 },
+                // Total Array Width = 7+14+42+9+15+16+19+15+15+15+15+19+15+15+16+13+20 = 300
                 columnStyles: {
                     0: { cellWidth: 7, halign: 'center' },      
-                    1: { cellWidth: 15 },     
-                    2: { cellWidth: 45 },     
-                    3: { cellWidth: 10, halign: 'center' },     
-                    4: { cellWidth: 17, halign: 'right' },      
-                    5: { cellWidth: 17, halign: 'right' },      
-                    6: { cellWidth: 22 },     
+                    1: { cellWidth: 14 },     
+                    2: { cellWidth: 42 },     
+                    3: { cellWidth: 9, halign: 'center' },     
+                    4: { cellWidth: 15, halign: 'right' },      
+                    5: { cellWidth: 16, halign: 'right' },      
+                    6: { cellWidth: 19 },     
                     7: { cellWidth: 15, halign: 'right' },      
                     8: { cellWidth: 15, halign: 'right' },      
                     9: { cellWidth: 15, halign: 'right' },      
                     10: { cellWidth: 15, halign: 'right' },     
-                    11: { cellWidth: 22 },    
+                    11: { cellWidth: 19 },    
                     12: { cellWidth: 15, halign: 'right' },     
                     13: { cellWidth: 15, halign: 'right' },     
-                    14: { cellWidth: 19, halign: 'right' },     
-                    15: { cellWidth: 16, halign: 'center' },
-                    16: { cellWidth: 20, halign: 'right', fillColor: [235, 247, 255], fontStyle: 'bold' } // Kolom Total dg warna biru super soft
+                    14: { cellWidth: 16, halign: 'right' },     
+                    15: { cellWidth: 13, halign: 'center' },
+                    16: { cellWidth: 20, halign: 'right', fillColor: [235, 247, 255], fontStyle: 'bold' } // Biru super soft
                 }
             });
 
@@ -1960,9 +1960,14 @@
 
         async function downloadReport(period) {
             showMessageBox('Memproses...', 'Mempersiapkan PDF untuk diunduh...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
-            let pdfData = await generatePDFDoc(period);
-            pdfData.doc.save(pdfData.title);
-            closeMessageBox();
+            try {
+                let pdfData = await generatePDFDoc(period);
+                pdfData.doc.save(pdfData.title);
+                closeMessageBox();
+            } catch (e) {
+                closeMessageBox();
+                showMessageBox('Gagal', 'Terjadi kesalahan saat mengunduh laporan PDF.', 'fa-times', 'bg-red-50 text-danger');
+            }
         }
 
         async function previewReport(period) {
@@ -1970,15 +1975,12 @@
             
             try {
                 let pdfData = await generatePDFDoc(period);
-                
-                // PERBAIKAN 1: Menggunakan Blob dan Object URL agar tidak diblokir oleh Chrome
                 const pdfBlob = pdfData.doc.output('blob');
                 const blobUrl = URL.createObjectURL(pdfBlob);
                 
                 document.getElementById('pdf-preview-frame').src = blobUrl;
                 closeMessageBox();
                 
-                // Tampilkan Modal
                 const modal = document.getElementById('modal-pdf-preview');
                 const content = document.getElementById('modal-pdf-content');
                 modal.classList.remove('hidden');
@@ -1999,132 +2001,9 @@
             content.classList.add('scale-95');
             setTimeout(() => { 
                 modal.classList.add('hidden'); 
-                // Bebaskan memori blob saat ditutup
                 URL.revokeObjectURL(document.getElementById('pdf-preview-frame').src);
                 document.getElementById('pdf-preview-frame').src = ''; 
             }, 300);
-        }
-
-        // Fungsi Cetak Tabel 16 Kolom F4 Landscape
-        function buildDetailedTable(doc, txs, title, yPos, margin) {
-            doc.setFontSize(11);
-            doc.setFont("helvetica", "bold");
-            doc.text(title, margin, yPos);
-            
-            let body = [];
-            
-            // Variabel Akumulasi Total
-            let tBps=0, tSpp=0, tDu1=0, tDu2=0, tDu3=0, tTahfidzPlus=0, tTahfidz=0, tIcp=0, tTanggungan=0, tAll=0;
-
-            txs.forEach((tx, index) => {
-                let dSplit = tx.date ? tx.date.split(',') : ['-'];
-                let tgl = dSplit[0].trim(); // Hanya ambil tanggalnya saja
-                
-                let nama = tx.nama || '-';
-                let kelas = tx.kelas || '-';
-                
-                let bps = parseInt(tx.bps) || 0;
-                let spp = (parseInt(tx.spp) || 0) + (parseInt(tx.sppJuli) || 0);
-                let ketSpp = tx.ketSpp || '-';
-                let du1 = parseInt(tx.daftarUlang1) || 0;
-                let du2 = parseInt(tx.daftarUlang2) || 0;
-                let du3 = parseInt(tx.daftarUlang3) || 0;
-                let tahfidzPlus = parseInt(tx.tahfidzPlus) || 0;
-                let ketTahfidzPlus = tx.ketTahfidzPlus || '-';
-                let tahfidz = parseInt(tx.tahfidz) || 0;
-                let icp = (parseInt(tx.icp) || 0) + (parseInt(tx.icpSore) || 0);
-                let tanggungan = parseInt(tx.tanggungan) || 0;
-                let kasir = tx.kasir || '-';
-                
-                tBps += bps; tSpp += spp; tDu1 += du1; tDu2 += du2; tDu3 += du3; 
-                tTahfidzPlus += tahfidzPlus; tTahfidz += tahfidz; tIcp += icp; tTanggungan += tanggungan;
-
-                const f = (num) => num > 0 ? formatCurrency(num).replace('Rp ', '') : '-';
-
-                body.push([
-                    index + 1, tgl, nama, kelas, 
-                    f(bps), f(spp), ketSpp, f(du1), f(du2), f(du3), 
-                    f(tahfidzPlus), ketTahfidzPlus, f(tahfidz), f(icp), f(tanggungan), kasir
-                ]);
-            });
-
-            const fT = (num) => num > 0 ? formatCurrency(num).replace('Rp ', '') : '-';
-
-            // Baris Total
-            body.push([
-                { content: 'TOTAL KESELURUHAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
-                { content: fT(tBps), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
-                { content: fT(tSpp), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
-                { content: '', styles: { fillColor: [230, 240, 250] } }, 
-                { content: fT(tDu1), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
-                { content: fT(tDu2), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
-                { content: fT(tDu3), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
-                { content: fT(tTahfidzPlus), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
-                { content: '', styles: { fillColor: [230, 240, 250] } }, 
-                { content: fT(tTahfidz), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
-                { content: fT(tIcp), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
-                { content: fT(tTanggungan), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
-                { content: '', styles: { fillColor: [230, 240, 250] } }  
-            ]);
-
-            // PERBAIKAN 2: Penambahan styles eksplisit untuk garis tabel yang rapi
-            doc.autoTable({
-                startY: yPos + 4,
-                head: [['No', 'Tanggal', 'Nama Siswa', 'Kelas', 'BPS', 'SPP', 'Ket SPP', 'DU 1', 'DU 2', 'DU 3', 'Tahfidz+', 'Ket Tahf+', 'Tahfidz', 'ICP', 'Tanggungan', 'Kasir']],
-                body: body,
-                theme: 'grid', // Memaksa mode grid (kotak-kotak)
-                headStyles: { 
-                    fillColor: [30, 58, 95], 
-                    textColor: [255, 255, 255],
-                    fontSize: 7, 
-                    halign: 'center',
-                    lineColor: [0, 0, 0], // Garis header lebih tegas
-                    lineWidth: 0.1
-                }, 
-                margin: { left: margin, right: margin },
-                styles: { 
-                    fontSize: 7, 
-                    cellPadding: 1.5, 
-                    overflow: 'linebreak',
-                    lineColor: [180, 180, 180], // Garis tabel abu-abu jelas
-                    lineWidth: 0.1 // Ketebalan garis
-                },
-                alternateRowStyles: {
-                    fillColor: [248, 250, 252] // Zebra striping (selang-seling warna agar mudah dibaca ke samping)
-                },
-                columnStyles: {
-                    0: { cellWidth: 8, halign: 'center' },      
-                    1: { cellWidth: 16 },     
-                    2: { cellWidth: 35 },     
-                    3: { cellWidth: 12, halign: 'center' },     
-                    4: { cellWidth: 18, halign: 'right' },      
-                    5: { cellWidth: 18, halign: 'right' },      
-                    6: { cellWidth: 20 },     
-                    7: { cellWidth: 16, halign: 'right' },      
-                    8: { cellWidth: 16, halign: 'right' },      
-                    9: { cellWidth: 16, halign: 'right' },      
-                    10: { cellWidth: 16, halign: 'right' },     
-                    11: { cellWidth: 20 },    
-                    12: { cellWidth: 16, halign: 'right' },     
-                    13: { cellWidth: 16, halign: 'right' },     
-                    14: { cellWidth: 18, halign: 'right' },     
-                    15: { cellWidth: 17 }     
-                }
-            });
-
-            return doc.lastAutoTable.finalY;
-        }
-
-        async function downloadReport(period) {
-            showMessageBox('Memproses...', 'Mempersiapkan PDF untuk diunduh...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
-            try {
-                let pdfData = await generatePDFDoc(period);
-                pdfData.doc.save(pdfData.title);
-                closeMessageBox();
-            } catch (e) {
-                closeMessageBox();
-                showMessageBox('Gagal', 'Terjadi kesalahan saat mengunduh laporan PDF.', 'fa-times', 'bg-red-50 text-danger');
-            }
         }
 
         window.onload = () => {
