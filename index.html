@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Library untuk Pembuatan PDF di sisi Klien (Browser) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
+    
     <script>
         tailwind.config = {
             theme: {
@@ -326,8 +330,12 @@
                 
                 <!-- HARI INI -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-blue-50 px-5 py-3 border-b border-blue-100 flex justify-between items-center">
-                        <h3 class="font-bold text-blue-800"><i class="fas fa-calendar-day mr-2"></i>Hari Ini</h3>
+                    <div class="bg-blue-50 px-5 py-3 border-b border-blue-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <h3 class="font-bold text-blue-800"><i class="fas fa-calendar-day mr-2"></i>Harian</h3>
+                        <div class="flex items-center gap-2 w-full md:w-auto">
+                            <input type="date" id="filter-date-daily" onchange="renderRekap()" class="text-sm px-3 py-1.5 rounded-lg border border-blue-200 text-blue-800 bg-white shadow-sm outline-none">
+                            <button onclick="downloadReport('harian')" class="bg-primary hover:bg-opacity-90 text-white px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm transition"><i class="fas fa-file-pdf mr-1"></i> Cetak</button>
+                        </div>
                     </div>
                     <div class="p-5 grid grid-cols-2 gap-4">
                         <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
@@ -351,6 +359,7 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="bg-orange-50 px-5 py-3 border-b border-orange-100 flex justify-between items-center">
                         <h3 class="font-bold text-orange-800"><i class="fas fa-calendar-week mr-2"></i>Pekan Ini</h3>
+                        <button onclick="downloadReport('mingguan')" class="bg-primary hover:bg-opacity-90 text-white px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm transition"><i class="fas fa-file-pdf mr-1"></i> Cetak</button>
                     </div>
                     <div class="p-5 grid grid-cols-2 gap-4">
                         <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
@@ -372,8 +381,12 @@
 
                 <!-- BULAN INI -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-green-50 px-5 py-3 border-b border-green-100 flex justify-between items-center">
-                        <h3 class="font-bold text-green-800"><i class="fas fa-calendar-alt mr-2"></i>Bulan Ini</h3>
+                    <div class="bg-green-50 px-5 py-3 border-b border-green-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <h3 class="font-bold text-green-800"><i class="fas fa-calendar-alt mr-2"></i>Bulanan</h3>
+                        <div class="flex items-center gap-2 w-full md:w-auto">
+                            <input type="month" id="filter-date-monthly" onchange="renderRekap()" class="text-sm px-3 py-1.5 rounded-lg border border-green-200 text-green-800 bg-white shadow-sm outline-none">
+                            <button onclick="downloadReport('bulanan')" class="bg-primary hover:bg-opacity-90 text-white px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm transition"><i class="fas fa-file-pdf mr-1"></i> Cetak</button>
+                        </div>
                     </div>
                     <div class="p-5 grid grid-cols-2 gap-4">
                         <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
@@ -1367,7 +1380,7 @@
             // Helper parsing tanggal ID format "DD/MM/YYYY, HH.mm.ss"
             if(!dateStr) return new Date(0);
             try {
-                let onlyDate = dateStr.split(',')[0].split(' ')[0]; 
+                let onlyDate = dateStr.split(',')[0].trim(); 
                 let parts = onlyDate.split('/');
                 if(parts.length === 3) return new Date(parts[2], parts[1]-1, parts[0]);
             } catch(e) {}
@@ -1378,18 +1391,37 @@
             // Ambil transaksi yang lunas/berhasil
             let validTxs = adminData.transactions.filter(t => t.status === 'success' || t.status === 'lunas');
             
+            let filterDaily = document.getElementById('filter-date-daily');
+            let filterMonthly = document.getElementById('filter-date-monthly');
+            
             let now = new Date();
-            let todayStr = now.toLocaleDateString('id-ID').split(',')[0];
+            // Set default value (Hari ini & Bulan ini) jika masih kosong
+            if(!filterDaily.value) {
+                let tzOffset = now.getTimezoneOffset() * 60000;
+                let localISOTime = (new Date(now - tzOffset)).toISOString().slice(0, -1);
+                filterDaily.value = localISOTime.split('T')[0];
+            }
+            if(!filterMonthly.value) {
+                let mStr = (now.getMonth() + 1).toString().padStart(2, '0');
+                filterMonthly.value = `${now.getFullYear()}-${mStr}`;
+            }
+
+            let selectedDaily = new Date(filterDaily.value);
+            let selectedMonthly = new Date(filterMonthly.value + "-01");
             
-            // Logika Pekan Ini (Senin sebagai awal)
-            let dayOfWeek = now.getDay();
-            let diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-            let startOfWeek = new Date(now.setDate(diff));
+            // Logika Pekan Ini (Senin sebagai awal berdasarkan tanggal yang dipilih di filter Harian)
+            let dayOfWeek = selectedDaily.getDay();
+            let diff = selectedDaily.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+            let startOfWeek = new Date(selectedDaily); 
+            startOfWeek.setDate(diff); 
             startOfWeek.setHours(0,0,0,0);
-            now = new Date(); // Reset NOW
+            let endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(endOfWeek.getDate() + 6);
+            endOfWeek.setHours(23,59,59,999);
             
-            let currentMonth = now.getMonth();
-            let currentYear = now.getFullYear();
+            // Logika Bulanan berdasarkan filter bulan
+            let currentMonth = selectedMonthly.getMonth();
+            let currentYear = selectedMonthly.getFullYear();
 
             let stats = {
                 today: { tunai: 0, transfer: 0 },
@@ -1402,17 +1434,17 @@
                 let isTunai = tx.buktiTF === 'PEMBAYARAN_TUNAI';
                 let amt = calculateTxTotal(tx);
 
-                // HARI INI
-                if (tx.date && tx.date.includes(todayStr)) {
+                // HARI INI (Matching with selectedDaily)
+                if (txDateObj.getDate() === selectedDaily.getDate() && txDateObj.getMonth() === selectedDaily.getMonth() && txDateObj.getFullYear() === selectedDaily.getFullYear()) {
                     if(isTunai) stats.today.tunai += amt; else stats.today.transfer += amt;
                 }
 
-                // PEKAN INI
-                if (txDateObj >= startOfWeek && txDateObj <= new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59)) {
+                // PEKAN INI (Matching with selectedDaily's week)
+                if (txDateObj >= startOfWeek && txDateObj <= endOfWeek) {
                     if(isTunai) stats.week.tunai += amt; else stats.week.transfer += amt;
                 }
 
-                // BULAN INI
+                // BULAN INI (Matching with selectedMonthly)
                 if (txDateObj.getMonth() === currentMonth && txDateObj.getFullYear() === currentYear) {
                     if(isTunai) stats.month.tunai += amt; else stats.month.transfer += amt;
                 }
@@ -1430,6 +1462,198 @@
             document.getElementById('rekap-month-tunai').innerText = formatCurrency(stats.month.tunai);
             document.getElementById('rekap-month-transfer').innerText = formatCurrency(stats.month.transfer);
             document.getElementById('rekap-month-total').innerText = formatCurrency(stats.month.tunai + stats.month.transfer);
+        }
+
+        // --- EXPORT PDF REPORTS ---
+        function downloadReport(period) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ format: [210, 330], orientation: 'portrait' }); // Ukuran F4 = 210mm x 330mm
+            
+            let txs = adminData.transactions.filter(t => t.status === 'success' || t.status === 'lunas');
+            let filteredTxs = [];
+            let titleStr = "";
+            let periodStr = "";
+            
+            let filterDaily = document.getElementById('filter-date-daily').value;
+            let filterMonthly = document.getElementById('filter-date-monthly').value;
+            
+            let dailyDate = filterDaily ? new Date(filterDaily) : new Date();
+            let monthlyDate = filterMonthly ? new Date(filterMonthly + "-01") : new Date();
+
+            if (period === 'harian') {
+                titleStr = "LAPORAN KEUANGAN HARIAN";
+                periodStr = "Tanggal: " + dailyDate.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
+                filteredTxs = txs.filter(tx => {
+                    let d = parseIdDate(tx.date);
+                    return d.getDate() === dailyDate.getDate() && d.getMonth() === dailyDate.getMonth() && d.getFullYear() === dailyDate.getFullYear();
+                });
+            } else if (period === 'mingguan') {
+                titleStr = "LAPORAN KEUANGAN MINGGUAN";
+                let dayOfWeek = dailyDate.getDay();
+                let diff = dailyDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); 
+                let startOfWeek = new Date(dailyDate); startOfWeek.setDate(diff); startOfWeek.setHours(0,0,0,0);
+                let endOfWeek = new Date(startOfWeek); endOfWeek.setDate(endOfWeek.getDate() + 6); endOfWeek.setHours(23,59,59,999);
+                
+                periodStr = `Periode: ${startOfWeek.toLocaleDateString('id-ID')} - ${endOfWeek.toLocaleDateString('id-ID')}`;
+                filteredTxs = txs.filter(tx => {
+                    let d = parseIdDate(tx.date);
+                    return d >= startOfWeek && d <= endOfWeek;
+                });
+            } else if (period === 'bulanan') {
+                titleStr = "LAPORAN KEUANGAN BULANAN";
+                periodStr = "Bulan: " + monthlyDate.toLocaleDateString('id-ID', {month:'long', year:'numeric'});
+                let m = monthlyDate.getMonth();
+                let y = monthlyDate.getFullYear();
+                filteredTxs = txs.filter(tx => {
+                    let d = parseIdDate(tx.date);
+                    return d.getMonth() === m && d.getFullYear() === y;
+                });
+            }
+
+            // Margin 15mm (1.5cm)
+            let margin = 15;
+
+            // HEADER PDF
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("SD MUHAMMADIYAH SUDAGARAN WONOSOBO", 105, margin + 5, { align: "center" });
+            doc.setFontSize(12);
+            doc.text(titleStr, 105, margin + 12, { align: "center" });
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.text(periodStr, 105, margin + 18, { align: "center" });
+            
+            doc.setLineWidth(0.5);
+            doc.line(margin, margin + 22, 210 - margin, margin + 22);
+
+            // Pisahkan Data Tunai & Transfer
+            let dataTunai = filteredTxs.filter(t => t.buktiTF === 'PEMBAYARAN_TUNAI');
+            let dataTransfer = filteredTxs.filter(t => t.buktiTF !== 'PEMBAYARAN_TUNAI');
+
+            let yPos = margin + 30;
+
+            if (period === 'harian') {
+                // Untuk Harian, cetak rincian per siswa
+                yPos = buildTableDaily(doc, dataTunai, "PEMBAYARAN TUNAI", yPos, margin);
+                yPos += 15;
+                yPos = buildTableDaily(doc, dataTransfer, "PEMBAYARAN TRANSFER", yPos, margin);
+            } else {
+                // Untuk Mingguan/Bulanan, cetak agregat per hari
+                yPos = buildTableSummary(doc, dataTunai, "PENDAPATAN TUNAI PER HARI", yPos, margin);
+                yPos += 15;
+                yPos = buildTableSummary(doc, dataTransfer, "PENDAPATAN TRANSFER PER HARI", yPos, margin);
+            }
+
+            // FOOTER TTD KASIR
+            let finalY = yPos + 15;
+            if (finalY > 300) { doc.addPage(); finalY = margin + 10; } // Pindah halaman jika batas bawah sudah penuh
+            
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            let todayText = `Wonosobo, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}`;
+            
+            // Tempatkan di sisi kanan laporan
+            doc.text(todayText, 210 - margin - doc.getTextWidth(todayText), finalY);
+            doc.text("Mengetahui,", 210 - margin - 25, finalY + 5, {align: "center"});
+            
+            doc.setFont("helvetica", "bold");
+            doc.text("Kasir 1", 210 - margin - 25, finalY + 25, {align: "center"});
+            
+            doc.setLineWidth(0.2);
+            doc.line(210 - margin - 45, finalY + 26, 210 - margin - 5, finalY + 26); // Garis bawah nama/jabatan (opsional)
+
+            // Simpan Berkas (Unduh)
+            doc.save(`${titleStr.replace(/ /g, "_")}.pdf`);
+        }
+
+        // Fungsi Cetak Tabel PDF Rincian Harian Per Siswa
+        function buildTableDaily(doc, txs, title, yPos, margin) {
+            doc.setFontSize(11);
+            doc.setFont("helvetica", "bold");
+            doc.text(title, margin, yPos);
+            
+            let body = [];
+            let total = 0;
+            txs.forEach((tx, index) => {
+                let amt = calculateTxTotal(tx);
+                total += amt;
+                let time = tx.date ? tx.date.split(',')[1] || '-' : '-';
+                let desc = getTxDescriptionPreview(tx);
+                body.push([index + 1, time.trim(), tx.nis || '-', tx.nama || '-', tx.kelas || '-', desc, formatCurrency(amt)]);
+            });
+
+            if(body.length === 0) {
+                body.push([{content: 'Tidak ada data transaksi.', colSpan: 7, styles: {halign: 'center', fontStyle: 'italic'}}]);
+            } else {
+                body.push([{ content: 'TOTAL', colSpan: 6, styles: { halign: 'right', fontStyle: 'bold' } }, { content: formatCurrency(total), styles: { fontStyle: 'bold' } }]);
+            }
+
+            doc.autoTable({
+                startY: yPos + 4,
+                head: [['No', 'Waktu', 'NIS', 'Nama Siswa', 'Kelas', 'Rincian', 'Nominal']],
+                body: body,
+                theme: 'grid',
+                headStyles: { fillColor: [30, 58, 95] }, // Warna brand (primary)
+                margin: { left: margin, right: margin },
+                styles: { fontSize: 8, cellPadding: 2 },
+                columnStyles: {
+                    0: { cellWidth: 10 },
+                    1: { cellWidth: 20 },
+                    2: { cellWidth: 20 },
+                    4: { cellWidth: 15 },
+                    6: { cellWidth: 25, halign: 'right' }
+                }
+            });
+
+            return doc.lastAutoTable.finalY;
+        }
+
+        // Fungsi Cetak Tabel PDF Ringkasan Per Hari (Untuk Pekan/Bulan)
+        function buildTableSummary(doc, txs, title, yPos, margin) {
+            doc.setFontSize(11);
+            doc.setFont("helvetica", "bold");
+            doc.text(title, margin, yPos);
+            
+            let summary = {};
+            txs.forEach(tx => {
+                let dStr = tx.date ? tx.date.split(',')[0].trim() : '-';
+                if(!summary[dStr]) summary[dStr] = 0;
+                summary[dStr] += calculateTxTotal(tx);
+            });
+
+            let body = [];
+            let total = 0;
+            let index = 1;
+            
+            let sortedDates = Object.keys(summary).sort((a,b) => parseIdDate(a) - parseIdDate(b));
+            
+            sortedDates.forEach(dStr => {
+                let amt = summary[dStr];
+                total += amt;
+                body.push([index++, dStr, formatCurrency(amt)]);
+            });
+
+            if(body.length === 0) {
+                body.push([{content: 'Tidak ada data transaksi.', colSpan: 3, styles: {halign: 'center', fontStyle: 'italic'}}]);
+            } else {
+                body.push([{ content: 'TOTAL KESELURUHAN', colSpan: 2, styles: { halign: 'right', fontStyle: 'bold' } }, { content: formatCurrency(total), styles: { fontStyle: 'bold' } }]);
+            }
+
+            doc.autoTable({
+                startY: yPos + 4,
+                head: [['No', 'Tanggal', 'Nominal Pendapatan']],
+                body: body,
+                theme: 'grid',
+                headStyles: { fillColor: [30, 58, 95] },
+                margin: { left: margin, right: margin },
+                styles: { fontSize: 9, cellPadding: 3 },
+                columnStyles: {
+                    0: { cellWidth: 15 },
+                    2: { halign: 'right' }
+                }
+            });
+
+            return doc.lastAutoTable.finalY;
         }
 
         // --- MENU MANAGEMENT ---
