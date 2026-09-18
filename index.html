@@ -247,6 +247,13 @@
                     </div>
 
                     <h3 class="text-sm font-bold text-gray-700 mb-3 px-1">Daftar Tagihan (Pilih untuk dibayar)</h3>
+                    
+                    <!-- AREA PILIH SEMUA -->
+                    <label id="cash-container-select-all" class="flex items-center gap-3 mb-4 px-1 hidden cursor-pointer">
+                        <input type="checkbox" id="cash-chk-select-all" onchange="toggleSelectAllCash(this)" class="w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary">
+                        <span class="text-sm font-bold text-gray-800">Pilih Semua Tagihan</span>
+                    </label>
+
                     <div id="cash-bills-list" class="space-y-3 mb-6">
                         <!-- Checkboxes Tagihan -->
                     </div>
@@ -811,9 +818,12 @@
             let area = document.getElementById('cash-bill-area');
             let list = document.getElementById('cash-bills-list');
             let actionBtn = document.getElementById('cash-pay-action');
+            let selectAllContainer = document.getElementById('cash-container-select-all');
+            let selectAllChk = document.getElementById('cash-chk-select-all');
             
             list.innerHTML = ''; area.classList.remove('hidden'); 
             if(actionBtn) actionBtn.classList.remove('hidden');
+            if(selectAllContainer) { selectAllContainer.classList.add('hidden'); selectAllChk.checked = false; }
 
             let rawBills = [];
             BILL_COLUMNS.forEach(c => {
@@ -842,6 +852,8 @@
                 if(actionBtn) actionBtn.classList.add('hidden');
                 return;
             }
+
+            if(selectAllContainer) selectAllContainer.classList.remove('hidden');
 
             let monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
             let currentMonthName = monthNames[new Date().getMonth()];
@@ -873,14 +885,27 @@
             });
         }
 
+        function toggleSelectAllCash(cb) {
+            document.querySelectorAll('.cash-bill-chk').forEach(el => el.checked = cb.checked);
+            calcCashSelected();
+        }
+
         function calcCashSelected() {
             let total = 0; adminData.cashSelectedBills = [];
-            document.querySelectorAll('.cash-bill-chk:checked').forEach(cb => {
+            let allCheckboxes = document.querySelectorAll('.cash-bill-chk');
+            let checkedBoxes = document.querySelectorAll('.cash-bill-chk:checked');
+
+            checkedBoxes.forEach(cb => {
                 total += parseInt(cb.dataset.amt);
                 adminData.cashSelectedBills.push(cb);
             });
             document.getElementById('cash-total-rp').innerText = formatCurrency(total);
             document.getElementById('btn-cash-pay').disabled = adminData.cashSelectedBills.length === 0;
+
+            let cbAll = document.getElementById('cash-chk-select-all');
+            if (cbAll && allCheckboxes.length > 0) {
+                cbAll.checked = (checkedBoxes.length === allCheckboxes.length);
+            }
         }
 
         function resetCashForm() {
@@ -890,6 +915,8 @@
             document.getElementById('cash-bill-area').classList.add('hidden');
             let actionBtn = document.getElementById('cash-pay-action');
             if (actionBtn) actionBtn.classList.add('hidden');
+            let selectAllContainer = document.getElementById('cash-container-select-all');
+            if (selectAllContainer) selectAllContainer.classList.add('hidden');
             adminData.cashSelectedBills = [];
         }
 
@@ -937,9 +964,13 @@
                 // Refresh data
                 await fetchTransactions();
                 resetCashForm();
-                showMessageBox('Berhasil', 'Pembayaran tunai berhasil dicatat!', 'fa-check-circle', 'bg-green-50 text-success');
+                closeMessageBox(); // Menutup tampilan loading
+                
+                // Buka preview struk secara otomatis setelah data berhasil disimpan
+                setTimeout(() => openReceiptPreview(txId), 300);
                 
             } catch (e) {
+                closeMessageBox();
                 showMessageBox('Gagal', e.message, 'fa-times', 'bg-red-50 text-danger');
             }
         }
