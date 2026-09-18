@@ -633,6 +633,55 @@
         // --- UTILITIES ---
         function formatCurrency(num) { return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
 
+        // Fungsi baru untuk menghitung total bulan dan nominal saat dropdown diganti
+        function updateMonthlyAmount(id, baseAmt) {
+            const academicMonths = ['Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'];
+            let startSel = document.getElementById(`start-month-${id}`);
+            let endSel = document.getElementById(`end-month-${id}`);
+            if(!startSel || !endSel) return;
+            
+            let start = startSel.value;
+            let end = endSel.value;
+            
+            let startIndex = academicMonths.indexOf(start);
+            let endIndex = academicMonths.indexOf(end);
+            
+            // Jika pilihan terbalik, sistem otomatis membenarkan
+            if(startIndex > endIndex) {
+                let temp = startIndex; startIndex = endIndex; endIndex = temp;
+            }
+            
+            let monthCount = endIndex - startIndex + 1;
+            let totalAmt = baseAmt * monthCount;
+            let ket = (start === end) ? start : `${start} s.d ${end}`;
+            
+            // Perbarui tampilan harga dan data yang akan dikirim
+            document.getElementById(`amt-text-${id}`).innerText = formatCurrency(totalAmt);
+            
+            let chk = document.getElementById(`chk-${id}`);
+            if(chk) {
+                chk.dataset.amt = totalAmt;
+                chk.dataset.ket = ket;
+            }
+            
+            calcCashSelected();
+        }
+
+        // Fungsi untuk menampilkan/menyembunyikan Dropdown Bulan saat dicentang
+        function toggleMonthUI(id) {
+            let chk = document.getElementById(`chk-${id}`);
+            let ui = document.getElementById(`month-ui-${id}`);
+            if(ui && chk) {
+                if(chk.checked) {
+                    ui.classList.remove('hidden');
+                    // Langsung hitung nilai berdasarkan dropdown saat ini
+                    updateMonthlyAmount(id, parseInt(chk.dataset.baseamt));
+                } else {
+                    ui.classList.add('hidden');
+                }
+            }
+        }
+
         function togglePassword() {
             let p = document.getElementById('loginPass'); let i = document.getElementById('eyeIcon');
             if(p.type === 'password'){ p.type='text'; i.className='fas fa-eye-slash'; } else { p.type='password'; i.className='fas fa-eye'; }
@@ -855,38 +904,70 @@
 
             if(selectAllContainer) selectAllContainer.classList.remove('hidden');
 
-            let monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-            let currentMonthName = monthNames[new Date().getMonth()];
+            const academicMonths = ['Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'];
+            let curMonthStr = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][new Date().getMonth()];
+            
             let mult = (new Date().getMonth() >= 6) ? new Date().getMonth() - 5 : new Date().getMonth() + 7;
             let mList = ['spp','tahfidzPlus','tahfidz','icp','icpSore'];
 
             unpaidBills.forEach(b => {
-                let fAmt = b.amount; let note = ""; let ketBulan = "";
+                let isMonthly = mList.includes(b.id);
+                let fAmt = b.amount; 
+                let ketBulan = "";
+                let monthSelectorHtml = "";
                 
-                if(mList.includes(b.id)) {
+                if(isMonthly) {
                     if (history.length === 0) {
-                        fAmt = b.amount * mult; 
-                        let monthStr = getUnpaidMonthsString(mult);
-                        note = `<p class="text-[10px] text-danger bg-red-50 px-2 py-1 rounded inline-block mt-1 mb-1 font-semibold">Tunggakan (${mult} Bln): ${monthStr}</p>`;
-                        ketBulan = monthStr;
-                    } else { ketBulan = currentMonthName; }
+                        fAmt = b.amount * mult;
+                        ketBulan = `Jul s.d ${curMonthStr}`;
+                        if ('Jul' === curMonthStr) ketBulan = 'Jul';
+                    } else {
+                        ketBulan = curMonthStr;
+                    }
+
+                    let startOptionsHtml = '';
+                    let endOptionsHtml = '';
+                    let defaultStart = (history.length === 0) ? 'Jul' : curMonthStr;
+                    let defaultEnd = curMonthStr;
+
+                    academicMonths.forEach((m) => {
+                        startOptionsHtml += `<option value="${m}" ${m === defaultStart ? 'selected' : ''}>${m}</option>`;
+                        endOptionsHtml += `<option value="${m}" ${m === defaultEnd ? 'selected' : ''}>${m}</option>`;
+                    });
+
+                    monthSelectorHtml = `
+                        <div class="flex items-center gap-2 text-xs text-gray-700 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg w-fit hidden mt-1.5" id="month-ui-${b.id}">
+                            <span class="font-medium">Bulan:</span>
+                            <select id="start-month-${b.id}" class="border border-gray-300 rounded px-1.5 py-1 bg-white outline-none focus:border-primary font-medium" onchange="updateMonthlyAmount('${b.id}', ${b.amount})">
+                                ${startOptionsHtml}
+                            </select>
+                            <span class="font-medium text-gray-400">s.d</span>
+                            <select id="end-month-${b.id}" class="border border-gray-300 rounded px-1.5 py-1 bg-white outline-none focus:border-primary font-medium" onchange="updateMonthlyAmount('${b.id}', ${b.amount})">
+                                ${endOptionsHtml}
+                            </select>
+                        </div>
+                    `;
                 }
 
                 list.innerHTML += `
-                    <label class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex gap-4 items-center cursor-pointer hover:border-primary transition group">
-                        <input type="checkbox" class="cash-bill-chk w-6 h-6 text-primary rounded border-gray-300 focus:ring-primary" value="${b.id}" data-amt="${fAmt}" data-title="${b.title}" data-db="${b.db}" data-ket="${ketBulan}" onchange="calcCashSelected()">
-                        <div class="flex-1">
-                            <h3 class="font-bold text-gray-800 text-sm group-hover:text-primary transition">${b.title}</h3>
-                            ${note}
-                            <p class="text-base font-bold text-primary mt-0.5">${formatCurrency(fAmt)}</p>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex gap-4 items-start transition group relative">
+                        <input type="checkbox" id="chk-${b.id}" class="cash-bill-chk w-6 h-6 mt-0.5 text-primary rounded border-gray-300 focus:ring-primary cursor-pointer" value="${b.id}" data-baseamt="${b.amount}" data-amt="${fAmt}" data-title="${b.title}" data-db="${b.db}" data-ket="${ketBulan}" onchange="toggleMonthUI('${b.id}'); calcCashSelected()">
+                        
+                        <div class="flex-1 flex flex-col gap-1">
+                            <label for="chk-${b.id}" class="font-bold text-gray-800 text-sm group-hover:text-primary transition cursor-pointer w-full block">${b.title}</label>
+                            ${monthSelectorHtml}
+                            <label for="chk-${b.id}" class="text-base font-bold text-primary cursor-pointer w-full block mt-1" id="amt-text-${b.id}">${formatCurrency(fAmt)}</label>
                         </div>
-                    </label>
+                    </div>
                 `;
             });
         }
 
         function toggleSelectAllCash(cb) {
-            document.querySelectorAll('.cash-bill-chk').forEach(el => el.checked = cb.checked);
+            document.querySelectorAll('.cash-bill-chk').forEach(el => {
+                el.checked = cb.checked;
+                toggleMonthUI(el.value);
+            });
             calcCashSelected();
         }
 
@@ -950,6 +1031,9 @@
                 payload[db] = amt;
                 if (code === 'spp') payload.ketSpp = ket;
                 if (code === 'tahfidzPlus') payload.ketTahfidzPlus = ket;
+                if (code === 'tahfidz') payload.ketTahfidz = ket;
+                if (code === 'icp') payload.ketIcp = ket;
+                if (code === 'icpSore') payload.ketIcpSore = ket;
             });
 
             try {
@@ -1107,6 +1191,9 @@
                     let title = c.title;
                     if(c.code === 'spp' && tx.ketSpp) title += ` (${tx.ketSpp})`;
                     if(c.code === 'tahfidzPlus' && tx.ketTahfidzPlus) title += ` (${tx.ketTahfidzPlus})`;
+                    if(c.code === 'tahfidz' && tx.ketTahfidz) title += ` (${tx.ketTahfidz})`;
+                    if(c.code === 'icp' && tx.ketIcp) title += ` (${tx.ketIcp})`;
+                    if(c.code === 'icpSore' && tx.ketIcpSore) title += ` (${tx.ketIcpSore})`;
                     details.push({ title: title, amount: parseInt(tx[c.db]) });
                 }
             });
