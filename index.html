@@ -847,10 +847,10 @@
         ];
 
         const DEFAULT_USERS = [
-            { id: 'u1', username: 'kasir1', name: 'Kasir 1', password: 'berkah', role: 'menu-cash,menu-verify,menu-history', sortOrder: 0 },
-            { id: 'u2', username: 'bendahara', name: 'Bendahara', password: 'berkah', role: 'menu-verify,menu-history,menu-rekap', sortOrder: 1 },
-            { id: 'u3', username: 'KS', name: 'Kepala Sekolah (KS)', password: 'berkah', role: 'menu-history,menu-rekap', sortOrder: 2 },
-            { id: 'u4', username: 'admin', name: 'Admin System', password: 'berkah', role: 'menu-cash,menu-verify,menu-history,menu-rekap,menu-menus,menu-users,menu-students', sortOrder: 3 }
+            { id: 'u1', username: 'kasir1', name: 'Kasir 1', password: 'berkah', role: 'menu-cash,menu-verify,menu-history', sortorder: 0 },
+            { id: 'u2', username: 'bendahara', name: 'Bendahara', password: 'berkah', role: 'menu-verify,menu-history,menu-rekap', sortorder: 1 },
+            { id: 'u3', username: 'KS', name: 'Kepala Sekolah (KS)', password: 'berkah', role: 'menu-history,menu-rekap', sortorder: 2 },
+            { id: 'u4', username: 'admin', name: 'Admin System', password: 'berkah', role: 'menu-cash,menu-verify,menu-history,menu-rekap,menu-menus,menu-users,menu-students', sortorder: 3 }
         ];
 
         let adminData = { 
@@ -897,7 +897,7 @@
 
         async function fetchAdminUsers() {
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*&order=sortOrder.asc`, { headers: HEADERS });
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*&order=sortorder.asc`, { headers: HEADERS });
                 if(res.ok) {
                     let data = await res.json();
                     if(data.length > 0) adminData.users = data;
@@ -1149,7 +1149,7 @@
                     if(!res.ok) throw new Error((await res.json()).code === '23505' ? "Username sudah digunakan!" : "Gagal update");
                 } else { 
                     payload.id = 'U-' + Date.now();
-                    payload.sortOrder = adminData.users.length;
+                    payload.sortorder = adminData.users.length;
                     let res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users`, {
                         method: 'POST',
                         headers: { ...HEADERS, 'Prefer': 'return=minimal' },
@@ -1179,14 +1179,14 @@
         async function moveUser(index, dir) {
             let u1 = adminData.users[index]; let u2 = adminData.users[index + dir];
             if(!u1 || !u2) return;
-            let newOrder1 = u2.sortOrder !== undefined ? u2.sortOrder : index + dir;
-            let newOrder2 = u1.sortOrder !== undefined ? u1.sortOrder : index;
+            let newOrder1 = u2.sortorder !== undefined ? u2.sortorder : index + dir;
+            let newOrder2 = u1.sortorder !== undefined ? u1.sortorder : index;
             if (newOrder1 === newOrder2) { newOrder1 = index + dir; newOrder2 = index; }
 
             try {
                 await Promise.all([
-                    fetch(`${SUPABASE_URL}/rest/v1/admin_users?id=eq.${u1.id}`, { method: 'PATCH', headers: { ...HEADERS, 'Prefer': 'return=minimal' }, body: JSON.stringify({ sortOrder: newOrder1 }) }),
-                    fetch(`${SUPABASE_URL}/rest/v1/admin_users?id=eq.${u2.id}`, { method: 'PATCH', headers: { ...HEADERS, 'Prefer': 'return=minimal' }, body: JSON.stringify({ sortOrder: newOrder2 }) })
+                    fetch(`${SUPABASE_URL}/rest/v1/admin_users?id=eq.${u1.id}`, { method: 'PATCH', headers: { ...HEADERS, 'Prefer': 'return=minimal' }, body: JSON.stringify({ sortorder: newOrder1 }) }),
+                    fetch(`${SUPABASE_URL}/rest/v1/admin_users?id=eq.${u2.id}`, { method: 'PATCH', headers: { ...HEADERS, 'Prefer': 'return=minimal' }, body: JSON.stringify({ sortorder: newOrder2 }) })
                 ]);
                 await fetchAdminUsers(); renderUsers();
             } catch(e) { console.error(e); }
@@ -1723,7 +1723,7 @@
                 let total = calculateTxTotal(tx); let detailHtml = '';
                 getTxDetailsArray(tx).forEach(d => { detailHtml += `<div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span>${d.title}</span><span style="font-weight: bold;">${formatCurrency(d.amount)}</span></div>`; });
 
-                document.getElementById('receipt-paper').innerHTML = `<div style="text-align: center; margin-bottom: 10px;"><div style="font-weight: bold; font-size: 14px;">SD MUH SUDAGARAN</div><div style="font-size: 10px;">Wonosobo, Jawa Tengah</div></div><div style="border-top: 1px dashed black; margin: 8px 0;"></div><div>No: ${tx.id}<br>Tgl: ${tx.date}<br>Nama: ${tx.nama}<br>Kelas: ${tx.kelas}</div><div style="border-top: 1px dashed black; margin: 8px 0;"></div>${detailHtml}<div style="border-top: 1px dashed black; margin: 8px 0;"></div><div style="display: flex; justify-content: space-between; font-weight: bold;"><span>TOTAL</span><span>${formatCurrency(total)}</span></div>`;
+                document.getElementById('receipt-paper').innerHTML = `<div style="text-align: center; margin-bottom: 10px;"><img src="https://iili.io/nHwYAuV.png" style="width: 45px; height: auto; margin-bottom: 5px; filter: grayscale(100%);"><div style="font-weight: bold; font-size: 14px;">SD MUH SUDAGARAN</div><div style="font-size: 10px;">Wonosobo, Jawa Tengah</div></div><div style="border-top: 1px dashed black; margin: 8px 0;"></div><div>No: ${tx.id}<br>Tgl: ${tx.date}<br>Nama: ${tx.nama}<br>Kelas: ${tx.kelas}</div><div style="border-top: 1px dashed black; margin: 8px 0;"></div>${detailHtml}<div style="border-top: 1px dashed black; margin: 8px 0;"></div><div style="display: flex; justify-content: space-between; font-weight: bold;"><span>TOTAL</span><span>${formatCurrency(total)}</span></div>`;
                 document.getElementById('btn-print-receipt').onclick = () => printThermalReceipt(txId);
                 document.getElementById('modal-receipt-preview').classList.remove('hidden'); setTimeout(() => document.getElementById('modal-receipt-preview').classList.remove('opacity-0'), 10);
             }, 300);
@@ -1734,7 +1734,7 @@
         function printThermalReceipt(txId) {
             let tx = adminData.transactions.find(x => x.id === txId); if(!tx) return;
             let printWindow = window.open('', '_blank');
-            printWindow.document.write(`<html><head><title>Cetak Struk</title><style>body{font-family: 'Courier New', Courier, monospace; font-size: 12px; width: 80mm; margin: 0;} .dashed{border-top: 1px dashed black; margin: 8px 0;} .flex{display: flex; justify-content: space-between;}</style></head><body>${document.getElementById('receipt-paper').innerHTML}<script>window.onload=function(){window.print();window.close();}<\/script></body></html>`);
+            printWindow.document.write(`<html><head><title>Cetak Struk</title><style>body{font-family: 'Courier New', Courier, monospace; font-size: 12px; width: 80mm; margin: 0;} .dashed{border-top: 1px dashed black; margin: 8px 0;} .flex{display: flex; justify-content: space-between;} img { display: block; margin: 0 auto; }</style></head><body>${document.getElementById('receipt-paper').innerHTML}<script>setTimeout(function(){window.print();window.close();}, 800);<\/script></body></html>`);
             printWindow.document.close();
         }
 
