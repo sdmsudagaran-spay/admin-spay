@@ -76,6 +76,13 @@
         
         .bg-gradient-primary { background: linear-gradient(135deg, #1E3A5F 0%, #2A528A 100%); }
         .islamic-pattern { background-image: radial-gradient(#F59E0B 1px, transparent 1px); background-size: 20px 20px; opacity: 0.05; position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; }
+        
+        /* Custom Scrollbar for inner lists */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -184,6 +191,13 @@
                                 <i class="fas fa-user-graduate text-2xl"></i>
                             </div>
                             <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Kelola<br>Siswa</span>
+                        </button>
+
+                        <button id="menu-students-plus" onclick="showAdminScreen('screen-students-plus')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-rose-50 hover:border-rose-200 border border-transparent transition group">
+                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-rose-600 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-user-plus text-2xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Siswa<br>Plus</span>
                         </button>
 
                         <button id="menu-rekap" onclick="showAdminScreen('screen-rekap')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-teal-50 hover:border-teal-200 border border-transparent transition group">
@@ -393,6 +407,39 @@
             </div>
         </div>
 
+        <!-- ================= KELOLA SISWA PLUS SCREEN ================= -->
+        <div id="screen-students-plus" class="screen">
+            <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
+                <button onclick="showAdminScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
+                <div>
+                    <h2 class="text-lg md:text-xl font-bold text-primary">Database Siswa Plus</h2>
+                    <p class="text-xs text-gray-500 mt-1">Atur tagihan tambahan khusus</p>
+                </div>
+            </div>
+            
+            <div class="px-5 md:px-10 py-6">
+                <div class="flex flex-col md:flex-row gap-3 w-full mb-6">
+                    <div class="relative w-full md:w-1/3">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-filter"></i></span>
+                        <select id="filter-student-plus-class" onchange="renderStudentsPlusAdmin()" class="w-full pl-10 pr-8 py-2.5 rounded-xl border border-gray-200 text-sm bg-white outline-none shadow-sm font-semibold text-gray-700 appearance-none focus:border-primary">
+                            <option value="">Semua Kelas</option>
+                        </select>
+                    </div>
+                    <div class="relative w-full md:w-2/3">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-search"></i></span>
+                        <input type="text" id="search-student-plus-name" onkeyup="renderStudentsPlusAdmin()" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white outline-none shadow-sm font-medium text-gray-700 focus:border-primary" placeholder="Cari Nama / NIS...">
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-24">
+                    <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center gap-3">
+                        <span class="text-sm font-bold text-gray-700">Daftar Siswa <span id="lbl-student-plus-count" class="text-gray-400 font-normal ml-1"></span></span>
+                    </div>
+                    <div id="admin-student-plus-list" class="divide-y divide-gray-100 max-h-[60vh] overflow-y-auto custom-scrollbar"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- ================= REKAPITULASI SCREEN ================= -->
         <div id="screen-rekap" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
@@ -550,6 +597,10 @@
                                 <input type="checkbox" value="menu-students" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
                                 <span class="text-xs font-medium text-gray-700">Kelola Siswa</span>
                             </label>
+                            <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                                <input type="checkbox" value="menu-students-plus" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
+                                <span class="text-xs font-medium text-gray-700">Siswa Plus</span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -564,36 +615,35 @@
         <div id="modal-edit-menu" class="fixed inset-0 bg-black/60 z-[60] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-end md:items-center justify-center">
             <div class="modal-inner-card bg-white w-full max-w-[480px] rounded-t-[2rem] p-6 transform translate-y-full md:translate-y-0 transition-transform duration-300 shadow-2xl" id="modal-edit-menu-content">
                 <div class="flex justify-between items-center mb-5">
-                    <h3 class="text-lg font-bold text-gray-800" id="modal-menu-title">Tambah Fitur Baru</h3>
-                    <button onclick="closeMenuModal()" class="w-8 h-8 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200"><i class="fas fa-times"></i></button>
+                    <h3 class="text-lg font-bold text-gray-800" id="modal-menu-title">Tambah Menu</h3>
+                    <button onclick="closeMenuModal()" class="w-8 h-8 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 flex justify-center items-center"><i class="fas fa-times"></i></button>
                 </div>
                 <input type="hidden" id="edit-menu-id">
-                <div class="space-y-4 h-[60vh] overflow-y-auto no-scrollbar pb-4 px-1">
+                <div class="space-y-4 overflow-y-auto no-scrollbar pb-4 px-1" style="max-height: 60vh;">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Nama Layanan</label>
-                        <input type="text" id="edit-menu-name" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm bg-gray-50 outline-none" placeholder="Contoh: SPP">
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Judul Menu</label>
+                        <input type="text" id="edit-menu-name" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm bg-gray-50 outline-none" placeholder="Contoh: Bayar SPP">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Status Publikasi</label>
-                        <label class="flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-200 cursor-pointer hover:border-primary transition">
-                            <span class="text-sm text-gray-700 font-medium">Tampilkan di Aplikasi Wali Murid</span>
-                            <input type="checkbox" id="edit-menu-active" class="w-5 h-5 text-primary rounded focus:ring-primary">
-                        </label>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Pilih Ikon</label>
-                        <div class="flex gap-2 overflow-x-auto py-2 no-scrollbar" id="admin-icon-presets"></div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Pilih Ikon (Scroll ke samping)</label>
+                        <div class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar" id="admin-icon-presets"></div>
                         <input type="hidden" id="edit-menu-icon" value="fa-circle">
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="edit-menu-active" class="w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary cursor-pointer">
+                        <label for="edit-menu-active" class="text-sm font-semibold text-gray-800 cursor-pointer">Menu Aktif (Ditampilkan ke Wali Murid)</label>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Warna Tampilan</label>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Warna Tombol</label>
                             <select id="edit-menu-color" class="w-full px-3 py-3 rounded-xl border border-gray-200 text-sm bg-gray-50 outline-none">
-                                <option value="text-primary|bg-white">Biasa (Putih)</option>
-                                <option value="text-blue-600|bg-blue-50">Tersorot (Biru)</option>
-                                <option value="text-accent|bg-orange-50">Penting (Oranye)</option>
-                                <option value="text-green-600|bg-green-50">Sukses (Hijau)</option>
-                                <option value="text-purple-600|bg-purple-50">Spesial (Ungu)</option>
+                                <option value="text-primary|bg-blue-50">Biru</option>
+                                <option value="text-accent|bg-orange-50">Oranye</option>
+                                <option value="text-success|bg-green-50">Hijau</option>
+                                <option value="text-purple-600|bg-purple-50">Ungu</option>
+                                <option value="text-pink-600|bg-pink-50">Pink</option>
+                                <option value="text-teal-600|bg-teal-50">Teal</option>
+                                <option value="text-danger|bg-red-50">Merah</option>
                             </select>
                         </div>
                         <div>
@@ -725,6 +775,50 @@
             </div>
         </div>
 
+        <!-- MODAL TAMBAH/EDIT SISWA PLUS -->
+        <div id="modal-edit-student-plus" class="fixed inset-0 bg-black/60 z-[60] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-end md:items-center justify-center">
+            <div class="modal-inner-card bg-white w-full max-w-[480px] rounded-t-[2rem] p-6 transform translate-y-full md:translate-y-0 transition-transform duration-300 shadow-2xl" id="modal-edit-student-plus-content">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-bold text-gray-800">Tagihan Plus</h3>
+                    <button onclick="closeStudentPlusModal()" class="w-8 h-8 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 flex justify-center items-center"><i class="fas fa-times"></i></button>
+                </div>
+                
+                <div class="space-y-4 pb-4 px-1">
+                    <div class="bg-rose-50 p-3 rounded-xl border border-rose-100 mb-4">
+                        <input type="hidden" id="edit-plus-nis">
+                        <h4 class="font-bold text-sm text-gray-800" id="edit-plus-nama">Nama Siswa</h4>
+                        <p class="text-xs text-gray-600 mt-0.5">Kelas: <span id="edit-plus-kelas" class="font-semibold"></span></p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">ICP Sore</label>
+                            <input type="number" id="edit-plus-icpSore" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-primary text-sm bg-white outline-none" placeholder="0">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">AJS</label>
+                            <input type="number" id="edit-plus-ajs" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-primary text-sm bg-white outline-none" placeholder="0">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">TPQ</label>
+                            <input type="number" id="edit-plus-tpq" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-primary text-sm bg-white outline-none" placeholder="0">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Olimpiade</label>
+                            <input type="number" id="edit-plus-olimpiade" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-primary text-sm bg-white outline-none" placeholder="0">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Rihlah</label>
+                            <input type="number" id="edit-plus-rihlah" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-primary text-sm bg-white outline-none" placeholder="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-5 flex mt-2 border-t border-gray-100">
+                    <button onclick="saveStudentPlus()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-md hover:bg-opacity-90 transition">Simpan Tagihan Plus</button>
+                </div>
+            </div>
+        </div>
+
         <!-- FULLSCREEN IMAGE VIEWER -->
         <div id="fs-viewer" class="fixed inset-0 bg-black/90 z-[70] hidden flex-col justify-center items-center opacity-0 transition-opacity duration-300 backdrop-blur-md">
             <button onclick="closeFullscreen()" class="absolute top-6 right-6 w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/40 transition z-[71]">
@@ -771,8 +865,8 @@
 
                 <div class="absolute bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 rounded-b-[2rem] hidden" id="dtl-actions">
                     <div class="flex gap-3">
-                        <button id="btn-reject" class="flex-1 bg-red-50 text-danger hover:bg-red-100 font-bold py-3.5 rounded-xl border border-red-100 transition"><i class="fas fa-times"></i> Tolak</button>
-                        <button id="btn-approve" class="flex-[2] bg-success text-white hover:bg-opacity-90 font-bold py-3.5 rounded-xl shadow-md transition"><i class="fas fa-check"></i> Konfirmasi Sukses</button>
+                        <button id="btn-reject" onclick="updateTxStatus(activeTxId, 'rejected')" class="flex-1 bg-red-50 text-danger hover:bg-red-100 font-bold py-3.5 rounded-xl border border-red-100 transition"><i class="fas fa-times"></i> Tolak</button>
+                        <button id="btn-approve" onclick="updateTxStatus(activeTxId, 'success')" class="flex-[2] bg-success text-white hover:bg-opacity-90 font-bold py-3.5 rounded-xl shadow-md transition"><i class="fas fa-check"></i> Konfirmasi Sukses</button>
                     </div>
                 </div>
             </div>
@@ -849,7 +943,6 @@
 
     <!-- ================= JAVASCRIPT ================= -->
     <script>
-        // KONEKSI SUPABASE
         const SUPABASE_URL = 'https://zbfzdrrtqtvfbmsogskt.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_R1e0gprQBAAEOM76AaF8Qw_Pytw-_ca';
         const HEADERS = {
@@ -858,7 +951,7 @@
             'Content-Type': 'application/json'
         };
 
-        const PRESET_ICONS = ['fa-graduation-cap', 'fa-book', 'fa-shirt', 'fa-store', 'fa-bus', 'fa-utensils', 'fa-mosque', 'fa-laptop', 'fa-futbol', 'fa-medal', 'fa-file-invoice-dollar', 'fa-wallet', 'fa-money-bill', 'fa-history', 'fa-users', 'fa-calendar-alt', 'fa-chart-bar', 'fa-bullhorn', 'fa-star', 'fa-heart', 'fa-ambulance', 'fa-pen', 'fa-car', 'fa-church', 'fa-hands-helping', 'fa-school', 'fa-user-graduate', 'fa-print', 'fa-wifi', 'fa-bus-alt'];
+        const PRESET_ICONS = ['fa-graduation-cap', 'fa-book', 'fa-shirt', 'fa-store', 'fa-bus', 'fa-utensils', 'fa-mosque', 'fa-laptop', 'fa-futbol', 'fa-medal', 'fa-file-invoice-dollar', 'fa-wallet', 'fa-money-bill', 'fa-history', 'fa-users', 'fa-calendar-alt', 'fa-chart-bar', 'fa-bullhorn', 'fa-star', 'fa-heart', 'fa-ambulance', 'fa-pen', 'fa-car', 'fa-church', 'fa-hands-helping', 'fa-school', 'fa-user-graduate', 'fa-print', 'fa-wifi', 'fa-bus-alt', 'fa-circle'];
         
         const BILL_COLUMNS = [
             {code: 'bps', title: 'BPS', db: 'bps'}, {code: 'sppJuli', title: 'SPP Juli', db: 'sppJuli'},
@@ -866,14 +959,16 @@
             {code: 'daftarUlang2', title: 'Daftar Ulang II', db: 'daftarUlang2'}, {code: 'daftarUlang3', title: 'Daftar Ulang III', db: 'daftarUlang3'},
             {code: 'tahfidzPlus', title: 'Kelas Tahfidz Plus', db: 'tahfidzPlus'}, {code: 'tahfidz', title: 'Kelas Tahfidz', db: 'tahfidz'},
             {code: 'icp', title: 'Kelas ICP', db: 'icp'}, {code: 'icpSore', title: 'ICP Sore', db: 'icpSore'},
-            {code: 'tanggungan', title: 'Tanggungan Tahun Lalu', db: 'tanggungan'}
+            {code: 'tanggungan', title: 'Tanggungan Tahun Lalu', db: 'tanggungan'},
+            {code: 'ajs', title: 'AJS', db: 'ajs'}, {code: 'tpq', title: 'TPQ', db: 'tpq'},
+            {code: 'olimpiade', title: 'Olimpiade', db: 'olimpiade'}, {code: 'rihlah', title: 'Rihlah', db: 'rihlah'}
         ];
 
         const DEFAULT_USERS = [
             { id: 'u1', username: 'kasir1', name: 'Kasir 1', password: 'berkah', role: 'menu-cash,menu-verify,menu-history', sortorder: 0 },
             { id: 'u2', username: 'bendahara', name: 'Bendahara', password: 'berkah', role: 'menu-verify,menu-history,menu-rekap', sortorder: 1 },
             { id: 'u3', username: 'KS', name: 'Kepala Sekolah (KS)', password: 'berkah', role: 'menu-history,menu-rekap', sortorder: 2 },
-            { id: 'u4', username: 'admin', name: 'Admin System', password: 'berkah', role: 'menu-cash,menu-verify,menu-history,menu-rekap,menu-menus,menu-users,menu-students', sortorder: 3 }
+            { id: 'u4', username: 'admin', name: 'Admin System', password: 'berkah', role: 'menu-cash,menu-verify,menu-history,menu-rekap,menu-menus,menu-users,menu-students,menu-students-plus', sortorder: 3 }
         ];
 
         let adminData = { 
@@ -890,7 +985,6 @@
         };
         let activeTxId = null;
 
-        // FUNGSI UMUM DAN BANTUAN
         function formatCurrency(num) { return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
 
         function getCombinedKelas(obj) {
@@ -898,7 +992,6 @@
             let k = obj.kelas ? String(obj.kelas).trim() : '';
             let nk = obj.namaKelas ? String(obj.namaKelas).trim() : '';
             if (k && nk) {
-                // Hanya hindari ganda jika nama kelas DIAWALI dengan kode kelas (bukan hanya mengandung hurufnya)
                 let kUpper = k.toUpperCase();
                 let nkUpper = nk.toUpperCase();
                 if (nkUpper.startsWith(kUpper + ' ') || nkUpper.startsWith(kUpper + '-')) {
@@ -966,16 +1059,14 @@
             
             let found = adminData.users.find(u => u.username === user && u.password === pass);
             if(found) {
-                // AUTO PATCH: Berikan hak Kelola Siswa pada Admin System jika belum ada
-                if(found.username === 'admin' && !found.role.includes('menu-students')) {
-                    found.role += ',menu-students';
-                    try {
-                        await fetch(`${SUPABASE_URL}/rest/v1/admin_users?id=eq.${found.id}`, {
-                            method: 'PATCH',
-                            headers: { ...HEADERS, 'Prefer': 'return=minimal' },
-                            body: JSON.stringify({ role: found.role })
-                        });
-                    } catch(e) {}
+                if(found.username === 'admin') {
+                    let updateNeeded = false;
+                    if(!found.role.includes('menu-students')) { found.role += ',menu-students'; updateNeeded = true; }
+                    if(!found.role.includes('menu-students-plus')) { found.role += ',menu-students-plus'; updateNeeded = true; }
+                    
+                    if(updateNeeded) {
+                        try { fetch(`${SUPABASE_URL}/rest/v1/admin_users?id=eq.${found.id}`, { method: 'PATCH', headers: { ...HEADERS, 'Prefer': 'return=minimal' }, body: JSON.stringify({ role: found.role }) }); } catch(e) {}
+                    }
                 }
 
                 adminData.loggedInUser = found.name;
@@ -996,6 +1087,11 @@
             } else {
                 showMessageBox('Gagal Login', 'Kata sandi salah atau akun tidak ditemukan.', 'fa-times-circle', 'bg-red-50 text-danger');
             }
+        }
+
+        function logoutAdmin() {
+            adminData = { loggedInUser: '', role: '', users: adminData.users, transactions: [], menus: [], allStudents: [], adminStudentList: [], currentFilter: 'all', cashSelectedStudent: null, cashSelectedBills: [] };
+            showAdminScreen('screen-login');
         }
 
         function showAdminScreen(screenId) {
@@ -1021,9 +1117,12 @@
             if(screenId === 'screen-users') renderUsers();
             if(screenId === 'screen-rekap') renderRekap();
             
-            if(screenId === 'screen-students') {
+            if(screenId === 'screen-students' || screenId === 'screen-students-plus') {
                 if(adminData.adminStudentList && adminData.adminStudentList.length === 0) fetchStudentsForAdmin();
-                else renderStudentsAdmin();
+                else {
+                    if (screenId === 'screen-students') renderStudentsAdmin();
+                    if (screenId === 'screen-students-plus') renderStudentsPlusAdmin();
+                }
             }
 
             if(screenId === 'screen-cash') {
@@ -1036,7 +1135,7 @@
             const roleStr = adminData.role || '';
             const allowedMenus = roleStr.split(',');
 
-            const allMenus = ['menu-cash', 'menu-verify', 'menu-history', 'menu-menus', 'menu-users', 'menu-rekap', 'menu-students'];
+            const allMenus = ['menu-cash', 'menu-verify', 'menu-history', 'menu-menus', 'menu-users', 'menu-rekap', 'menu-students', 'menu-students-plus'];
             allMenus.forEach(menuId => {
                 const el = document.getElementById(menuId);
                 if(el) {
@@ -1061,40 +1160,6 @@
                 if(requiredMenu && allowedMenus.includes(requiredMenu)) btn.classList.remove('hidden');
                 else btn.classList.add('hidden');
             });
-        }
-
-        function logoutAdmin() {
-            adminData = { loggedInUser: '', role: '', users: adminData.users, transactions: [], menus: [], allStudents: [], adminStudentList: [], currentFilter: 'all', cashSelectedStudent: null, cashSelectedBills: [] };
-            showAdminScreen('screen-login');
-        }
-
-        function updateBadgePending() {
-            let count = adminData.transactions.filter(tx => tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected').length;
-            let badg1 = document.getElementById('home-badge-pending');
-            let badg2 = document.getElementById('nav-badge-pending');
-            let txt = document.getElementById('stat-pending');
-            
-            if(count > 0) {
-                if(badg1) { badg1.classList.remove('hidden'); badg1.innerText = count > 99 ? '99+' : count; }
-                if(badg2) { badg2.classList.remove('hidden'); badg2.innerText = count > 99 ? '99+' : count; }
-            } else {
-                if(badg1) badg1.classList.add('hidden');
-                if(badg2) badg2.classList.add('hidden');
-            }
-            if(txt) txt.innerText = count;
-        }
-
-        async function fetchTransactions() {
-            try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/transactions?select=*&order=date.desc`, { headers: HEADERS });
-                if(!res.ok) throw new Error("Gagal ambil data");
-                adminData.transactions = await res.json();
-                updateBadgePending();
-                
-                const active = document.querySelector('.screen.active');
-                if(active && active.id === 'screen-verify') renderPendingTransactions();
-                if(active && active.id === 'screen-history') renderAllHistory();
-            } catch (e) { console.error(e); }
         }
 
         function renderUsers() {
@@ -1316,7 +1381,6 @@
         }
         async function moveMenu(index, dir) { let temp = adminData.menus[index]; adminData.menus[index] = adminData.menus[index + dir]; adminData.menus[index + dir] = temp; await syncMenuToServer(); renderMenus(); }
 
-
         async function fetchStudentsForAdmin() {
             try {
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/students?select=*`, { headers: HEADERS });
@@ -1324,10 +1388,18 @@
                     adminData.adminStudentList = await res.json();
                     let classes = [...new Set(adminData.adminStudentList.map(s => getCombinedKelas(s)).filter(k => k && k !== '-'))];
                     classes.sort();
-                    let el = document.getElementById('filter-student-class');
-                    el.innerHTML = '<option value="">Semua Kelas</option>';
-                    classes.forEach(c => el.innerHTML += `<option value="${c}">${c}</option>`);
-                    renderStudentsAdmin();
+                    
+                    let el1 = document.getElementById('filter-student-class');
+                    let el2 = document.getElementById('filter-student-plus-class');
+                    let htmlOpts = '<option value="">Semua Kelas</option>';
+                    classes.forEach(c => htmlOpts += `<option value="${c}">${c}</option>`);
+                    
+                    if(el1) el1.innerHTML = htmlOpts;
+                    if(el2) el2.innerHTML = htmlOpts;
+                    
+                    const active = document.querySelector('.screen.active');
+                    if (active && active.id === 'screen-students-plus') renderStudentsPlusAdmin();
+                    else renderStudentsAdmin();
                 }
             } catch (e) { console.log(e); }
         }
@@ -1339,7 +1411,6 @@
             let list = adminData.adminStudentList;
             if (filterClass) list = list.filter(s => getCombinedKelas(s) === filterClass);
             
-            // Filter berdasarkan teks (Nama / NIS)
             if (searchQuery) {
                 list = list.filter(s => 
                     (s.nama && s.nama.toLowerCase().includes(searchQuery)) || 
@@ -1395,7 +1466,6 @@
             document.getElementById('modal-edit-student').classList.remove('hidden');
             setTimeout(()=>document.getElementById('modal-edit-student').classList.remove('opacity-0'), 10);
             
-            // Mengisi opsi dropdown (Datalist) dari data yang sudah ada di database
             if (adminData.adminStudentList) {
                 const kodes = [...new Set(adminData.adminStudentList.map(s => s.kelas).filter(k => k))].sort();
                 const namas = [...new Set(adminData.adminStudentList.map(s => s.namaKelas).filter(k => k))].sort();
@@ -1454,7 +1524,7 @@
         function downloadStudentTemplate() {
             let headerStr = "nis,nama,kelas,namakelas,token";
             BILL_COLUMNS.forEach(c => headerStr += `,${c.db.toLowerCase()}`);
-            let row1 = "\n112233,Ahmad Budi,1,1 Abu Bakar,TKN1234,1000000,0,150000,0,0,0,0,0,0,0,0";
+            let row1 = "\n112233,Ahmad Budi,1,1 Abu Bakar,TKN1234,1000000,0,150000,0,0,0,0,0,0,0,0,0,0,0,0";
             const blob = new Blob([headerStr + row1], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob);
             const link = document.createElement("a"); link.setAttribute("href", url); link.setAttribute("download", "Template_Siswa.csv"); document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
@@ -1495,6 +1565,88 @@
             reader.readAsText(fileInput.files[0]);
         }
 
+        function renderStudentsPlusAdmin() {
+            const filterClass = document.getElementById('filter-student-plus-class').value;
+            const searchQuery = document.getElementById('search-student-plus-name').value.toLowerCase();
+            
+            let list = adminData.adminStudentList;
+            if (filterClass) list = list.filter(s => getCombinedKelas(s) === filterClass);
+            if (searchQuery) list = list.filter(s => (s.nama && s.nama.toLowerCase().includes(searchQuery)) || (s.nis && String(s.nis).toLowerCase().includes(searchQuery)));
+            
+            list.sort((a,b) => a.nama.localeCompare(b.nama));
+            document.getElementById('lbl-student-plus-count').innerText = `(${list.length} Siswa)`;
+
+            const container = document.getElementById('admin-student-plus-list'); container.innerHTML = '';
+            if (list.length === 0) { container.innerHTML = `<div class="p-8 text-center text-gray-400 text-sm">Tidak ada data</div>`; return; }
+
+            list.forEach(s => {
+                const k = getCombinedKelas(s);
+                container.innerHTML += `
+                    <div class="px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition group cursor-pointer" onclick="editStudentPlus('${s.nis}')">
+                        <div class="flex items-center gap-3 w-full overflow-hidden">
+                            <div class="w-8 h-8 bg-rose-50 border border-rose-200 rounded-full flex items-center justify-center text-rose-500 flex-shrink-0"><i class="fas fa-user-plus text-xs"></i></div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-bold text-sm text-gray-800 truncate">${s.nama}</h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5 truncate">NIS: ${s.nis} | Kelas: <span class="font-semibold">${k}</span></p>
+                            </div>
+                        </div>
+                        <button class="w-8 h-8 rounded-full bg-blue-50 text-primary flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-sm ml-2 flex-shrink-0"><i class="fas fa-pen text-xs"></i></button>
+                    </div>`;
+            });
+        }
+        
+        function openStudentPlusModal() {
+            document.getElementById('modal-edit-student-plus-content').classList.remove('translate-y-full'); 
+            document.getElementById('modal-edit-student-plus').classList.remove('hidden');
+            setTimeout(()=>document.getElementById('modal-edit-student-plus').classList.remove('opacity-0'), 10);
+        }
+        
+        function closeStudentPlusModal() { 
+            document.getElementById('modal-edit-student-plus').classList.add('opacity-0'); 
+            document.getElementById('modal-edit-student-plus-content').classList.add('translate-y-full'); 
+            setTimeout(()=>document.getElementById('modal-edit-student-plus').classList.add('hidden'), 300); 
+        }
+
+        function editStudentPlus(nis) {
+            const s = adminData.adminStudentList.find(x => String(x.nis) === String(nis));
+            if (!s) return;
+            openStudentPlusModal(); 
+            document.getElementById('edit-plus-nis').value = s.nis; 
+            document.getElementById('edit-plus-nama').innerText = s.nama; 
+            document.getElementById('edit-plus-kelas').innerText = getCombinedKelas(s); 
+            
+            document.getElementById('edit-plus-icpSore').value = s.icpSore || ''; 
+            document.getElementById('edit-plus-ajs').value = s.ajs || ''; 
+            document.getElementById('edit-plus-tpq').value = s.tpq || ''; 
+            document.getElementById('edit-plus-olimpiade').value = s.olimpiade || ''; 
+            document.getElementById('edit-plus-rihlah').value = s.rihlah || ''; 
+        }
+
+        async function saveStudentPlus() {
+            const nis = document.getElementById('edit-plus-nis').value;
+            const payload = {
+                icpSore: parseInt(document.getElementById('edit-plus-icpSore').value) || 0,
+                ajs: parseInt(document.getElementById('edit-plus-ajs').value) || 0,
+                tpq: parseInt(document.getElementById('edit-plus-tpq').value) || 0,
+                olimpiade: parseInt(document.getElementById('edit-plus-olimpiade').value) || 0,
+                rihlah: parseInt(document.getElementById('edit-plus-rihlah').value) || 0,
+            };
+            
+            showLoading('Menyimpan Tagihan Plus...');
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${nis}`, { 
+                    method: 'PATCH', 
+                    headers: { ...HEADERS, 'Prefer': 'return=minimal' }, 
+                    body: JSON.stringify(payload) 
+                });
+                if(!res.ok) throw new Error("Gagal menyimpan data");
+                
+                await fetchStudentsForAdmin(); 
+                adminData.allStudents = []; // Reset cache 
+                hideLoading(); closeStudentPlusModal();
+                showMessageBox('Berhasil', 'Tagihan Plus disimpan.', 'fa-check-circle', 'bg-green-50 text-success');
+            } catch (e) { hideLoading(); alert(e.message); }
+        }
 
         async function fetchAllStudentsForCash() {
             try {
@@ -1676,26 +1828,48 @@
             }
         }
 
+        function updateBadgePending() {
+            let count = adminData.transactions.filter(tx => tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected').length;
+            let badg1 = document.getElementById('home-badge-pending'); let badg2 = document.getElementById('nav-badge-pending'); let txt = document.getElementById('stat-pending');
+            if(count > 0) {
+                if(badg1) { badg1.classList.remove('hidden'); badg1.innerText = count > 99 ? '99+' : count; }
+                if(badg2) { badg2.classList.remove('hidden'); badg2.innerText = count > 99 ? '99+' : count; }
+            } else { if(badg1) badg1.classList.add('hidden'); if(badg2) badg2.classList.add('hidden'); }
+            if(txt) txt.innerText = count;
+        }
+
+        async function fetchTransactions() {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/transactions?select=*&order=date.desc`, { headers: HEADERS });
+                if(!res.ok) throw new Error("Gagal ambil data");
+                adminData.transactions = await res.json();
+                updateBadgePending();
+                
+                const active = document.querySelector('.screen.active');
+                if(active && active.id === 'screen-verify') renderPendingTransactions();
+                if(active && active.id === 'screen-history') renderAllHistory();
+            } catch (e) { console.error(e); }
+        }
 
         function filterVerify(type) {
             adminData.currentFilter = type;
-            document.getElementById('btn-filter-all').className = type === 'all' ? 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-primary' : 'px-3 py-1.5 text-xs text-gray-500 border';
-            document.getElementById('btn-filter-today').className = type === 'today' ? 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-primary' : 'px-3 py-1.5 text-xs text-gray-500 border';
+            document.getElementById('btn-filter-all').className = type === 'all' ? 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-primary transition' : 'px-3 py-1.5 text-xs font-semibold rounded-lg text-gray-500 hover:bg-gray-50 transition border border-gray-100';
+            document.getElementById('btn-filter-today').className = type === 'today' ? 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-primary transition' : 'px-3 py-1.5 text-xs font-semibold rounded-lg text-gray-500 hover:bg-gray-50 transition border border-gray-100';
             renderPendingTransactions();
         }
 
         function renderPendingTransactions() {
             const container = document.getElementById('pending-list-container'); container.innerHTML = '';
             let pendings = adminData.transactions.filter(tx => tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected');
-            if(pendings.length === 0) { container.innerHTML = `<div class="text-center py-16 bg-white border"><h3 class="font-bold">Semua Bersih!</h3></div>`; return; }
+            if(pendings.length === 0) { container.innerHTML = `<div class="text-center py-16 bg-white border border-gray-100 rounded-xl"><h3 class="font-bold text-gray-500">Semua Bersih!</h3></div>`; return; }
 
             pendings.forEach(tx => {
                 const total = calculateTxTotal(tx);
                 container.innerHTML += `
-                    <div class="bg-white rounded-xl shadow-sm border p-4 relative cursor-pointer" onclick="openTxDetail('${tx.id}')">
-                        <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-accent"></div>
-                        <div class="flex justify-between items-start pl-2"><div><h4 class="text-sm font-bold">${tx.nama || '-'}</h4><p class="text-xs text-gray-500">${getCombinedKelas(tx)} | NIS: ${tx.nis || '-'}</p></div><span class="text-[10px] font-bold text-accent bg-orange-50 px-2 py-1 rounded">Cek</span></div>
-                        <div class="flex justify-between items-end mt-3 border-t pl-2 pt-2"><p class="text-xs font-semibold text-gray-600">${getTxDescriptionPreview(tx)}</p><p class="text-base font-bold text-primary">${formatCurrency(total)}</p></div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 relative cursor-pointer hover:border-primary transition" onclick="openTxDetail('${tx.id}')">
+                        <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-accent rounded-l-xl"></div>
+                        <div class="flex justify-between items-start pl-2"><div><h4 class="text-sm font-bold text-gray-800">${tx.nama || '-'}</h4><p class="text-xs text-gray-500">${getCombinedKelas(tx)} | NIS: ${tx.nis || '-'}</p></div><span class="text-[10px] font-bold text-accent bg-orange-50 px-2 py-1 rounded border border-orange-100">Cek</span></div>
+                        <div class="flex justify-between items-end mt-3 border-t border-dashed border-gray-200 pl-2 pt-2"><p class="text-xs font-semibold text-gray-500">${getTxDescriptionPreview(tx)}</p><p class="text-base font-bold text-primary">${formatCurrency(total)}</p></div>
                     </div>`;
             });
         }
@@ -1709,24 +1883,16 @@
         }
 
         function renderAllHistory() {
-            initRekapDates(); // Pastikan tanggal otomatis terisi saat dimuat
-
+            initRekapDates(); 
             const container = document.getElementById('all-history-container'); container.innerHTML = '';
-            
-            const searchEl = document.getElementById('search-history');
-            const q = searchEl ? searchEl.value.toLowerCase() : '';
-            
+            const searchEl = document.getElementById('search-history'); const q = searchEl ? searchEl.value.toLowerCase() : '';
             const dateStart = document.getElementById('filter-date-history-start') ? document.getElementById('filter-date-history-start').value : '';
             const dateEnd = document.getElementById('filter-date-history-end') ? document.getElementById('filter-date-history-end').value : '';
             
             let list = adminData.transactions;
             
-            // 1. Filter by Text (Search)
-            if(q) {
-                list = list.filter(tx => (tx.nama?.toLowerCase().includes(q) || tx.nis?.toLowerCase().includes(q) || tx.id?.toLowerCase().includes(q)));
-            }
+            if(q) list = list.filter(tx => (tx.nama?.toLowerCase().includes(q) || tx.nis?.toLowerCase().includes(q) || tx.id?.toLowerCase().includes(q)));
             
-            // 2. Filter by Date Range (Rentang Waktu)
             if(dateStart && dateEnd) {
                 const sDate = new Date(dateStart); sDate.setHours(0,0,0,0);
                 const eDate = new Date(dateEnd); eDate.setHours(23,59,59,999);
@@ -1750,7 +1916,7 @@
                             ${stat}
                         </div>
                         <div class="flex justify-between items-start">
-                            <div><h4 class="text-sm font-bold text-gray-800">${tx.nama}</h4><p class="text-xs text-gray-500">${tx.kelas} | NIS: ${tx.nis}</p></div>
+                            <div><h4 class="text-sm font-bold text-gray-800">${tx.nama}</h4><p class="text-xs text-gray-500">${getCombinedKelas(tx)} | NIS: ${tx.nis}</p></div>
                             <p class="text-sm font-bold text-primary">${formatCurrency(total)}</p>
                         </div>
                     </div>`;
@@ -1774,14 +1940,14 @@
             const tx = adminData.transactions.find(t => t.id === id); if(!tx) return;
             activeTxId = id;
             document.getElementById('dtl-id').innerText = tx.id; document.getElementById('dtl-nama').innerText = tx.nama || '-'; document.getElementById('dtl-nis').innerText = tx.nis || '-';
-            document.getElementById('dtl-kelas').innerText = tx.kelas || '-'; document.getElementById('dtl-date').innerText = tx.date || '-';
+            document.getElementById('dtl-kelas').innerText = getCombinedKelas(tx) || '-'; document.getElementById('dtl-date').innerText = tx.date || '-';
 
             const imgEl = document.getElementById('dtl-img'); const noImgEl = document.getElementById('dtl-no-img');
             if(tx.buktiTF && tx.buktiTF.includes('http')) { imgEl.src = tx.buktiTF; imgEl.parentElement.classList.remove('hidden'); imgEl.classList.remove('hidden'); noImgEl.classList.add('hidden'); } 
             else { imgEl.classList.add('hidden'); noImgEl.classList.remove('hidden'); imgEl.parentElement.classList.remove('hidden'); noImgEl.innerHTML = `<i class="fas fa-money-bill-wave text-4xl mb-3 text-green-300"></i><span class="text-sm font-semibold">Tunai</span>`; }
 
             let total = 0; let listHtml = '';
-            getTxDetailsArray(tx).forEach(item => { total += item.amount; listHtml += `<div class="flex justify-between items-center text-sm border-b border-dashed pb-2 pt-1"><span>${item.title}</span><span class="font-bold">${formatCurrency(item.amount)}</span></div>`; });
+            getTxDetailsArray(tx).forEach(item => { total += item.amount; listHtml += `<div class="flex justify-between items-center text-sm border-b border-dashed pb-2 pt-1 text-gray-700"><span>${item.title}</span><span class="font-bold text-gray-900">${formatCurrency(item.amount)}</span></div>`; });
             document.getElementById('dtl-rincian').innerHTML = listHtml; document.getElementById('dtl-total').innerText = formatCurrency(total);
 
             const actContainer = document.getElementById('dtl-actions');
@@ -1811,38 +1977,31 @@
             try {
                 await fetch(`${SUPABASE_URL}/rest/v1/transactions?id=eq.${id}`, { method: 'PATCH', headers: { ...HEADERS, 'Prefer': 'return=minimal' }, body: JSON.stringify({ status: newStatus, kasir: adminData.loggedInUser }) });
                 
-                // Update local data immediately for responsive UI
                 let txIndex = adminData.transactions.findIndex(t => t.id === id);
                 if (txIndex !== -1) {
                     adminData.transactions[txIndex].status = newStatus;
                     adminData.transactions[txIndex].kasir = adminData.loggedInUser;
                 }
 
-                fetchTransactions(); // Background refresh
+                fetchTransactions(); 
                 hideLoading();
                 
-                if (newStatus === 'success') {
-                    // Jika sukses, langsung buka preview struk
-                    openReceiptPreview(id);
-                } else {
-                    closeTxModal();
-                }
-
+                if (newStatus === 'success') openReceiptPreview(id);
+                else closeTxModal();
             } catch(e) { hideLoading(); alert("Gagal update status"); }
         }
 
         function viewFullscreenImage(src) { 
-            document.getElementById('fs-img').src = src; 
+            let img = document.getElementById('fs-img');
             let viewer = document.getElementById('fs-viewer');
+            img.src = src; 
             viewer.classList.remove('hidden'); 
-            // Tambahkan jeda kecil agar display:flex aktif sebelum animasi opacity berjalan
             setTimeout(() => viewer.classList.remove('opacity-0'), 10);
         }
         
         function closeFullscreen() { 
             let viewer = document.getElementById('fs-viewer');
             viewer.classList.add('opacity-0'); 
-            // Tunggu animasi fade out selesai baru sembunyikan elemennya
             setTimeout(() => viewer.classList.add('hidden'), 300);
         }
 
@@ -1860,7 +2019,7 @@
                         <div style="font-size: 10px;">Wonosobo, Jawa Tengah</div>
                     </div>
                     <div style="border-top: 1px dashed black; margin: 8px 0;"></div>
-                    <div>No: ${tx.id}<br>Tgl: ${tx.date}<br>Nama: ${tx.nama}<br>Kelas: ${tx.kelas}</div>
+                    <div>No: ${tx.id}<br>Tgl: ${tx.date}<br>Nama: ${tx.nama}<br>Kelas: ${getCombinedKelas(tx)}</div>
                     <div style="border-top: 1px dashed black; margin: 8px 0;"></div>
                     ${detailHtml}
                     <div style="border-top: 1px dashed black; margin: 8px 0;"></div>
@@ -1883,38 +2042,23 @@
             printWindow.document.close();
         }
 
-        // Helper untuk memparsing semua jenis format tanggal dari Supabase (DD/MM/YYYY atau YYYY-MM-DD)
         function parseTxDate(dateStr) {
             if(!dateStr) return new Date();
-            
-            let d = new Date(dateStr);
-            if (!isNaN(d.getTime())) return d;
+            let d = new Date(dateStr); if (!isNaN(d.getTime())) return d;
             
             try {
-                let cleanStr = dateStr.replace(/,/, ' '); 
-                let parts = cleanStr.trim().split(/\s+/); 
-                let dateOnly = parts[0];
-                let timeOnly = parts[1] || '00:00:00';
-                
+                let cleanStr = dateStr.replace(/,/, ' '); let parts = cleanStr.trim().split(/\s+/); 
+                let dateOnly = parts[0]; let timeOnly = parts[1] || '00:00:00';
                 let dateParts = dateOnly.includes('/') ? dateOnly.split('/') : dateOnly.split('-');
                 
                 if(dateParts.length === 3) {
-                    let day = dateParts[0].padStart(2, '0');
-                    let month = dateParts[1].padStart(2, '0');
-                    let year = dateParts[2];
-                    
-                    if(year.length === 2 || dateParts[0].length === 4) {
-                        year = dateParts[0]; day = dateParts[2].padStart(2, '0');
-                    }
-                    
+                    let day = dateParts[0].padStart(2, '0'); let month = dateParts[1].padStart(2, '0'); let year = dateParts[2];
+                    if(year.length === 2 || dateParts[0].length === 4) { year = dateParts[0]; day = dateParts[2].padStart(2, '0'); }
                     timeOnly = timeOnly.replace(/\./g, ':');
-                    
                     let isoStr = `${year}-${month}-${day}T${timeOnly}`;
-                    let finalDate = new Date(isoStr);
-                    if (!isNaN(finalDate.getTime())) return finalDate;
+                    let finalDate = new Date(isoStr); if (!isNaN(finalDate.getTime())) return finalDate;
                 }
-            } catch(e) { console.error("Error parsing date:", e); }
-            
+            } catch(e) {}
             return new Date(); 
         }
 
@@ -1925,13 +2069,11 @@
             const dd = String(now.getDate()).padStart(2, '0');
             const todayStr = `${yyyy}-${mm}-${dd}`;
             
-            // Auto-fill Rentang Waktu Rekapitulasi (Jika Kosong)
             const elDailyStart = document.getElementById('filter-date-daily-start');
             const elDailyEnd = document.getElementById('filter-date-daily-end');
             if (elDailyStart && !elDailyStart.value) elDailyStart.value = todayStr;
             if (elDailyEnd && !elDailyEnd.value) elDailyEnd.value = todayStr;
             
-            // Auto-fill Rentang Waktu Riwayat Transaksi (Jika Kosong)
             const elHistStart = document.getElementById('filter-date-history-start');
             const elHistEnd = document.getElementById('filter-date-history-end');
             if (elHistStart && !elHistStart.value) elHistStart.value = todayStr;
@@ -1954,16 +2096,13 @@
             const year = parseInt(weekString.substring(0, 4));
             const week = parseInt(weekString.substring(6, 8));
             
-            // Cari acuan hari Senin di minggu pertama standar ISO
             const simple = new Date(year, 0, 4); 
             const dayOfWeek = simple.getDay() || 7; 
             simple.setDate(simple.getDate() - dayOfWeek + 1); 
             
-            // Hitung Tanggal Mulai (Senin, 00:00:00)
             const startOfWeek = new Date(simple.getTime() + (week - 1) * 7 * 24 * 60 * 60 * 1000);
             startOfWeek.setHours(0, 0, 0, 0); 
             
-            // Hitung Tanggal Selesai (Sabtu, 23:59:59) -> Senin + 5 hari
             const endOfWeek = new Date(startOfWeek);
             endOfWeek.setDate(startOfWeek.getDate() + 5); 
             endOfWeek.setHours(23, 59, 59, 999); 
@@ -1973,9 +2112,7 @@
 
         function renderRekap() {
             initRekapDates(); 
-
             let validTxs = adminData.transactions.filter(t => t.status === 'success' || t.status === 'lunas');
-            
             let stats = { today: { tunai: 0, transfer: 0 }, week: { tunai: 0, transfer: 0 }, month: { tunai: 0, transfer: 0 } };
             
             const filterStart = document.getElementById('filter-date-daily-start').value; 
@@ -1988,34 +2125,26 @@
                 let isTunai = tx.buktiTF === 'PEMBAYARAN_TUNAI';
                 let txDate = parseTxDate(tx.date);
 
-                // Hitung Rentang Waktu Terpilih (Sebelumnya "Harian")
                 if (filterStart && filterEnd) {
                     let sDate = new Date(filterStart); sDate.setHours(0,0,0,0);
                     let eDate = new Date(filterEnd); eDate.setHours(23,59,59,999);
-                    
                     if (txDate >= sDate && txDate <= eDate) {
-                        if (isTunai) stats.today.tunai += amt; 
-                        else stats.today.transfer += amt;
+                        if (isTunai) stats.today.tunai += amt; else stats.today.transfer += amt;
                     }
                 }
 
-                // Hitung Pekan Ini (Senin - Sabtu)
                 if (filterWeekly && isDateInWeek(txDate, filterWeekly)) {
-                    if (isTunai) stats.week.tunai += amt; 
-                    else stats.week.transfer += amt;
+                    if (isTunai) stats.week.tunai += amt; else stats.week.transfer += amt;
                 }
 
-                // Hitung Bulanan
                 if (filterMonthly) {
                     const [fYear, fMonth] = filterMonthly.split('-');
                     if (txDate.getFullYear() === parseInt(fYear) && (txDate.getMonth() + 1) === parseInt(fMonth)) {
-                        if (isTunai) stats.month.tunai += amt; 
-                        else stats.month.transfer += amt;
+                        if (isTunai) stats.month.tunai += amt; else stats.month.transfer += amt;
                     }
                 }
             });
 
-            // Update Tampilan UI Rekapitulasi
             document.getElementById('rekap-today-tunai').innerText = formatCurrency(stats.today.tunai);
             document.getElementById('rekap-today-transfer').innerText = formatCurrency(stats.today.transfer);
             document.getElementById('rekap-today-total').innerText = formatCurrency(stats.today.tunai + stats.today.transfer);
@@ -2040,22 +2169,18 @@
                     let sDate = new Date(fStart); sDate.setHours(0,0,0,0);
                     let eDate = new Date(fEnd); eDate.setHours(23,59,59,999);
                     txs = txs.filter(tx => {
-                        let txDate = parseTxDate(tx.date);
-                        return txDate >= sDate && txDate <= eDate;
+                        let txDate = parseTxDate(tx.date); return txDate >= sDate && txDate <= eDate;
                     });
                 }
             } else if (period === 'mingguan') {
                 const filterWeekly = document.getElementById('filter-date-weekly').value;
-                if(filterWeekly) {
-                    txs = txs.filter(tx => isDateInWeek(parseTxDate(tx.date), filterWeekly));
-                }
+                if(filterWeekly) txs = txs.filter(tx => isDateInWeek(parseTxDate(tx.date), filterWeekly));
             } else if (period === 'bulanan') {
                 const filterMonthly = document.getElementById('filter-date-monthly').value;
                 if(filterMonthly) {
                     const [fYear, fMonth] = filterMonthly.split('-');
                     txs = txs.filter(tx => {
-                        let txDate = parseTxDate(tx.date);
-                        return txDate.getFullYear() === parseInt(fYear) && (txDate.getMonth() + 1) === parseInt(fMonth);
+                        let txDate = parseTxDate(tx.date); return txDate.getFullYear() === parseInt(fYear) && (txDate.getMonth() + 1) === parseInt(fMonth);
                     });
                 }
             }
@@ -2066,13 +2191,12 @@
 
         function buildDetailedTable(doc, startY, transactions, typeTitle) {
             doc.setFont("helvetica", "bold"); doc.setFontSize(10);
-            doc.text(typeTitle, 165, startY, { align: "center" }); // Center axis at 165mm
+            doc.text(typeTitle, 165, startY, { align: "center" }); 
             
             let filtered = transactions;
             if(typeTitle.includes("TUNAI")) filtered = transactions.filter(t => t.buktiTF === 'PEMBAYARAN_TUNAI');
             else filtered = transactions.filter(t => t.buktiTF !== 'PEMBAYARAN_TUNAI');
 
-            // Set Total Width = 300
             const colWidths = [7, 15, 40, 10, 17, 17, 18, 17, 17, 17, 17, 18, 17, 17, 18, 15, 23];
             const head = [['No', 'Tanggal', 'Nama Siswa', 'Kelas', 'BPS', 'SPP', 'Ket SPP', 'DU 1', 'DU 2', 'DU 3', 'Tahfidz+', 'Ket Tahf+', 'Tahfidz', 'ICP', 'Tanggungan', 'Kasir', 'Total']];
             
@@ -2082,13 +2206,15 @@
                 let t = tx.date ? tx.date.split(',')[0].substring(0,10) : '-';
                 let b = parseInt(tx.bps||0); let s = parseInt(tx.spp||0); let d1 = parseInt(tx.daftarUlang1||0); let d2 = parseInt(tx.daftarUlang2||0); let d3 = parseInt(tx.daftarUlang3||0);
                 let tp = parseInt(tx.tahfidzPlus||0); let th = parseInt(tx.tahfidz||0); let ic = parseInt(tx.icp||0); let tg = parseInt(tx.tanggungan||0);
-                let totalRow = b+s+d1+d2+d3+tp+th+ic+tg;
+                let ics = parseInt(tx.icpSore||0); let ajs = parseInt(tx.ajs||0); let tpq = parseInt(tx.tpq||0); let olim = parseInt(tx.olimpiade||0); let rih = parseInt(tx.rihlah||0);
+
+                let totalRow = b+s+d1+d2+d3+tp+th+ic+tg + ics + ajs + tpq + olim + rih;
                 
                 colSums[4]+=b; colSums[5]+=s; colSums[7]+=d1; colSums[8]+=d2; colSums[9]+=d3; colSums[10]+=tp; colSums[12]+=th; colSums[13]+=ic; colSums[14]+=tg; colSums[16]+=totalRow;
 
                 let fm = (n) => n > 0 ? formatCurrency(n).replace('Rp ','') : '-';
                 body.push([
-                    (i+1).toString(), t, (tx.nama||'-').substring(0,15), tx.kelas||'-',
+                    (i+1).toString(), t, (tx.nama||'-').substring(0,15), getCombinedKelas(tx),
                     fm(b), fm(s), tx.ketSpp||'-', fm(d1), fm(d2), fm(d3), fm(tp), tx.ketTahfidzPlus||'-', fm(th), fm(ic), fm(tg), (tx.kasir||'-').substring(0,7), fm(totalRow)
                 ]);
             });
@@ -2103,11 +2229,8 @@
                 startY: startY + 5, head: head, body: body, theme: 'grid',
                 styles: { fontSize: 6, cellPadding: 1, halign: 'center', valign: 'middle' },
                 headStyles: { fillColor: [30, 58, 95], textColor: 255, fontStyle: 'bold' },
-                columnStyles: { 
-                    2: { halign: 'left' }, 16: { fillColor: [235, 247, 255], fontStyle: 'bold', textColor: [0,0,0] } 
-                },
-                margin: { left: 15, right: 15 },
-                tableWidth: 300,
+                columnStyles: { 2: { halign: 'left' }, 16: { fillColor: [235, 247, 255], fontStyle: 'bold', textColor: [0,0,0] } },
+                margin: { left: 15, right: 15 }, tableWidth: 300,
                 didParseCell: function(data) {
                     if(data.section === 'head' || data.section === 'body') { data.cell.width = colWidths[data.column.index]; }
                     if(data.row.index === body.length - 1 && data.section === 'body') { data.cell.styles.fontStyle = 'bold'; }
@@ -2119,13 +2242,13 @@
         function generatePdf(period, isPreview = false) {
             try {
                 if(!window.jspdf || !window.jspdf.jsPDF) { throw new Error("Library PDF belum siap, periksa koneksi internet."); }
-                const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape', 'mm', [330, 210]); // F4
+                const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape', 'mm', [330, 210]);
                 const txs = getFilteredTransactions(period);
 
                 doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.text("SD MUHAMMADIYAH SUDAGARAN WONOSOBO", 165, 15, { align: "center" });
                 doc.setFontSize(12); doc.text("LAPORAN KEUANGAN TRANSAKSI", 165, 22, { align: "center" });
                 doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.text(`Periode: Cetak Saat Ini`, 165, 28, { align: "center" });
-                doc.setLineWidth(0.5); doc.line(15, 33, 315, 33); // 330-15 = 315
+                doc.setLineWidth(0.5); doc.line(15, 33, 315, 33);
 
                 let nextY = buildDetailedTable(doc, 45, txs, "RINCIAN PEMBAYARAN TUNAI");
                 buildDetailedTable(doc, nextY, txs, "RINCIAN PEMBAYARAN TRANSFER");
@@ -2134,9 +2257,7 @@
                     const blob = doc.output('blob'); const url = URL.createObjectURL(blob);
                     document.getElementById('pdf-iframe').src = url; document.getElementById('pdf-preview-modal').classList.remove('hidden'); document.getElementById('pdf-preview-modal').classList.add('flex');
                     document.getElementById('btn-download-pdf-viewer').onclick = () => { doc.save(`Laporan_Sudagaran_${period}.pdf`); };
-                } else {
-                    doc.save(`Laporan_Sudagaran_${period}.pdf`);
-                }
+                } else { doc.save(`Laporan_Sudagaran_${period}.pdf`); }
             } catch (e) { alert("Gagal PDF: " + e.message); }
         }
 
