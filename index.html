@@ -644,7 +644,7 @@
                     <button onclick="closeStudentModal()" class="w-8 h-8 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 flex justify-center items-center"><i class="fas fa-times"></i></button>
                 </div>
                 <input type="hidden" id="edit-std-old-nis">
-                <div class="space-y-4 h-[60vh] overflow-y-auto no-scrollbar pb-4 px-1">
+                <div class="space-y-4 h-[60vh] overflow-y-auto custom-scrollbar pb-4 px-1">
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1.5">Nomor Induk Siswa (NIS)</label>
                         <input type="text" id="edit-std-nis" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm bg-gray-50 outline-none" placeholder="Wajib Diisi (Unik)">
@@ -666,6 +666,57 @@
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1.5">Token Akses (Otomatis/Buat Sendiri)</label>
                         <input type="text" id="edit-std-token" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary text-sm bg-gray-50 outline-none font-mono" placeholder="Kosongi untuk di-generate otomatis">
+                    </div>
+                    
+                    <!-- AREA TAGIHAN SISWA -->
+                    <div class="pt-4 mt-2 border-t border-gray-100">
+                        <h4 class="text-sm font-bold text-gray-700 mb-3"><i class="fas fa-file-invoice-dollar mr-1.5 text-primary"></i> Pengaturan Tagihan Awal (Rp)</h4>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-gray-500 mb-1">BPS</label>
+                                <input type="number" id="edit-std-bps" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-gray-500 mb-1">SPP Bulan Juli</label>
+                                <input type="number" id="edit-std-sppJuli" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-gray-500 mb-1">SPP (Bulanan)</label>
+                                <input type="number" id="edit-std-spp" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-gray-500 mb-1">Daftar Ulang I</label>
+                                <input type="number" id="edit-std-daftarUlang1" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-gray-500 mb-1">Daftar Ulang II</label>
+                                <input type="number" id="edit-std-daftarUlang2" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-gray-500 mb-1">Daftar Ulang III</label>
+                                <input type="number" id="edit-std-daftarUlang3" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-gray-500 mb-1">Kelas Tahfidz Plus</label>
+                                <input type="number" id="edit-std-tahfidzPlus" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-gray-500 mb-1">Kelas Tahfidz</label>
+                                <input type="number" id="edit-std-tahfidz" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-gray-500 mb-1">Kelas ICP</label>
+                                <input type="number" id="edit-std-icp" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-gray-500 mb-1">ICP Sore</label>
+                                <input type="number" id="edit-std-icpSore" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-[10px] font-semibold text-gray-500 mb-1">Tanggungan Tahun Lalu</label>
+                                <input type="number" id="edit-std-tanggungan" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="pt-5 flex mt-2 border-t border-gray-100">
@@ -1422,7 +1473,8 @@
         async function fetchStudentsForAdmin() {
             showMessageBox('Memuat...', 'Mengambil database siswa...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/students?select=nis,nama,kelas,namaKelas,token`, { headers: HEADERS });
+                // Mengambil SEMUA kolom (*) agar data tagihan juga ikut terbawa untuk diedit
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/students?select=*`, { headers: HEADERS });
                 if(res.ok) {
                     adminData.adminStudentList = await res.json();
                     
@@ -1511,6 +1563,12 @@
             document.getElementById('edit-std-kelas').value = '';
             document.getElementById('edit-std-namakelas').value = '';
             document.getElementById('edit-std-token').value = '';
+            
+            // Reset tagihan
+            BILL_COLUMNS.forEach(c => {
+                let el = document.getElementById(`edit-std-${c.db}`);
+                if(el) el.value = '';
+            });
         }
 
         function closeStudentModal() {
@@ -1531,6 +1589,12 @@
             document.getElementById('edit-std-kelas').value = s.kelas || '';
             document.getElementById('edit-std-namakelas').value = s.namaKelas || '';
             document.getElementById('edit-std-token').value = s.token || '';
+
+            // Set data tagihan ke dalam form
+            BILL_COLUMNS.forEach(c => {
+                let el = document.getElementById(`edit-std-${c.db}`);
+                if(el) el.value = s[c.db] || '';
+            });
         }
 
         async function saveStudent() {
@@ -1548,40 +1612,14 @@
 
             if (!token) { token = 'TKN' + Math.floor(1000 + Math.random() * 9000); }
 
-            showMessageBox('Menyimpan...', 'Menyimpan data siswa ke database...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
-            
+            // Ambil semua data tagihan dan ubah ke angka integer
             const payload = { nis, nama, kelas, namaKelas, token };
+            BILL_COLUMNS.forEach(c => {
+                let el = document.getElementById(`edit-std-${c.db}`);
+                payload[c.db] = el && el.value ? parseInt(el.value) : 0;
+            });
 
-            try {
-                if (oldNis && oldNis !== nis) {
-                    // Update dengan ganti NIS (Hapus lama, Insert baru) - Cukup tricky jika ada FK, tapi kita asumsikan simpel
-                    await fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${oldNis}`, { method: 'DELETE', headers: HEADERS });
-                }
-
-                await fetch(`${SUPABASE_URL}/rest/v1/students?on_conflict=nis`, {
-                    method: 'POST',
-                    headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
-                    body: JSON.stringify([payload])
-                });
-
-                closeStudentModal();
-                await fetchStudentsForAdmin(); // Reload dari server
-                adminData.allStudents = []; // Reset cache cash
-                
-                closeMessageBox();
-                showMessageBox('Sukses', 'Data siswa berhasil disimpan.', 'fa-check', 'bg-green-50 text-success');
-            } catch (e) {
-                closeMessageBox();
-                showMessageBox('Gagal', 'Terjadi kesalahan sistem.', 'fa-times', 'bg-red-50 text-danger');
-            }
-        }
-
-        async function deleteSelectedStudents() {
-            const chks = document.querySelectorAll('.chk-student:checked');
-            if(chks.length === 0) return;
-            if(!confirm(`Yakin ingin MENGHAPUS PERMANEN ${chks.length} siswa yang terpilih?`)) return;
-
-            showMessageBox('Menghapus...', 'Memproses penghapusan massal...', 'fa-spinner fa-spin', 'text-danger bg-red-50', '', 'hidden');
+            showMessageBox('Menyimpan...', 'Menyimpan data siswa ke database...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
             
             try {
                 // Hapus Paralel agar cepat
@@ -1616,7 +1654,15 @@
         }
 
         function downloadStudentTemplate() {
-            const csvContent = "nis,nama,kelas,namakelas,token\n112233,Ahmad Budi Santoso,1,1 Abu Bakar,TKN1234\n112234,Siti Aisyah,2,2 Umar,TKN5678";
+            // Header dinamis menyesuaikan semua kolom tagihan yang ada di sistem
+            let headerStr = "nis,nama,kelas,namakelas,token";
+            BILL_COLUMNS.forEach(c => headerStr += `,${c.db.toLowerCase()}`);
+            
+            // Contoh pengisian (Siswa 1 dengan tagihan, Siswa 2 tagihan kosong/nol)
+            let row1 = "\n112233,Ahmad Budi Santoso,1,1 Abu Bakar,TKN1234,1000000,0,150000,0,0,0,0,0,0,0,0";
+            let row2 = "\n112234,Siti Aisyah,2,2 Umar,TKN5678,0,0,150000,0,0,0,0,0,0,0,0";
+            
+            const csvContent = headerStr + row1 + row2;
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
@@ -1644,7 +1690,7 @@
 
                 const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/[^a-z0-9]/g, ''));
                 
-                // Cari Index Kolom
+                // Cari Index Kolom Dasar
                 const idxNis = headers.indexOf('nis');
                 const idxNama = headers.indexOf('nama');
                 const idxKelas = headers.indexOf('kelas');
@@ -1655,6 +1701,12 @@
                     showMessageBox('Format Salah', 'File CSV harus memiliki header "nis" dan "nama".', 'fa-times', 'bg-red-50 text-danger');
                     return;
                 }
+
+                // Buat Pemetaan Index untuk Kolom Tagihan (Dinamis)
+                const tagihanIdxMap = {};
+                BILL_COLUMNS.forEach(c => {
+                    tagihanIdxMap[c.db] = headers.indexOf(c.db.toLowerCase());
+                });
 
                 let payload = [];
                 for(let i = 1; i < lines.length; i++) {
@@ -1668,7 +1720,16 @@
                     let token = (idxToken !== -1 && data[idxToken]) ? data[idxToken].trim() : ('TKN' + Math.floor(1000 + Math.random() * 9000));
 
                     if(nis && nama) {
-                        payload.push({ nis, nama, kelas, namaKelas, token });
+                        let studentObj = { nis, nama, kelas, namaKelas, token };
+                        
+                        // Menarik data tagihan dari CSV berdasar Index Mapping
+                        BILL_COLUMNS.forEach(c => {
+                            let idx = tagihanIdxMap[c.db];
+                            let valStr = (idx !== -1 && data[idx]) ? data[idx].trim() : '0';
+                            studentObj[c.db] = parseInt(valStr) || 0;
+                        });
+                        
+                        payload.push(studentObj);
                     }
                 }
 
