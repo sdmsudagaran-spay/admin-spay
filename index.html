@@ -178,23 +178,23 @@
                         </button>
 
                         <!-- Menu 4: Kelola Aplikasi -->
-                        <button onclick="showAdminScreen('screen-menus')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-purple-50 hover:border-purple-200 border border-transparent transition group">
+                        <button id="menu-menus" onclick="showAdminScreen('screen-menus')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-purple-50 hover:border-purple-200 border border-transparent transition group">
                             <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-purple-600 mb-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-sliders-h text-2xl"></i>
                             </div>
                             <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Kelola<br>Aplikasi</span>
                         </button>
 
-                        <!-- Menu 5: Rekap Data -->
-                        <button onclick="showAdminScreen('screen-rekap')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-teal-50 hover:border-teal-200 border border-transparent transition group">
-                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-teal-600 mb-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-chart-pie text-2xl"></i>
+                        <!-- Menu Baru: Kelola Pengguna -->
+                        <button id="menu-users" onclick="showAdminScreen('screen-users')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-indigo-50 hover:border-indigo-200 border border-transparent transition group">
+                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-indigo-600 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-users-cog text-2xl"></i>
                             </div>
-                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Rekap<br>Data</span>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Kelola<br>Pengguna</span>
                         </button>
-                    </div>
-                </div>
-            </div>
+
+                        <!-- Menu 5: Rekap Data -->
+                        <button id="menu-rekap" onclick="showAdminScreen('screen-rekap')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-teal-50 hover:border-teal-200 border border-transparent transition group">
         </div>
 
         <!-- ================= PEMBAYARAN TUNAI SCREEN ================= -->
@@ -314,9 +314,12 @@
 
         <!-- ================= KELOLA MENU SCREEN ================= -->
         <div id="screen-menus" class="screen">
-            <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30">
-                <h2 class="text-lg md:text-xl font-bold text-primary">Kelola Menu Aplikasi</h2>
-                <p class="text-xs text-gray-500 mt-1">Atur tampilan beranda wali murid</p>
+            <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
+                <button onclick="showAdminScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
+                <div>
+                    <h2 class="text-lg md:text-xl font-bold text-primary">Kelola Menu Aplikasi</h2>
+                    <p class="text-xs text-gray-500 mt-1">Atur tampilan beranda wali murid</p>
+                </div>
             </div>
             <div class="px-6 md:px-10 py-6">
                 <div class="flex justify-between items-center mb-6">
@@ -326,6 +329,26 @@
                     </button>
                 </div>
                 <div class="space-y-3 pb-24" id="admin-menu-list"></div>
+            </div>
+        </div>
+
+        <!-- ================= KELOLA PENGGUNA SCREEN ================= -->
+        <div id="screen-users" class="screen">
+            <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
+                <button onclick="showAdminScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
+                <div>
+                    <h2 class="text-lg md:text-xl font-bold text-primary">Kelola Pengguna</h2>
+                    <p class="text-xs text-gray-500 mt-1">Atur akses dan akun admin</p>
+                </div>
+            </div>
+            <div class="px-6 md:px-10 py-6">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-sm text-gray-700 font-bold" id="admin-user-count">0 Pengguna</span>
+                    <button onclick="openUserModal()" class="text-xs font-bold text-white bg-primary hover:bg-opacity-90 px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition">
+                        <i class="fas fa-plus"></i> Tambah Akun
+                    </button>
+                </div>
+                <div class="space-y-3 pb-24" id="admin-user-list"></div>
             </div>
         </div>
 
@@ -429,6 +452,44 @@
 
         <!-- ================= MODALS ================= -->
         
+        <!-- MODAL KELOLA PENGGUNA -->
+        <div id="modal-edit-user" class="fixed inset-0 bg-black/60 z-[60] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-end md:items-center justify-center">
+            <div class="modal-inner-card bg-white w-full max-w-[480px] rounded-t-[2rem] p-6 transform translate-y-full md:translate-y-0 transition-transform duration-300 shadow-2xl" id="modal-edit-user-content">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-bold text-gray-800" id="modal-user-title">Tambah Pengguna</h3>
+                    <button onclick="closeUserModal()" class="w-8 h-8 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 flex justify-center items-center"><i class="fas fa-times"></i></button>
+                </div>
+                <input type="hidden" id="edit-user-id">
+                <div class="space-y-4 h-[60vh] overflow-y-auto no-scrollbar pb-4 px-1">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Username (ID Login)</label>
+                        <input type="text" id="edit-user-username" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm bg-gray-50 outline-none" placeholder="Contoh: kasir2">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Nama Lengkap</label>
+                        <input type="text" id="edit-user-name" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm bg-gray-50 outline-none" placeholder="Contoh: Budi Santoso">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Kata Sandi</label>
+                        <input type="text" id="edit-user-password" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary text-sm bg-gray-50 outline-none" placeholder="Minimal 6 karakter">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Hak Akses (Role)</label>
+                        <select id="edit-user-role" class="w-full px-3 py-3 rounded-xl border border-gray-200 text-sm bg-gray-50 outline-none">
+                            <option value="kasir">Kasir (Tunai, Cek TF, Riwayat)</option>
+                            <option value="bendahara">Bendahara (Cek TF, Riwayat, Rekap)</option>
+                            <option value="ks">Kepala Sekolah (Riwayat, Rekap)</option>
+                            <option value="admin">Admin System (Full Akses)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="pt-5 flex gap-3 mt-2 border-t border-gray-100">
+                    <button id="btn-delete-user" onclick="deleteUser()" class="hidden flex-1 bg-red-50 text-danger font-bold py-3.5 rounded-xl border border-red-100 hover:bg-red-100 transition">Hapus</button>
+                    <button onclick="saveUser()" class="flex-[2] bg-primary text-white font-bold py-3.5 rounded-xl shadow-md hover:bg-opacity-90 transition">Simpan Akun</button>
+                </div>
+            </div>
+        </div>
+
         <!-- MODAL PREVIEW PDF REKAPITULASI -->
         <div id="modal-pdf-preview" class="fixed inset-0 bg-black/80 z-[90] hidden opacity-0 transition-opacity duration-300 flex flex-col justify-center items-center backdrop-blur-sm p-4 md:p-8">
             <div class="w-full max-w-7xl bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden h-[95vh] transform scale-95 transition-transform duration-300" id="modal-pdf-content">
@@ -624,8 +685,17 @@
             {code: 'tanggungan', title: 'Tanggungan Tahun Lalu', db: 'tanggungan'}
         ];
 
+        const DEFAULT_USERS = [
+            { id: 'u1', username: 'kasir1', name: 'Kasir 1', password: 'berkah', role: 'kasir' },
+            { id: 'u2', username: 'bendahara', name: 'Bendahara', password: 'berkah', role: 'bendahara' },
+            { id: 'u3', username: 'KS', name: 'Kepala Sekolah (KS)', password: 'berkah', role: 'ks' },
+            { id: 'u4', username: 'admin', name: 'Admin System', password: 'berkah', role: 'admin' }
+        ];
+
         let adminData = { 
             loggedInUser: '',
+            role: '',
+            users: [],
             transactions: [], 
             menus: [], 
             allStudents: [], 
@@ -634,6 +704,33 @@
             cashSelectedBills: []
         };
         let activeTxId = null;
+
+        async function fetchAdminUsers() {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*`, { headers: HEADERS });
+                if(res.ok) {
+                    let data = await res.json();
+                    if(data.length > 0) adminData.users = data;
+                    else adminData.users = [...DEFAULT_USERS];
+                } else {
+                    adminData.users = [...DEFAULT_USERS];
+                }
+            } catch (e) {
+                adminData.users = [...DEFAULT_USERS];
+            }
+            populateLoginDropdown();
+        }
+
+        function populateLoginDropdown() {
+            let sel = document.getElementById('loginId');
+            if(sel) {
+                sel.innerHTML = '';
+                adminData.users.forEach(u => {
+                    let roleLabel = u.role === 'admin' ? 'Admin System' : (u.role === 'ks' ? 'Kepala Sekolah' : (u.role === 'bendahara' ? 'Bendahara' : 'Kasir'));
+                    sel.innerHTML += `<option value="${u.username}">${u.name} (${roleLabel})</option>`;
+                });
+            }
+        }
 
         function formatCurrency(num) { return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
 
@@ -748,6 +845,7 @@
             if(screenId === 'screen-verify') renderPendingTransactions();
             if(screenId === 'screen-history') renderAllHistory();
             if(screenId === 'screen-menus') renderMenus();
+            if(screenId === 'screen-users') renderUsers();
             if(screenId === 'screen-rekap') renderRekap();
             if(screenId === 'screen-cash') {
                 if(adminData.allStudents.length === 0) fetchAllStudentsForCash();
@@ -755,17 +853,58 @@
             }
         }
 
-        async function handleAdminLogin() {
-            const role = document.getElementById('loginId').value;
-            const pass = document.getElementById('loginPass').value;
+        function applyRoleRestrictions() {
+            const role = adminData.role;
+            const mCash = document.getElementById('menu-cash');
+            const mVerify = document.getElementById('menu-verify');
+            const mHistory = document.getElementById('menu-history');
+            const mMenus = document.getElementById('menu-menus');
+            const mUsers = document.getElementById('menu-users');
+            const mRekap = document.getElementById('menu-rekap');
 
-            if(pass === 'berkah') {
+            if(mCash) mCash.classList.add('hidden');
+            if(mVerify) mVerify.classList.add('hidden');
+            if(mHistory) mHistory.classList.add('hidden');
+            if(mMenus) mMenus.classList.add('hidden');
+            if(mUsers) mUsers.classList.add('hidden');
+            if(mRekap) mRekap.classList.add('hidden');
+
+            if (role === 'admin') {
+                if(mCash) mCash.classList.remove('hidden');
+                if(mVerify) mVerify.classList.remove('hidden');
+                if(mHistory) mHistory.classList.remove('hidden');
+                if(mMenus) mMenus.classList.remove('hidden');
+                if(mUsers) mUsers.classList.remove('hidden');
+                if(mRekap) mRekap.classList.remove('hidden');
+            } else if (role === 'kasir') {
+                if(mCash) mCash.classList.remove('hidden');
+                if(mVerify) mVerify.classList.remove('hidden');
+                if(mHistory) mHistory.classList.remove('hidden');
+            } else if (role === 'bendahara') {
+                if(mVerify) mVerify.classList.remove('hidden');
+                if(mHistory) mHistory.classList.remove('hidden');
+                if(mRekap) mRekap.classList.remove('hidden');
+            } else if (role === 'ks') {
+                if(mHistory) mHistory.classList.remove('hidden');
+                if(mRekap) mRekap.classList.remove('hidden');
+            }
+        }
+
+        async function handleAdminLogin() {
+            const username = document.getElementById('loginId').value;
+            const pass = document.getElementById('loginPass').value;
+            
+            const user = adminData.users.find(u => u.username === username);
+
+            if(user && pass === user.password) {
                 showMessageBox('Memuat Sistem', 'Mengambil data server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
                 
-                let roleName = document.getElementById('loginId').options[document.getElementById('loginId').selectedIndex].text;
-                adminData.loggedInUser = roleName;
-                document.getElementById('admin-user-name').innerText = roleName;
-                document.getElementById('badge-role').innerText = role.toUpperCase();
+                adminData.loggedInUser = user.name;
+                adminData.role = user.role;
+                document.getElementById('admin-user-name').innerText = user.name;
+                document.getElementById('badge-role').innerText = user.role.toUpperCase();
+
+                applyRoleRestrictions();
 
                 await Promise.all([fetchTransactions(), fetchMenus()]);
                 
@@ -773,12 +912,12 @@
                 document.getElementById('loginForm').reset();
                 showAdminScreen('screen-home-admin');
             } else {
-                showMessageBox('Akses Ditolak', 'Kata sandi salah.', 'fa-lock', 'bg-red-50 text-danger');
+                showMessageBox('Akses Ditolak', 'Username atau kata sandi salah.', 'fa-lock', 'bg-red-50 text-danger');
             }
         }
 
         function logoutAdmin() {
-            adminData = { loggedInUser: '', transactions: [], menus: [], allStudents: [], currentFilter: 'all', cashSelectedStudent: null, cashSelectedBills: [] };
+            adminData = { loggedInUser: '', role: '', users: adminData.users, transactions: [], menus: [], allStudents: [], currentFilter: 'all', cashSelectedStudent: null, cashSelectedBills: [] };
             showAdminScreen('screen-login');
         }
 
@@ -953,6 +1092,123 @@
             closeMessageBox();
             renderMenus();
         }
+
+        // --- KELOLA PENGGUNA FUNCTIONS ---
+
+        function renderUsers() {
+            document.getElementById('admin-user-count').innerText = `${adminData.users.length} Pengguna`;
+            let ul = document.getElementById('admin-user-list'); 
+            ul.innerHTML = '';
+            adminData.users.forEach(u => {
+                let roleColor = u.role === 'admin' ? 'bg-purple-100 text-purple-700 border-purple-200' : (u.role === 'ks' ? 'bg-orange-100 text-orange-700 border-orange-200' : (u.role === 'bendahara' ? 'bg-teal-100 text-teal-700 border-teal-200' : 'bg-blue-100 text-blue-700 border-blue-200'));
+                
+                ul.innerHTML += `
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500 flex-shrink-0"><i class="fas fa-user-tie"></i></div>
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800">${u.name}</h4>
+                            <p class="text-[10px] text-gray-500 mt-0.5">ID: <span class="font-mono text-gray-700">${u.username}</span> • Pass: <span class="font-mono text-gray-700">${u.password}</span></p>
+                            <span class="text-[9px] ${roleColor} border px-2 py-0.5 rounded font-bold uppercase inline-block mt-1.5">${u.role}</span>
+                        </div>
+                    </div>
+                    <button onclick="editUser('${u.id}')" class="text-xs font-bold text-primary px-3 py-2 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 transition">Edit</button>
+                </div>`;
+            });
+        }
+
+        function openUserModal() {
+            document.getElementById('modal-edit-user-content').classList.remove('translate-y-full'); 
+            document.getElementById('modal-edit-user').classList.remove('hidden');
+            setTimeout(()=>document.getElementById('modal-edit-user').classList.remove('opacity-0'), 10);
+            
+            document.getElementById('edit-user-id').value = ''; 
+            document.getElementById('edit-user-username').value = '';
+            document.getElementById('edit-user-name').value = ''; 
+            document.getElementById('edit-user-password').value = '';
+            document.getElementById('edit-user-role').value = 'kasir';
+            document.getElementById('btn-delete-user').classList.add('hidden'); 
+        }
+
+        function closeUserModal() { 
+            document.getElementById('modal-edit-user').classList.add('opacity-0'); 
+            document.getElementById('modal-edit-user-content').classList.add('translate-y-full'); 
+            setTimeout(()=>document.getElementById('modal-edit-user').classList.add('hidden'),300); 
+        }
+
+        function editUser(id) {
+            let u = adminData.users.find(x=>x.id == id);
+            if(u){ 
+                openUserModal(); 
+                document.getElementById('modal-user-title').innerText='Edit Pengguna'; 
+                document.getElementById('edit-user-id').value=u.id; 
+                document.getElementById('edit-user-username').value=u.username; 
+                document.getElementById('edit-user-name').value=u.name; 
+                document.getElementById('edit-user-password').value=u.password; 
+                document.getElementById('edit-user-role').value=u.role; 
+                document.getElementById('btn-delete-user').classList.remove('hidden'); 
+            }
+        }
+
+        async function syncUsersToServer() {
+            try {
+                const payload = adminData.users.map(u => ({
+                    id: u.id.toString(), username: u.username, name: u.name, password: u.password, role: u.role
+                }));
+                await fetch(`${SUPABASE_URL}/rest/v1/admin_users?on_conflict=id`, {
+                    method: 'POST',
+                    headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
+                    body: JSON.stringify(payload)
+                });
+            } catch(e) { console.log('Gagal sync users', e); }
+        }
+
+        async function saveUser() {
+            let id = document.getElementById('edit-user-id').value;
+            let username = document.getElementById('edit-user-username').value;
+            let name = document.getElementById('edit-user-name').value;
+            let password = document.getElementById('edit-user-password').value;
+            let role = document.getElementById('edit-user-role').value;
+            
+            if(!username || !name || !password) {
+                showMessageBox('Peringatan', 'Semua kolom harus diisi.', 'fa-exclamation-triangle', 'bg-orange-50 text-accent');
+                return;
+            }
+            
+            showMessageBox('Menyimpan...', 'Sinkronisasi pengguna ke Supabase...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            
+            if(id) { 
+                let ix = adminData.users.findIndex(x=>x.id == id); 
+                adminData.users[ix] = {id:id, username, name, password, role}; 
+            } else { 
+                adminData.users.push({id:'U-'+Date.now(), username, name, password, role}); 
+            }
+            
+            await syncUsersToServer(); 
+            populateLoginDropdown();
+            closeMessageBox();
+            closeUserModal(); 
+            renderUsers();
+        }
+
+        async function deleteUser() { 
+            let id = document.getElementById('edit-user-id').value;
+            if(!confirm("Yakin ingin menghapus pengguna ini?")) return;
+
+            showMessageBox('Menghapus...', 'Menghapus pengguna dari Supabase...', 'fa-spinner fa-spin', 'text-danger bg-red-50', '', 'hidden');
+            
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/admin_users?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
+                adminData.users = adminData.users.filter(x=>x.id != id); 
+                await syncUsersToServer();
+                populateLoginDropdown();
+                closeMessageBox(); closeUserModal(); renderUsers(); 
+            } catch(e) { 
+                closeMessageBox(); showMessageBox('Gagal', 'Terjadi kesalahan saat menghapus.', 'fa-times', 'bg-red-50 text-danger'); 
+            }
+        }
+
+        // --- END KELOLA PENGGUNA ---
 
         function updateBadgePending() {
             const pendings = adminData.transactions.filter(tx => tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected');
@@ -2036,6 +2292,7 @@
         }
 
         window.onload = () => {
+            fetchAdminUsers();
             showAdminScreen('screen-login');
         };
     </script>
