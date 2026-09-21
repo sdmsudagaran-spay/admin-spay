@@ -1524,7 +1524,7 @@
                     <div class="px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition group">
                         <div class="flex items-center gap-3 w-full overflow-hidden">
                             <input type="checkbox" value="${s.nis}" onchange="toggleDeleteStudentsButton()" class="chk-student w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary flex-shrink-0 cursor-pointer">
-                            <div class="flex-1 min-w-0" onclick="editStudent('${s.nis}')" class="cursor-pointer">
+                            <div class="flex-1 min-w-0 cursor-pointer" onclick="editStudent('${s.nis}')">
                                 <h4 class="font-bold text-sm text-gray-800 truncate">${s.nama}</h4>
                                 <p class="text-[10px] text-gray-500 mt-0.5 truncate">NIS: ${s.nis} | Kelas: <span class="font-semibold text-gray-700">${k}</span> | Token: <span class="font-mono text-gray-400">${s.token || '-'}</span></p>
                             </div>
@@ -1548,6 +1548,32 @@
                 btn.innerHTML = `<i class="fas fa-trash-alt mr-1.5"></i> Hapus (${checkedCount})`;
             } else {
                 btn.classList.add('hidden');
+            }
+        }
+
+        async function deleteSelectedStudents() {
+            const chks = document.querySelectorAll('.chk-student:checked');
+            if (chks.length === 0) return;
+
+            if (!confirm(`Yakin ingin menghapus ${chks.length} siswa terpilih secara permanen?`)) return;
+
+            showMessageBox('Menghapus...', `Menghapus ${chks.length} data siswa...`, 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+
+            try {
+                const deletePromises = Array.from(chks).map(chk =>
+                    fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${chk.value}`, { method: 'DELETE', headers: HEADERS })
+                );
+
+                await Promise.all(deletePromises);
+
+                await fetchStudentsForAdmin(); // Reload list
+                adminData.allStudents = []; // Reset cache kasir
+
+                closeMessageBox();
+                showMessageBox('Terhapus', `${chks.length} siswa berhasil dihapus.`, 'fa-trash', 'bg-red-50 text-danger');
+            } catch (e) {
+                closeMessageBox();
+                showMessageBox('Gagal', 'Terjadi kesalahan saat menghapus data.', 'fa-times', 'bg-red-50 text-danger');
             }
         }
 
@@ -1578,8 +1604,12 @@
         }
 
         function editStudent(nis) {
-            const s = adminData.adminStudentList.find(x => x.nis === nis);
-            if (!s) return;
+            // Gunakan String() agar kebal terhadap perbedaan tipe data int vs string dari server
+            const s = adminData.adminStudentList.find(x => String(x.nis) === String(nis));
+            if (!s) {
+                console.error("Data siswa tidak ditemukan:", nis);
+                return;
+            }
             
             openStudentModal();
             document.getElementById('modal-student-title').innerText = 'Edit Data Siswa';
@@ -1610,7 +1640,7 @@
                 return;
             }
 
-            if (!token) { token = 'TKN' + Math.floor(1000 + Math.random() * 9000); }
+            if (!token) { token = 'SDM' + Math.floor(1000 + Math.random() * 9000); }
 
             // Ambil semua data tagihan dan ubah ke angka integer
             const payload = { nis, nama, kelas, namaKelas, token };
@@ -1622,21 +1652,29 @@
             showMessageBox('Menyimpan...', 'Menyimpan data siswa ke database...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
             
             try {
-                // Hapus Paralel agar cepat
-                const deletePromises = Array.from(chks).map(chk => 
-                    fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${chk.value}`, { method: 'DELETE', headers: HEADERS })
-                );
-                
-                await Promise.all(deletePromises);
+                // Jika user mengedit/merubah NIS, hapus NIS yang lama agar tidak terjadi duplikasi data
+                if (oldNis && oldNis !== nis) {
+                    await fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${oldNis}`, { method: 'DELETE', headers: HEADERS });
+                }
+
+                // Simpan / Update data siswa ke server (UPSERT)
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/students?on_conflict=nis`, {
+                    method: 'POST',
+                    headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
+                    body: JSON.stringify(payload)
+                });
+
+                if(!res.ok) throw new Error("Gagal menyimpan data ke server.");
                 
                 await fetchStudentsForAdmin(); // Reload list
-                adminData.allStudents = []; // Reset cache cash
+                adminData.allStudents = []; // Reset cache kasir
                 
+                closeStudentModal();
                 closeMessageBox();
-                showMessageBox('Terhapus', `${chks.length} siswa berhasil dihapus.`, 'fa-trash', 'bg-red-50 text-danger');
+                showMessageBox('Berhasil', 'Data siswa berhasil disimpan.', 'fa-check-circle', 'bg-green-50 text-success');
             } catch (e) {
                 closeMessageBox();
-                showMessageBox('Gagal', 'Gagal menghapus beberapa data.', 'fa-times', 'bg-red-50 text-danger');
+                showMessageBox('Gagal', e.message, 'fa-times', 'bg-red-50 text-danger');
             }
         }
 
