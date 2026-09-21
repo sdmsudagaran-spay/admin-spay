@@ -1169,13 +1169,18 @@
 
                 if(!res.ok) throw new Error("Gagal menyimpan database");
                 
-                // Refresh data
-                await fetchTransactions();
+                // Mencegah delay/race-condition dari Supabase
+                // Kita inject data langsung ke memori lokal secara manual
+                adminData.transactions.unshift(payload);
+                
+                // Refresh data server dibiarkan berjalan di background
+                fetchTransactions();
+                
                 resetCashForm();
                 closeMessageBox(); // Menutup tampilan loading
                 
-                // Buka preview struk secara otomatis setelah data berhasil disimpan
-                setTimeout(() => openReceiptPreview(txId), 300);
+                // Buka preview struk secara otomatis dan pasti muncul
+                setTimeout(() => openReceiptPreview(txId), 350);
                 
             } catch (e) {
                 closeMessageBox();
