@@ -106,10 +106,7 @@
                                 <div class="relative">
                                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-user-tie"></i></span>
                                     <select id="loginId" class="w-full pl-10 pr-10 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary transition appearance-none bg-white text-gray-700 font-semibold cursor-pointer">
-                                        <option value="kasir1">Kasir 1</option>
-                                        <option value="bendahara">Bendahara</option>
-                                        <option value="KS">Kepala Sekolah (KS)</option>
-                                        <option value="admin">Admin System</option>
+                                        <!-- Options populated dynamically -->
                                     </select>
                                     <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down"></i></span>
                                 </div>
@@ -482,13 +479,33 @@
                         <input type="text" id="edit-user-password" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary text-sm bg-gray-50 outline-none" placeholder="Minimal 6 karakter">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Hak Akses (Role)</label>
-                        <select id="edit-user-role" class="w-full px-3 py-3 rounded-xl border border-gray-200 text-sm bg-gray-50 outline-none">
-                            <option value="kasir">Kasir (Tunai, Cek TF, Riwayat)</option>
-                            <option value="bendahara">Bendahara (Cek TF, Riwayat, Rekap)</option>
-                            <option value="ks">Kepala Sekolah (Riwayat, Rekap)</option>
-                            <option value="admin">Admin System (Full Akses)</option>
-                        </select>
+                        <label class="block text-xs font-semibold text-gray-600 mb-3">Pilih Hak Akses (Bisa lebih dari satu)</label>
+                        <div class="grid grid-cols-2 gap-3" id="edit-user-roles-container">
+                            <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                                <input type="checkbox" value="menu-cash" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
+                                <span class="text-xs font-medium text-gray-700">Bayar Tunai</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                                <input type="checkbox" value="menu-verify" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
+                                <span class="text-xs font-medium text-gray-700">Cek Transfer</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                                <input type="checkbox" value="menu-history" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
+                                <span class="text-xs font-medium text-gray-700">Riwayat</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                                <input type="checkbox" value="menu-rekap" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
+                                <span class="text-xs font-medium text-gray-700">Rekap Data</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                                <input type="checkbox" value="menu-menus" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
+                                <span class="text-xs font-medium text-gray-700">Kelola Aplikasi</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                                <input type="checkbox" value="menu-users" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
+                                <span class="text-xs font-medium text-gray-700">Kelola Pengguna</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="pt-5 flex gap-3 mt-2 border-t border-gray-100">
@@ -694,10 +711,10 @@
         ];
 
         const DEFAULT_USERS = [
-            { id: 'u1', username: 'kasir1', name: 'Kasir 1', password: 'berkah', role: 'kasir' },
-            { id: 'u2', username: 'bendahara', name: 'Bendahara', password: 'berkah', role: 'bendahara' },
-            { id: 'u3', username: 'KS', name: 'Kepala Sekolah (KS)', password: 'berkah', role: 'ks' },
-            { id: 'u4', username: 'admin', name: 'Admin System', password: 'berkah', role: 'admin' }
+            { id: 'u1', username: 'kasir1', name: 'Kasir 1', password: 'berkah', role: 'menu-cash,menu-verify,menu-history' },
+            { id: 'u2', username: 'bendahara', name: 'Bendahara', password: 'berkah', role: 'menu-verify,menu-history,menu-rekap' },
+            { id: 'u3', username: 'KS', name: 'Kepala Sekolah (KS)', password: 'berkah', role: 'menu-history,menu-rekap' },
+            { id: 'u4', username: 'admin', name: 'Admin System', password: 'berkah', role: 'menu-cash,menu-verify,menu-history,menu-rekap,menu-menus,menu-users' }
         ];
 
         let adminData = { 
@@ -734,7 +751,12 @@
             if(sel) {
                 sel.innerHTML = '';
                 adminData.users.forEach(u => {
-                    let roleLabel = u.role === 'admin' ? 'Admin System' : (u.role === 'ks' ? 'Kepala Sekolah' : (u.role === 'bendahara' ? 'Bendahara' : 'Kasir'));
+                    let roleLabel = 'Akses Khusus';
+                    if(u.role === 'menu-cash,menu-verify,menu-history,menu-rekap,menu-menus,menu-users') roleLabel = 'Admin System';
+                    else if(u.role === 'menu-history,menu-rekap') roleLabel = 'Kepala Sekolah';
+                    else if(u.role === 'menu-verify,menu-history,menu-rekap') roleLabel = 'Bendahara';
+                    else if(u.role === 'menu-cash,menu-verify,menu-history') roleLabel = 'Kasir';
+
                     sel.innerHTML += `<option value="${u.username}">${u.name} (${roleLabel})</option>`;
                 });
             }
@@ -843,7 +865,11 @@
             if(screenId === 'screen-login') { bNav.classList.add('hidden'); return; }
             
             bNav.classList.remove('hidden');
-            document.querySelectorAll('.nav-btn-admin').forEach(btn => {
+            
+            // Terapkan ulang batasan role pada navigasi bawah
+            applyNavRoleRestrictions();
+
+            document.querySelectorAll('.nav-btn-admin:not(.hidden)').forEach(btn => {
                 if(btn.dataset.target === screenId){ btn.classList.add('text-primary'); btn.classList.remove('text-gray-400'); }
                 else { btn.classList.add('text-gray-400'); btn.classList.remove('text-primary'); }
             });
@@ -862,40 +888,42 @@
         }
 
         function applyRoleRestrictions() {
-            const role = adminData.role;
-            const mCash = document.getElementById('menu-cash');
-            const mVerify = document.getElementById('menu-verify');
-            const mHistory = document.getElementById('menu-history');
-            const mMenus = document.getElementById('menu-menus');
-            const mUsers = document.getElementById('menu-users');
-            const mRekap = document.getElementById('menu-rekap');
+            const roleStr = adminData.role || '';
+            const allowedMenus = roleStr.split(',');
 
-            if(mCash) mCash.classList.add('hidden');
-            if(mVerify) mVerify.classList.add('hidden');
-            if(mHistory) mHistory.classList.add('hidden');
-            if(mMenus) mMenus.classList.add('hidden');
-            if(mUsers) mUsers.classList.add('hidden');
-            if(mRekap) mRekap.classList.add('hidden');
+            const allMenus = ['menu-cash', 'menu-verify', 'menu-history', 'menu-menus', 'menu-users', 'menu-rekap'];
+            
+            allMenus.forEach(menuId => {
+                const el = document.getElementById(menuId);
+                if(el) {
+                    if (allowedMenus.includes(menuId)) {
+                        el.classList.remove('hidden');
+                    } else {
+                        el.classList.add('hidden');
+                    }
+                }
+            });
+        }
 
-            if (role === 'admin') {
-                if(mCash) mCash.classList.remove('hidden');
-                if(mVerify) mVerify.classList.remove('hidden');
-                if(mHistory) mHistory.classList.remove('hidden');
-                if(mMenus) mMenus.classList.remove('hidden');
-                if(mUsers) mUsers.classList.remove('hidden');
-                if(mRekap) mRekap.classList.remove('hidden');
-            } else if (role === 'kasir') {
-                if(mCash) mCash.classList.remove('hidden');
-                if(mVerify) mVerify.classList.remove('hidden');
-                if(mHistory) mHistory.classList.remove('hidden');
-            } else if (role === 'bendahara') {
-                if(mVerify) mVerify.classList.remove('hidden');
-                if(mHistory) mHistory.classList.remove('hidden');
-                if(mRekap) mRekap.classList.remove('hidden');
-            } else if (role === 'ks') {
-                if(mHistory) mHistory.classList.remove('hidden');
-                if(mRekap) mRekap.classList.remove('hidden');
-            }
+        function applyNavRoleRestrictions() {
+            const roleStr = adminData.role || '';
+            const allowedMenus = roleStr.split(',');
+            
+            document.querySelectorAll('.nav-btn-admin').forEach(btn => {
+                const target = btn.dataset.target;
+                if(!target) return; // Tombol Keluar
+
+                let requiredMenu = '';
+                if(target === 'screen-home-admin') { btn.classList.remove('hidden'); return; }
+                if(target === 'screen-verify') requiredMenu = 'menu-verify';
+                if(target === 'screen-history') requiredMenu = 'menu-history';
+
+                if (requiredMenu && !allowedMenus.includes(requiredMenu)) {
+                    btn.classList.add('hidden');
+                } else {
+                    btn.classList.remove('hidden');
+                }
+            });
         }
 
         async function handleAdminLogin() {
@@ -1108,7 +1136,9 @@
             let ul = document.getElementById('admin-user-list'); 
             ul.innerHTML = '';
             adminData.users.forEach(u => {
-                let roleColor = u.role === 'admin' ? 'bg-purple-100 text-purple-700 border-purple-200' : (u.role === 'ks' ? 'bg-orange-100 text-orange-700 border-orange-200' : (u.role === 'bendahara' ? 'bg-teal-100 text-teal-700 border-teal-200' : 'bg-blue-100 text-blue-700 border-blue-200'));
+                let roleCount = (u.role || '').split(',').filter(x => x).length;
+                let roleLabel = roleCount === 6 ? 'Full Akses' : `${roleCount} Akses`;
+                let roleColor = roleCount === 6 ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-blue-100 text-blue-700 border-blue-200';
                 
                 ul.innerHTML += `
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center justify-between mb-3">
@@ -1117,7 +1147,7 @@
                         <div>
                             <h4 class="font-bold text-sm text-gray-800">${u.name}</h4>
                             <p class="text-[10px] text-gray-500 mt-0.5">ID: <span class="font-mono text-gray-700">${u.username}</span> • Pass: <span class="font-mono text-gray-700">${u.password}</span></p>
-                            <span class="text-[9px] ${roleColor} border px-2 py-0.5 rounded font-bold uppercase inline-block mt-1.5">${u.role}</span>
+                            <span class="text-[9px] ${roleColor} border px-2 py-0.5 rounded font-bold uppercase inline-block mt-1.5">${roleLabel}</span>
                         </div>
                     </div>
                     <button onclick="editUser('${u.id}')" class="text-xs font-bold text-primary px-3 py-2 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 transition">Edit</button>
@@ -1134,7 +1164,9 @@
             document.getElementById('edit-user-username').value = '';
             document.getElementById('edit-user-name').value = ''; 
             document.getElementById('edit-user-password').value = '';
-            document.getElementById('edit-user-role').value = 'kasir';
+            
+            document.querySelectorAll('.user-role-chk').forEach(chk => chk.checked = false);
+
             document.getElementById('btn-delete-user').classList.add('hidden'); 
         }
 
@@ -1153,7 +1185,12 @@
                 document.getElementById('edit-user-username').value=u.username; 
                 document.getElementById('edit-user-name').value=u.name; 
                 document.getElementById('edit-user-password').value=u.password; 
-                document.getElementById('edit-user-role').value=u.role; 
+                
+                const userRoles = (u.role || '').split(',');
+                document.querySelectorAll('.user-role-chk').forEach(chk => {
+                    chk.checked = userRoles.includes(chk.value);
+                });
+
                 document.getElementById('btn-delete-user').classList.remove('hidden'); 
             }
         }
@@ -1176,10 +1213,19 @@
             let username = document.getElementById('edit-user-username').value;
             let name = document.getElementById('edit-user-name').value;
             let password = document.getElementById('edit-user-password').value;
-            let role = document.getElementById('edit-user-role').value;
+            
+            let selectedRoles = [];
+            document.querySelectorAll('.user-role-chk:checked').forEach(chk => {
+                selectedRoles.push(chk.value);
+            });
+            let role = selectedRoles.join(',');
             
             if(!username || !name || !password) {
                 showMessageBox('Peringatan', 'Semua kolom harus diisi.', 'fa-exclamation-triangle', 'bg-orange-50 text-accent');
+                return;
+            }
+            if(selectedRoles.length === 0) {
+                showMessageBox('Peringatan', 'Pilih minimal satu hak akses.', 'fa-exclamation-triangle', 'bg-orange-50 text-accent');
                 return;
             }
             
