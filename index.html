@@ -1129,11 +1129,13 @@
             if(adminData.cashSelectedBills.length === 0) return;
             if(!confirm("Proses pembayaran tunai sebesar " + document.getElementById('cash-total-rp').innerText + " ?")) return;
 
-            showMessageBox('Menyimpan...', 'Mencatat transaksi tunai...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            // 1. Tampilkan layar loading
+            showMessageBox('Menyimpan...', 'Mencatat transaksi tunai ke server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
             
             let s = adminData.cashSelectedStudent;
             let txId = 'TUNAI-' + Math.floor(100000 + Math.random() * 900000);
             
+            // 2. Siapkan payload / data yang akan dikirim ke database
             let payload = {
                 id: txId,
                 token: s.token,
@@ -1143,15 +1145,19 @@
                 kelas: s.kelas,
                 status: 'success',
                 kasir: adminData.loggedInUser,
-                // Keterangan khusus agar tahu ini tunai
-                buktiTF: 'PEMBAYARAN_TUNAI' 
+                buktiTF: 'PEMBAYARAN_TUNAI' // Penanda bahwa ini bukan transfer
             };
 
-            // Inject amount based on checked items
-            BILL_COLUMNS.forEach(c => payload[c.db] = 0); // Init 0
+            // Inisialisasi semua kolom rincian dengan nilai 0
+            BILL_COLUMNS.forEach(c => payload[c.db] = 0); 
             
+            // Masukkan nominal sesuai tagihan yang dicentang oleh Kasir
             adminData.cashSelectedBills.forEach(cb => {
-                let code = cb.value; let db = cb.dataset.db; let amt = parseInt(cb.dataset.amt); let ket = cb.dataset.ket;
+                let code = cb.value; 
+                let db = cb.dataset.db; 
+                let amt = parseInt(cb.dataset.amt); 
+                let ket = cb.dataset.ket;
+                
                 payload[db] = amt;
                 if (code === 'spp') payload.ketSpp = ket;
                 if (code === 'tahfidzPlus') payload.ketTahfidzPlus = ket;
@@ -1161,26 +1167,31 @@
             });
 
             try {
+                // 3. Simpan ke database Supabase
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/transactions`, {
                     method: 'POST',
                     headers: { ...HEADERS, 'Prefer': 'return=minimal' },
                     body: JSON.stringify(payload)
                 });
 
-                if(!res.ok) throw new Error("Gagal menyimpan database");
+                if(!res.ok) throw new Error("Gagal menyimpan ke database Supabase.");
                 
-                // Mencegah delay/race-condition dari Supabase
-                // Kita inject data langsung ke memori lokal secara manual
+                // 4. Mencegah delay pembacaan server (Race-Condition) 
+                // Kita masukkan data payload langsung ke memori lokal secara paksa
                 adminData.transactions.unshift(payload);
                 
-                // Refresh data server dibiarkan berjalan di background
+                // 5. Minta sistem untuk me-refresh data latar belakang secara diam-diam
                 fetchTransactions();
                 
+                // 6. Tutup modal loading dan kosongkan formulir
                 resetCashForm();
-                closeMessageBox(); // Menutup tampilan loading
+                closeMessageBox(); 
                 
-                // Buka preview struk secara otomatis dan pasti muncul
-                setTimeout(() => openReceiptPreview(txId), 350);
+                // 7. BUKA PREVIEW STRUK SECARA OTOMATIS
+                // (Diberi jeda 400ms agar animasi penutupan kotak loading selesai dengan mulus)
+                setTimeout(() => {
+                    openReceiptPreview(txId);
+                }, 400);
                 
             } catch (e) {
                 closeMessageBox();
