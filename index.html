@@ -293,9 +293,17 @@
             </div>
             
             <div class="px-5 md:px-10 py-6">
-                <div class="relative mb-6">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400"><i class="fas fa-search"></i></span>
-                    <input type="text" id="search-history" onkeyup="searchHistory()" class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none focus:border-primary text-sm bg-white shadow-sm" placeholder="Cari NIS, Nama, atau No Transaksi...">
+                <div class="flex flex-col md:flex-row gap-3 mb-6">
+                    <div class="relative flex-1">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400"><i class="fas fa-search"></i></span>
+                        <input type="text" id="search-history" onkeyup="renderAllHistory()" class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none focus:border-primary text-sm bg-white shadow-sm" placeholder="Cari NIS, Nama, atau No Transaksi...">
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto bg-white rounded-xl border border-gray-200 px-3 py-2 shadow-sm">
+                        <input type="date" id="filter-date-history-start" onchange="renderAllHistory()" class="text-sm focus:outline-none text-gray-700 bg-transparent">
+                        <span class="text-xs text-gray-400 font-bold">s.d</span>
+                        <input type="date" id="filter-date-history-end" onchange="renderAllHistory()" class="text-sm focus:outline-none text-gray-700 bg-transparent">
+                        <button onclick="clearHistoryDate()" class="text-gray-400 hover:text-danger ml-1 transition" title="Hapus Filter"><i class="fas fa-times-circle"></i></button>
+                    </div>
                 </div>
 
                 <div class="space-y-3 pb-24" id="all-history-container"></div>
@@ -386,15 +394,19 @@
                 <h2 class="text-lg md:text-xl font-bold text-primary">Rekapitulasi</h2>
             </div>
             <div class="px-5 md:px-10 py-6 pb-24 space-y-6">
-                <!-- HARI INI -->
+                <!-- HARI INI / RENTANG WAKTU -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="bg-blue-50 px-5 py-3 border-b border-blue-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                        <h3 class="font-bold text-blue-800"><i class="fas fa-calendar-day mr-2"></i>Harian</h3>
-                        <div class="flex items-center gap-2 w-full md:w-auto">
-                            <input type="date" id="filter-date-daily" onchange="renderRekap()" class="text-sm px-3 py-1.5 rounded-lg border border-blue-200 text-blue-800 bg-white shadow-sm outline-none">
-                            <div class="flex bg-gray-100 rounded-lg p-1 border border-gray-200">
-                                <button onclick="previewReport('harian')" class="text-gray-600 hover:text-primary px-3 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1 hover:bg-white shadow-sm"><i class="fas fa-eye"></i> Pratinjau</button>
-                                <button onclick="downloadReport('harian')" class="bg-primary text-white hover:bg-opacity-90 px-3 py-1.5 rounded-md text-xs font-bold shadow-sm transition flex items-center gap-1"><i class="fas fa-download"></i> Cetak PDF</button>
+                        <h3 class="font-bold text-blue-800"><i class="fas fa-calendar-day mr-2"></i>Rentang Waktu</h3>
+                        <div class="flex flex-col md:flex-row items-start md:items-center gap-2 w-full md:w-auto">
+                            <div class="flex items-center gap-2 bg-white rounded-lg border border-blue-200 px-2 py-1.5 shadow-sm">
+                                <input type="date" id="filter-date-daily-start" onchange="renderRekap()" class="text-sm text-blue-800 bg-transparent outline-none">
+                                <span class="text-xs text-blue-400 font-bold">s.d</span>
+                                <input type="date" id="filter-date-daily-end" onchange="renderRekap()" class="text-sm text-blue-800 bg-transparent outline-none">
+                            </div>
+                            <div class="flex bg-gray-100 rounded-lg p-1 border border-gray-200 w-full md:w-auto">
+                                <button onclick="previewReport('harian')" class="flex-1 md:flex-none text-gray-600 hover:text-primary px-3 py-1.5 rounded-md text-xs font-bold transition flex items-center justify-center gap-1 hover:bg-white shadow-sm"><i class="fas fa-eye"></i> Pratinjau</button>
+                                <button onclick="downloadReport('harian')" class="flex-1 md:flex-none bg-primary text-white hover:bg-opacity-90 px-3 py-1.5 rounded-md text-xs font-bold shadow-sm transition flex items-center justify-center gap-1"><i class="fas fa-download"></i> Cetak PDF</button>
                             </div>
                         </div>
                     </div>
@@ -1651,22 +1663,30 @@
                 container.innerHTML += `
                     <div class="bg-white rounded-xl shadow-sm border p-4 relative cursor-pointer" onclick="openTxDetail('${tx.id}')">
                         <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-accent"></div>
-                        <div class="flex justify-between items-start pl-2"><div><h4 class="text-sm font-bold">${tx.nama || '-'}</h4><p class="text-xs text-gray-500">${tx.kelas || '-'} | NIS: ${tx.nis || '-'}</p></div><span class="text-[10px] font-bold text-accent bg-orange-50 px-2 py-1 rounded">Cek</span></div>
+                        <div class="flex justify-between items-start pl-2"><div><h4 class="text-sm font-bold">${tx.nama || '-'}</h4><p class="text-xs text-gray-500">${getCombinedKelas(tx)} | NIS: ${tx.nis || '-'}</p></div><span class="text-[10px] font-bold text-accent bg-orange-50 px-2 py-1 rounded">Cek</span></div>
                         <div class="flex justify-between items-end mt-3 border-t pl-2 pt-2"><p class="text-xs font-semibold text-gray-600">${getTxDescriptionPreview(tx)}</p><p class="text-base font-bold text-primary">${formatCurrency(total)}</p></div>
                     </div>`;
             });
         }
 
         function clearHistoryDate() {
-            document.getElementById('filter-date-history').value = '';
+            const dStart = document.getElementById('filter-date-history-start');
+            const dEnd = document.getElementById('filter-date-history-end');
+            if (dStart) dStart.value = '';
+            if (dEnd) dEnd.value = '';
             renderAllHistory();
         }
 
         function renderAllHistory() {
+            initRekapDates(); // Pastikan tanggal otomatis terisi saat dimuat
+
             const container = document.getElementById('all-history-container'); container.innerHTML = '';
             
-            const q = document.getElementById('search-history').value.toLowerCase();
-            const dateFilter = document.getElementById('filter-date-history').value;
+            const searchEl = document.getElementById('search-history');
+            const q = searchEl ? searchEl.value.toLowerCase() : '';
+            
+            const dateStart = document.getElementById('filter-date-history-start') ? document.getElementById('filter-date-history-start').value : '';
+            const dateEnd = document.getElementById('filter-date-history-end') ? document.getElementById('filter-date-history-end').value : '';
             
             let list = adminData.transactions;
             
@@ -1675,14 +1695,13 @@
                 list = list.filter(tx => (tx.nama?.toLowerCase().includes(q) || tx.nis?.toLowerCase().includes(q) || tx.id?.toLowerCase().includes(q)));
             }
             
-            // 2. Filter by Date
-            if(dateFilter) {
-                const fDate = new Date(dateFilter);
+            // 2. Filter by Date Range (Rentang Waktu)
+            if(dateStart && dateEnd) {
+                const sDate = new Date(dateStart); sDate.setHours(0,0,0,0);
+                const eDate = new Date(dateEnd); eDate.setHours(23,59,59,999);
                 list = list.filter(tx => {
                     let txDate = parseTxDate(tx.date);
-                    return txDate.getFullYear() === fDate.getFullYear() && 
-                           txDate.getMonth() === fDate.getMonth() && 
-                           txDate.getDate() === fDate.getDate();
+                    return txDate >= sDate && txDate <= eDate;
                 });
             }
 
@@ -1800,14 +1819,12 @@
         function parseTxDate(dateStr) {
             if(!dateStr) return new Date();
             
-            // 1. Coba parser bawaan (Format ISO standard)
             let d = new Date(dateStr);
             if (!isNaN(d.getTime())) return d;
             
-            // 2. Parser Manual Tahan Banting (Format id-ID: DD/MM/YYYY, HH:MM:SS)
             try {
-                let cleanStr = dateStr.replace(/,/, ' '); // Hapus koma pemisah
-                let parts = cleanStr.trim().split(/\s+/); // Pisahkan tanggal & waktu
+                let cleanStr = dateStr.replace(/,/, ' '); 
+                let parts = cleanStr.trim().split(/\s+/); 
                 let dateOnly = parts[0];
                 let timeOnly = parts[1] || '00:00:00';
                 
@@ -1818,12 +1835,10 @@
                     let month = dateParts[1].padStart(2, '0');
                     let year = dateParts[2];
                     
-                    // Deteksi jika format terbalik (YYYY-MM-DD)
                     if(year.length === 2 || dateParts[0].length === 4) {
                         year = dateParts[0]; day = dateParts[2].padStart(2, '0');
                     }
                     
-                    // Bersihkan pemisah waktu (contoh 14.30.00 jadi 14:30:00)
                     timeOnly = timeOnly.replace(/\./g, ':');
                     
                     let isoStr = `${year}-${month}-${day}T${timeOnly}`;
@@ -1832,7 +1847,7 @@
                 }
             } catch(e) { console.error("Error parsing date:", e); }
             
-            return new Date(); // Fallback keamanan jika gagal memuat
+            return new Date(); 
         }
 
         function initRekapDates() {
@@ -1840,9 +1855,19 @@
             const yyyy = now.getFullYear();
             const mm = String(now.getMonth() + 1).padStart(2, '0');
             const dd = String(now.getDate()).padStart(2, '0');
+            const todayStr = `${yyyy}-${mm}-${dd}`;
             
-            const elDaily = document.getElementById('filter-date-daily');
-            if (elDaily && !elDaily.value) elDaily.value = `${yyyy}-${mm}-${dd}`;
+            // Auto-fill Rentang Waktu Rekapitulasi (Jika Kosong)
+            const elDailyStart = document.getElementById('filter-date-daily-start');
+            const elDailyEnd = document.getElementById('filter-date-daily-end');
+            if (elDailyStart && !elDailyStart.value) elDailyStart.value = todayStr;
+            if (elDailyEnd && !elDailyEnd.value) elDailyEnd.value = todayStr;
+            
+            // Auto-fill Rentang Waktu Riwayat Transaksi (Jika Kosong)
+            const elHistStart = document.getElementById('filter-date-history-start');
+            const elHistEnd = document.getElementById('filter-date-history-end');
+            if (elHistStart && !elHistStart.value) elHistStart.value = todayStr;
+            if (elHistEnd && !elHistEnd.value) elHistEnd.value = todayStr;
             
             const elMonthly = document.getElementById('filter-date-monthly');
             if (elMonthly && !elMonthly.value) elMonthly.value = `${yyyy}-${mm}`;
@@ -1856,7 +1881,6 @@
             }
         }
 
-        // Fungsi mengecek apakah tanggal masuk ke dalam rentang SENIN (00:00) hingga SABTU (23:59)
         function isDateInWeek(dateObj, weekString) {
             if (!weekString) return false;
             const year = parseInt(weekString.substring(0, 4));
@@ -1886,20 +1910,22 @@
             
             let stats = { today: { tunai: 0, transfer: 0 }, week: { tunai: 0, transfer: 0 }, month: { tunai: 0, transfer: 0 } };
             
-            const filterDaily = document.getElementById('filter-date-daily').value; 
+            const filterStart = document.getElementById('filter-date-daily-start').value; 
+            const filterEnd = document.getElementById('filter-date-daily-end').value; 
             const filterWeekly = document.getElementById('filter-date-weekly').value; 
             const filterMonthly = document.getElementById('filter-date-monthly').value; 
 
             validTxs.forEach(tx => {
                 let amt = calculateTxTotal(tx); 
-                // Cek akurat apakah ini pembayaran tunai
                 let isTunai = tx.buktiTF === 'PEMBAYARAN_TUNAI';
                 let txDate = parseTxDate(tx.date);
 
-                // Hitung Harian
-                if (filterDaily) {
-                    let fDate = new Date(filterDaily);
-                    if (txDate.getFullYear() === fDate.getFullYear() && txDate.getMonth() === fDate.getMonth() && txDate.getDate() === fDate.getDate()) {
+                // Hitung Rentang Waktu Terpilih (Sebelumnya "Harian")
+                if (filterStart && filterEnd) {
+                    let sDate = new Date(filterStart); sDate.setHours(0,0,0,0);
+                    let eDate = new Date(filterEnd); eDate.setHours(23,59,59,999);
+                    
+                    if (txDate >= sDate && txDate <= eDate) {
                         if (isTunai) stats.today.tunai += amt; 
                         else stats.today.transfer += amt;
                     }
@@ -1940,12 +1966,14 @@
             let txs = adminData.transactions.filter(t => t.status === 'success' || t.status === 'lunas');
             
             if (period === 'harian') {
-                const filterDaily = document.getElementById('filter-date-daily').value;
-                if(filterDaily) {
-                    let fDate = new Date(filterDaily);
+                const fStart = document.getElementById('filter-date-daily-start').value;
+                const fEnd = document.getElementById('filter-date-daily-end').value;
+                if(fStart && fEnd) {
+                    let sDate = new Date(fStart); sDate.setHours(0,0,0,0);
+                    let eDate = new Date(fEnd); eDate.setHours(23,59,59,999);
                     txs = txs.filter(tx => {
                         let txDate = parseTxDate(tx.date);
-                        return txDate.getFullYear() === fDate.getFullYear() && txDate.getMonth() === fDate.getMonth() && txDate.getDate() === fDate.getDate();
+                        return txDate >= sDate && txDate <= eDate;
                     });
                 }
             } else if (period === 'mingguan') {
