@@ -420,9 +420,12 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="bg-orange-50 px-5 py-3 border-b border-orange-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <h3 class="font-bold text-orange-800"><i class="fas fa-calendar-week mr-2"></i>Pekan Ini</h3>
-                        <div class="flex bg-gray-100 rounded-lg p-1 border border-gray-200 w-full md:w-auto">
-                            <button onclick="previewReport('mingguan')" class="flex-1 md:flex-none text-gray-600 hover:text-primary px-3 py-1.5 rounded-md text-xs font-bold transition flex justify-center items-center gap-1 hover:bg-white shadow-sm"><i class="fas fa-eye"></i> Pratinjau</button>
-                            <button onclick="downloadReport('mingguan')" class="flex-1 md:flex-none bg-primary text-white hover:bg-opacity-90 px-3 py-1.5 rounded-md text-xs font-bold shadow-sm transition flex justify-center items-center gap-1"><i class="fas fa-download"></i> Cetak PDF</button>
+                        <div class="flex items-center gap-2 w-full md:w-auto">
+                            <input type="week" id="filter-date-weekly" onchange="renderRekap()" class="text-sm px-3 py-1.5 rounded-lg border border-orange-200 text-orange-800 bg-white shadow-sm outline-none">
+                            <div class="flex bg-gray-100 rounded-lg p-1 border border-gray-200">
+                                <button onclick="previewReport('mingguan')" class="flex-1 md:flex-none text-gray-600 hover:text-primary px-3 py-1.5 rounded-md text-xs font-bold transition flex justify-center items-center gap-1 hover:bg-white shadow-sm"><i class="fas fa-eye"></i> Pratinjau</button>
+                                <button onclick="downloadReport('mingguan')" class="flex-1 md:flex-none bg-primary text-white hover:bg-opacity-90 px-3 py-1.5 rounded-md text-xs font-bold shadow-sm transition flex justify-center items-center gap-1"><i class="fas fa-download"></i> Cetak PDF</button>
+                            </div>
                         </div>
                     </div>
                     <div class="p-5 grid grid-cols-2 gap-4">
@@ -1723,7 +1726,22 @@
                 let total = calculateTxTotal(tx); let detailHtml = '';
                 getTxDetailsArray(tx).forEach(d => { detailHtml += `<div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span>${d.title}</span><span style="font-weight: bold;">${formatCurrency(d.amount)}</span></div>`; });
 
-                document.getElementById('receipt-paper').innerHTML = `<div style="text-align: center; margin-bottom: 10px;"><img src="https://iili.io/nHwYAuV.png" style="width: 45px; height: auto; margin-bottom: 5px; filter: grayscale(100%);"><div style="font-weight: bold; font-size: 14px;">SD MUH SUDAGARAN</div><div style="font-size: 10px;">Wonosobo, Jawa Tengah</div></div><div style="border-top: 1px dashed black; margin: 8px 0;"></div><div>No: ${tx.id}<br>Tgl: ${tx.date}<br>Nama: ${tx.nama}<br>Kelas: ${tx.kelas}</div><div style="border-top: 1px dashed black; margin: 8px 0;"></div>${detailHtml}<div style="border-top: 1px dashed black; margin: 8px 0;"></div><div style="display: flex; justify-content: space-between; font-weight: bold;"><span>TOTAL</span><span>${formatCurrency(total)}</span></div>`;
+                document.getElementById('receipt-paper').innerHTML = `
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <img src="https://iili.io/nHwYAuV.png" style="width: 45px; height: auto; margin: 0 auto 5px auto; display: block; filter: grayscale(100%);">
+                        <div style="font-weight: bold; font-size: 14px;">SD MUH SUDAGARAN</div>
+                        <div style="font-size: 10px;">Wonosobo, Jawa Tengah</div>
+                    </div>
+                    <div style="border-top: 1px dashed black; margin: 8px 0;"></div>
+                    <div>No: ${tx.id}<br>Tgl: ${tx.date}<br>Nama: ${tx.nama}<br>Kelas: ${tx.kelas}</div>
+                    <div style="border-top: 1px dashed black; margin: 8px 0;"></div>
+                    ${detailHtml}
+                    <div style="border-top: 1px dashed black; margin: 8px 0;"></div>
+                    <div style="display: flex; justify-content: space-between; font-weight: bold;"><span>TOTAL</span><span>${formatCurrency(total)}</span></div>
+                    <div style="border-top: 1px dashed black; margin: 8px 0;"></div>
+                    <div style="text-align: center; font-size: 10px; margin-top: 10px; line-height: 1.3;">
+                        Struk ini merupakan bukti pembayaran yang sah.<br>Harap disimpan sebagai bukti transaksi.
+                    </div>`;
                 document.getElementById('btn-print-receipt').onclick = () => printThermalReceipt(txId);
                 document.getElementById('modal-receipt-preview').classList.remove('hidden'); setTimeout(() => document.getElementById('modal-receipt-preview').classList.remove('opacity-0'), 10);
             }, 300);
@@ -1734,23 +1752,158 @@
         function printThermalReceipt(txId) {
             let tx = adminData.transactions.find(x => x.id === txId); if(!tx) return;
             let printWindow = window.open('', '_blank');
-            printWindow.document.write(`<html><head><title>Cetak Struk</title><style>body{font-family: 'Courier New', Courier, monospace; font-size: 12px; width: 80mm; margin: 0;} .dashed{border-top: 1px dashed black; margin: 8px 0;} .flex{display: flex; justify-content: space-between;} img { display: block; margin: 0 auto; }</style></head><body>${document.getElementById('receipt-paper').innerHTML}<script>setTimeout(function(){window.print();window.close();}, 800);<\/script></body></html>`);
+            printWindow.document.write(`<html><head><title>Cetak Struk</title><style>body{font-family: 'Courier New', Courier, monospace; font-size: 12px; width: 80mm; margin: 0; padding: 5px;} .dashed{border-top: 1px dashed black; margin: 8px 0;} .flex{display: flex; justify-content: space-between;} img { display: block; margin: 0 auto; }</style></head><body>${document.getElementById('receipt-paper').innerHTML}<script>setTimeout(function(){window.print();window.close();}, 800);<\/script></body></html>`);
             printWindow.document.close();
         }
 
+        // Helper untuk parse tanggal transaksi "21/09/2026, 14:30:00" atau "2026-09-21T14:30:00" menjadi Date object
+        function parseTxDate(dateStr) {
+            if(!dateStr) return new Date();
+            // Coba parsing format ISO dulu (jika dari Supabase langsung)
+            let d = new Date(dateStr);
+            if (!isNaN(d.getTime())) return d;
+            
+            // Parsing format "DD/MM/YYYY, HH:MM:SS" (Format locale id-ID yang biasa digunakan)
+            try {
+                let parts = dateStr.split(',');
+                let dateParts = parts[0].trim().split('/');
+                if(dateParts.length === 3) {
+                    return new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T${parts[1] ? parts[1].trim() : '00:00:00'}`);
+                }
+            } catch(e) {}
+            return new Date();
+        }
+
+        function initRekapDates() {
+            const now = new Date();
+            // Format YYYY-MM-DD
+            const yyyy = now.getFullYear();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            
+            const elDaily = document.getElementById('filter-date-daily');
+            if (elDaily && !elDaily.value) elDaily.value = `${yyyy}-${mm}-${dd}`;
+            
+            const elMonthly = document.getElementById('filter-date-monthly');
+            if (elMonthly && !elMonthly.value) elMonthly.value = `${yyyy}-${mm}`;
+
+            // Calculate current week (YYYY-Www)
+            const elWeekly = document.getElementById('filter-date-weekly');
+            if (elWeekly && !elWeekly.value) {
+                const startDate = new Date(now.getFullYear(), 0, 1);
+                const days = Math.floor((now - startDate) / (24 * 60 * 60 * 1000));
+                const weekNumber = Math.ceil((now.getDay() + 1 + days) / 7);
+                elWeekly.value = `${yyyy}-W${String(weekNumber).padStart(2, '0')}`;
+            }
+        }
+
+        // Fungsi bantuan untuk mengecek apakah sebuah tanggal (Date object) berada di dalam minggu ISO (YYYY-Www)
+        function isDateInWeek(dateObj, weekString) {
+            if (!weekString) return false;
+            const year = parseInt(weekString.substring(0, 4));
+            const week = parseInt(weekString.substring(6, 8));
+            
+            // Get first day of the year
+            const simple = new Date(year, 0, 1 + (week - 1) * 7);
+            const dow = simple.getDay();
+            const ISOweekStart = simple;
+            if (dow <= 4)
+                ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+            else
+                ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+            
+            const ISOweekEnd = new Date(ISOweekStart);
+            ISOweekEnd.setDate(ISOweekStart.getDate() + 6);
+            ISOweekEnd.setHours(23, 59, 59, 999);
+
+            return dateObj >= ISOweekStart && dateObj <= ISOweekEnd;
+        }
+
         function renderRekap() {
+            initRekapDates(); // Pastikan tanggal terisi
+
             let validTxs = adminData.transactions.filter(t => t.status === 'success' || t.status === 'lunas');
+            
             let stats = { today: { tunai: 0, transfer: 0 }, week: { tunai: 0, transfer: 0 }, month: { tunai: 0, transfer: 0 } };
+            
+            const filterDaily = document.getElementById('filter-date-daily').value; // YYYY-MM-DD
+            const filterWeekly = document.getElementById('filter-date-weekly').value; // YYYY-Www
+            const filterMonthly = document.getElementById('filter-date-monthly').value; // YYYY-MM
+
             validTxs.forEach(tx => {
-                let amt = calculateTxTotal(tx); let isTunai = tx.buktiTF === 'PEMBAYARAN_TUNAI';
-                stats.today.tunai += isTunai ? amt : 0; stats.today.transfer += !isTunai ? amt : 0;
+                let amt = calculateTxTotal(tx); 
+                let isTunai = tx.buktiTF === 'PEMBAYARAN_TUNAI';
+                let txDate = parseTxDate(tx.date);
+
+                // Check Daily
+                if (filterDaily) {
+                    let fDate = new Date(filterDaily);
+                    if (txDate.getFullYear() === fDate.getFullYear() && txDate.getMonth() === fDate.getMonth() && txDate.getDate() === fDate.getDate()) {
+                        stats.today.tunai += isTunai ? amt : 0; 
+                        stats.today.transfer += !isTunai ? amt : 0;
+                    }
+                }
+
+                // Check Weekly
+                if (filterWeekly && isDateInWeek(txDate, filterWeekly)) {
+                    stats.week.tunai += isTunai ? amt : 0; 
+                    stats.week.transfer += !isTunai ? amt : 0;
+                }
+
+                // Check Monthly
+                if (filterMonthly) {
+                    const [fYear, fMonth] = filterMonthly.split('-');
+                    if (txDate.getFullYear() === parseInt(fYear) && (txDate.getMonth() + 1) === parseInt(fMonth)) {
+                        stats.month.tunai += isTunai ? amt : 0; 
+                        stats.month.transfer += !isTunai ? amt : 0;
+                    }
+                }
             });
+
+            // Update UI Daily
+            document.getElementById('rekap-today-tunai').innerText = formatCurrency(stats.today.tunai);
+            document.getElementById('rekap-today-transfer').innerText = formatCurrency(stats.today.transfer);
             document.getElementById('rekap-today-total').innerText = formatCurrency(stats.today.tunai + stats.today.transfer);
+
+            // Update UI Weekly
+            document.getElementById('rekap-week-tunai').innerText = formatCurrency(stats.week.tunai);
+            document.getElementById('rekap-week-transfer').innerText = formatCurrency(stats.week.transfer);
+            document.getElementById('rekap-week-total').innerText = formatCurrency(stats.week.tunai + stats.week.transfer);
+
+            // Update UI Monthly
+            document.getElementById('rekap-month-tunai').innerText = formatCurrency(stats.month.tunai);
+            document.getElementById('rekap-month-transfer').innerText = formatCurrency(stats.month.transfer);
+            document.getElementById('rekap-month-total').innerText = formatCurrency(stats.month.tunai + stats.month.transfer);
         }
 
         function getFilteredTransactions(period) {
+            initRekapDates();
             let txs = adminData.transactions.filter(t => t.status === 'success' || t.status === 'lunas');
-            // Logika filter tanggal sederhana (Sebagai mock/contoh implementasi)
+            
+            if (period === 'harian') {
+                const filterDaily = document.getElementById('filter-date-daily').value;
+                if(filterDaily) {
+                    let fDate = new Date(filterDaily);
+                    txs = txs.filter(tx => {
+                        let txDate = parseTxDate(tx.date);
+                        return txDate.getFullYear() === fDate.getFullYear() && txDate.getMonth() === fDate.getMonth() && txDate.getDate() === fDate.getDate();
+                    });
+                }
+            } else if (period === 'mingguan') {
+                const filterWeekly = document.getElementById('filter-date-weekly').value;
+                if(filterWeekly) {
+                    txs = txs.filter(tx => isDateInWeek(parseTxDate(tx.date), filterWeekly));
+                }
+            } else if (period === 'bulanan') {
+                const filterMonthly = document.getElementById('filter-date-monthly').value;
+                if(filterMonthly) {
+                    const [fYear, fMonth] = filterMonthly.split('-');
+                    txs = txs.filter(tx => {
+                        let txDate = parseTxDate(tx.date);
+                        return txDate.getFullYear() === parseInt(fYear) && (txDate.getMonth() + 1) === parseInt(fMonth);
+                    });
+                }
+            }
             return txs; 
         }
 
