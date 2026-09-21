@@ -27,7 +27,7 @@
 
     <style>
         body { 
-            background-color: #cbd5e1; /* Latar belakang abu-abu untuk desktop */
+            background-color: #cbd5e1; 
             display: flex; justify-content: center; align-items: flex-start; 
             font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; 
             margin: 0; padding: 0; 
@@ -52,22 +52,18 @@
         @media (min-width: 768px) {
             body { padding: 2vh 0; }
             #app-container {
-                max-width: 800px; /* Melebar proporsional di layar besar */
+                max-width: 800px; 
                 min-height: 96vh;
                 height: 96vh;
                 border-radius: 24px;
             }
-            /* Menyesuaikan posisi elemen fixed (Bottom Nav, Footer Tunai) */
-            #bottom-nav-admin, .fixed-bottom-bar, #dtl-actions {
+            #bottom-nav-admin {
                 max-width: 800px !important;
                 left: 50% !important;
                 transform: translateX(-50%) !important;
-            }
-            #bottom-nav-admin {
                 border-bottom-left-radius: 24px;
                 border-bottom-right-radius: 24px;
             }
-            /* Menengahkan Modal di layar besar */
             .modal-inner-card {
                 max-width: 500px !important;
                 margin: 0 auto;
@@ -91,6 +87,7 @@
 
     <div id="app-container">
         
+        <!-- ================= LOGIN SCREEN ================= -->
         <div id="screen-login" class="screen active bg-white">
             <div class="min-h-[90vh] flex flex-col justify-center px-6 md:px-20 relative pb-0">
                 <div class="islamic-pattern"></div>
@@ -136,6 +133,7 @@
             </div>
         </div>
 
+        <!-- ================= HOME DASHBOARD ================= -->
         <div id="screen-home-admin" class="screen">
             <div class="bg-gradient-primary pt-8 pb-12 px-6 md:px-10 text-white rounded-b-[2rem] relative mb-6">
                 <div class="islamic-pattern opacity-10"></div>
@@ -199,6 +197,7 @@
             </div>
         </div>
 
+        <!-- ================= PEMBAYARAN TUNAI SCREEN ================= -->
         <div id="screen-cash" class="screen relative">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center justify-between">
                 <div class="flex items-center gap-4">
@@ -208,7 +207,7 @@
                 <div class="text-xs font-semibold bg-blue-50 text-blue-700 px-3 py-1 rounded-full"><i class="fas fa-cash-register mr-1"></i> Kasir</div>
             </div>
             
-            <div class="p-6 md:px-10 pb-48">
+            <div class="p-6 md:px-10 pb-10">
                 <!-- Dropdown Pencarian Siswa -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6">
                     <h3 class="text-sm font-bold text-gray-700 mb-4 border-b border-gray-100 pb-2">Cari Data Siswa</h3>
@@ -258,7 +257,7 @@
                         <!-- Checkboxes Tagihan -->
                     </div>
 
-                    <!-- AREA TOMBOL BAYAR TUNAI (Dipindah ke sini agar tidak tertumpuk) -->
+                    <!-- AREA TOMBOL BAYAR TUNAI -->
                     <div id="cash-pay-action" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 hidden mt-4">
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-sm font-semibold text-gray-600">Total Pembayaran:</span>
@@ -272,6 +271,7 @@
             </div>
         </div>
 
+        <!-- ================= CEK TRANSFER SCREEN ================= -->
         <div id="screen-verify" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex justify-between items-center">
                 <h2 class="text-lg md:text-xl font-bold text-primary">Cek Transferan</h2>
@@ -293,6 +293,7 @@
             </div>
         </div>
 
+        <!-- ================= RIWAYAT SCREEN ================= -->
         <div id="screen-history" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex justify-between items-center">
                 <h2 class="text-lg md:text-xl font-bold text-primary">Semua Transaksi</h2>
@@ -302,7 +303,7 @@
             <div class="px-5 md:px-10 py-6">
                 <div class="relative mb-6">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400"><i class="fas fa-search"></i></span>
-                    <input type="text" id="search-history" onkeyup="searchHistory()" class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none focus:border-primary text-sm bg-white shadow-sm" placeholder="Cari NIS, Nama Siswa, atau No Transaksi...">
+                    <input type="text" id="search-history" onkeyup="searchHistory()" class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none focus:border-primary text-sm bg-white shadow-sm" placeholder="Cari NIS, Nama, atau No Transaksi...">
                 </div>
 
                 <div class="space-y-3 pb-24" id="all-history-container">
@@ -311,6 +312,7 @@
             </div>
         </div>
 
+        <!-- ================= KELOLA MENU SCREEN ================= -->
         <div id="screen-menus" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30">
                 <h2 class="text-lg md:text-xl font-bold text-primary">Kelola Menu Aplikasi</h2>
@@ -327,7 +329,7 @@
             </div>
         </div>
 
-        <!-- LAYAR: REKAPITULASI -->
+        <!-- ================= REKAPITULASI SCREEN ================= -->
         <div id="screen-rekap" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
                 <button onclick="showAdminScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
@@ -425,6 +427,8 @@
             </div>
         </div>
 
+        <!-- ================= MODALS ================= -->
+        
         <!-- MODAL PREVIEW PDF REKAPITULASI -->
         <div id="modal-pdf-preview" class="fixed inset-0 bg-black/80 z-[90] hidden opacity-0 transition-opacity duration-300 flex flex-col justify-center items-center backdrop-blur-sm p-4 md:p-8">
             <div class="w-full max-w-7xl bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden h-[95vh] transform scale-95 transition-transform duration-300" id="modal-pdf-content">
@@ -503,6 +507,51 @@
             <img id="fs-img" src="" class="max-w-[95%] max-h-[90%] object-contain rounded-xl shadow-2xl">
         </div>
 
+        <!-- MODAL DETAIL TRANSAKSI -->
+        <div id="modal-tx-detail" class="fixed inset-0 bg-black/60 z-[60] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-end md:items-center justify-center">
+            <div class="modal-inner-card bg-white w-full max-w-[480px] rounded-t-[2rem] p-6 transform translate-y-full md:translate-y-0 transition-transform duration-300 shadow-2xl flex flex-col max-h-[90vh]" id="modal-tx-content">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-bold text-gray-800">Detail Pembayaran</h3>
+                    <button onclick="closeTxModal()" class="w-8 h-8 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200"><i class="fas fa-times"></i></button>
+                </div>
+                
+                <div class="overflow-y-auto no-scrollbar pb-24 px-1 flex-1">
+                    <span class="text-xs font-mono text-gray-400 mb-4 block" id="dtl-id"></span>
+                    
+                    <div class="mb-5 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 cursor-pointer hidden" onclick="viewFullscreenImage(document.getElementById('dtl-img').src)">
+                        <img id="dtl-img" src="" class="w-full h-40 object-cover hidden">
+                        <div id="dtl-no-img" class="w-full h-40 flex flex-col items-center justify-center text-gray-400 hidden">
+                            <i class="fas fa-image text-3xl mb-2"></i><span class="text-xs">Tanpa Gambar</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 mb-5 flex gap-4 items-center">
+                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary shadow-sm flex-shrink-0"><i class="fas fa-user-graduate text-xl"></i></div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 text-sm" id="dtl-nama">Nama</h4>
+                            <p class="text-xs text-gray-600 mt-1">NIS: <span id="dtl-nis" class="font-semibold"></span> | Kelas: <span id="dtl-kelas" class="font-semibold"></span></p>
+                            <p class="text-[10px] text-gray-400 mt-1"><i class="fas fa-calendar-alt"></i> <span id="dtl-date"></span></p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider">Rincian Dibayar</h3>
+                    <div id="dtl-rincian" class="space-y-2 mb-4"></div>
+                    
+                    <div class="border-t border-dashed border-gray-300 pt-3 flex justify-between items-center mb-6">
+                        <span class="font-bold text-gray-800">Total</span>
+                        <span class="text-xl font-bold text-primary" id="dtl-total">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="absolute bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 rounded-b-[2rem] hidden" id="dtl-actions">
+                    <div class="flex gap-3">
+                        <button id="btn-reject" class="flex-1 bg-red-50 text-danger hover:bg-red-100 font-bold py-3.5 rounded-xl border border-red-100 transition"><i class="fas fa-times"></i> Tolak</button>
+                        <button id="btn-approve" class="flex-[2] bg-success text-white hover:bg-opacity-90 font-bold py-3.5 rounded-xl shadow-md transition"><i class="fas fa-check"></i> Konfirmasi Sukses</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- MODAL PREVIEW STRUK THERMAL -->
         <div id="modal-receipt-preview" class="fixed inset-0 bg-black/60 z-[80] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-center justify-center">
             <div class="bg-white rounded-2xl w-full max-w-sm mx-4 overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="modal-receipt-content">
@@ -512,7 +561,6 @@
                 </div>
                 
                 <div class="p-4 overflow-y-auto flex-1 bg-gray-300 flex justify-center custom-scrollbar">
-                    <!-- Kertas Struk 80mm disimulasikan -->
                     <div id="receipt-paper" class="bg-white shadow-sm p-4 w-[80mm] min-h-[100mm] text-black" style="font-family: 'Courier New', Courier, monospace; font-size: 12px; line-height: 1.2;">
                         <!-- Konten struk di-inject ke sini -->
                     </div>
@@ -525,7 +573,7 @@
             </div>
         </div>
 
-        <!-- BOTTOM NAV ADMIN -->
+        <!-- ================= NAVIGATION & UTILITY ================= -->
         <nav id="bottom-nav-admin" class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-40 hidden pb-2 pt-1 shadow-[0_-5px_20px_rgba(0,0,0,0.03)]">
             <div class="flex justify-around items-center py-2 px-4">
                 <button onclick="showAdminScreen('screen-home-admin')" class="nav-btn-admin flex flex-col items-center p-2 w-16 text-primary" data-target="screen-home-admin">
@@ -544,7 +592,6 @@
             </div>
         </nav>
 
-        <!-- MESSAGE BOX UTILITY -->
         <div id="messageBox" class="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm">
             <div class="bg-white rounded-3xl p-6 max-w-[320px] w-11/12 shadow-2xl transform scale-95 transition-transform duration-300 text-center relative" id="messageBoxContent">
                 <div id="messageIcon" class="w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-4 shadow-sm"></div>
@@ -556,6 +603,7 @@
 
     </div>
 
+    <!-- ================= JAVASCRIPT ================= -->
     <script>
         const SUPABASE_URL = 'https://zbfzdrrtqtvfbmsogskt.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_R1e0gprQBAAEOM76AaF8Qw_Pytw-_ca';
@@ -580,17 +628,15 @@
             loggedInUser: '',
             transactions: [], 
             menus: [], 
-            allStudents: [], // Cache untuk dropdown tunai
+            allStudents: [], 
             currentFilter: 'all',
             cashSelectedStudent: null,
             cashSelectedBills: []
         };
         let activeTxId = null;
 
-        // --- UTILITIES ---
         function formatCurrency(num) { return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
 
-        // Fungsi baru untuk menghitung total bulan dan nominal saat dropdown diganti
         function updateMonthlyAmount(id, baseAmt) {
             const academicMonths = ['Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'];
             let startSel = document.getElementById(`start-month-${id}`);
@@ -603,16 +649,18 @@
             let startIndex = academicMonths.indexOf(start);
             let endIndex = academicMonths.indexOf(end);
             
-            // Jika pilihan terbalik, sistem otomatis membenarkan
             if(startIndex > endIndex) {
                 let temp = startIndex; startIndex = endIndex; endIndex = temp;
             }
             
             let monthCount = endIndex - startIndex + 1;
             let totalAmt = baseAmt * monthCount;
-            let ket = (start === end) ? start : `${start} s.d ${end}`;
+            let ket = (start === end) ? start : `${start}, ${end}`;
             
-            // Perbarui tampilan harga dan data yang akan dikirim
+            if (startIndex !== endIndex) {
+                 ket = academicMonths.slice(startIndex, endIndex + 1).join(', ');
+            }
+            
             document.getElementById(`amt-text-${id}`).innerText = formatCurrency(totalAmt);
             
             let chk = document.getElementById(`chk-${id}`);
@@ -620,18 +668,15 @@
                 chk.dataset.amt = totalAmt;
                 chk.dataset.ket = ket;
             }
-            
             calcCashSelected();
         }
 
-        // Fungsi untuk menampilkan/menyembunyikan Dropdown Bulan saat dicentang
         function toggleMonthUI(id) {
             let chk = document.getElementById(`chk-${id}`);
             let ui = document.getElementById(`month-ui-${id}`);
             if(ui && chk) {
                 if(chk.checked) {
                     ui.classList.remove('hidden');
-                    // Langsung hitung nilai berdasarkan dropdown saat ini
                     updateMonthlyAmount(id, parseInt(chk.dataset.baseamt));
                 } else {
                     ui.classList.add('hidden');
@@ -681,8 +726,6 @@
             }
         }
 
-        // --- AUTH & DATA FETCHING ---
-
         async function handleAdminLogin() {
             const role = document.getElementById('loginId').value;
             const pass = document.getElementById('loginPass').value;
@@ -690,7 +733,6 @@
             if(pass === 'berkah') {
                 showMessageBox('Memuat Sistem', 'Mengambil data server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
                 
-                // Simpan username
                 let roleName = document.getElementById('loginId').options[document.getElementById('loginId').selectedIndex].text;
                 adminData.loggedInUser = roleName;
                 document.getElementById('admin-user-name').innerText = roleName;
@@ -718,15 +760,13 @@
                 adminData.transactions = await res.json();
                 updateBadgePending();
                 
-                const active = document.querySelector('.screen.active').id;
-                if(active === 'screen-verify') renderPendingTransactions();
-                if(active === 'screen-history') renderAllHistory();
+                const active = document.querySelector('.screen.active');
+                if(active && active.id === 'screen-verify') renderPendingTransactions();
+                if(active && active.id === 'screen-history') renderAllHistory();
             } catch (e) {
                 console.error(e); showMessageBox('Error', 'Gagal memuat transaksi.', 'fa-wifi', 'bg-red-50 text-danger');
             }
         }
-
-        // --- FITUR: MANAJEMEN MENU APLIKASI WALI MURID ---
 
         async function fetchMenus() {
             try {
@@ -865,20 +905,12 @@
             showMessageBox('Menghapus...', 'Menghapus menu dari Supabase...', 'fa-spinner fa-spin', 'text-danger bg-red-50', '', 'hidden');
             
             try {
-                await fetch(`${SUPABASE_URL}/rest/v1/menus?id=eq.${id}`, { 
-                    method: 'DELETE', 
-                    headers: HEADERS 
-                });
-                
+                await fetch(`${SUPABASE_URL}/rest/v1/menus?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
                 adminData.menus = adminData.menus.filter(x=>x.id != id); 
                 await syncMenuToServer();
-                
-                closeMessageBox();
-                closeMenuModal(); 
-                renderMenus(); 
+                closeMessageBox(); closeMenuModal(); renderMenus(); 
             } catch(e) { 
-                closeMessageBox();
-                showMessageBox('Gagal', 'Terjadi kesalahan saat menghapus.', 'fa-times', 'bg-red-50 text-danger'); 
+                closeMessageBox(); showMessageBox('Gagal', 'Terjadi kesalahan saat menghapus.', 'fa-times', 'bg-red-50 text-danger'); 
             }
         }
 
@@ -896,12 +928,11 @@
         function updateBadgePending() {
             const pendings = adminData.transactions.filter(tx => tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected');
             const cnt = pendings.length;
-            const b1 = document.getElementById('badge-pending'); // Old badge if exists
             const b2 = document.getElementById('home-badge-pending');
             const b3 = document.getElementById('nav-badge-pending');
             const txt = cnt > 99 ? '99+' : cnt;
             
-            [b1, b2, b3].forEach(b => {
+            [b2, b3].forEach(b => {
                 if(b) {
                     if(cnt > 0) { b.classList.remove('hidden'); b.innerText = txt; }
                     else b.classList.add('hidden');
@@ -912,16 +943,12 @@
             if(stat) stat.innerText = cnt;
         }
 
-        // --- FITUR: PEMBAYARAN TUNAI ---
-
         async function fetchAllStudentsForCash() {
             try {
-                // Tambahkan namaKelas ke query
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/students?select=nis,nama,kelas,namaKelas,token`, { headers: HEADERS });
                 if(res.ok) {
                     adminData.allStudents = await res.json();
                     
-                    // Filter unik kelas memprioritaskan namaKelas, jika kosong pakai kelas
                     let classes = [...new Set(adminData.allStudents.map(s => s.namaKelas || s.kelas).filter(k => k))];
                     classes.sort();
                     
@@ -941,7 +968,6 @@
             
             if(!k) { el.disabled = true; el.innerHTML = '<option value="">-- Pilih Kelas Dahulu --</option>'; return; }
             
-            // Cocokkan dengan namaKelas atau kelas
             let stds = adminData.allStudents.filter(s => (s.namaKelas || s.kelas) === k);
             stds.sort((a,b) => a.nama.localeCompare(b.nama));
             
@@ -954,14 +980,13 @@
             let nis = document.getElementById('cash-siswa').value;
             if(!nis) { 
                 document.getElementById('cash-bill-area').classList.add('hidden'); 
-                document.getElementById('cash-pay-footer').classList.add('hidden');
+                document.getElementById('cash-pay-action').classList.add('hidden');
                 return; 
             }
             
             showMessageBox('Memuat...', 'Mengambil tagihan siswa...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
 
             try {
-                // Fetch full details for this student
                 let res = await fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${nis}&select=*`, { headers: HEADERS });
                 let studentData = (await res.json())[0];
                 adminData.cashSelectedStudent = studentData;
@@ -974,13 +999,6 @@
             } catch (e) {
                 closeMessageBox(); alert("Gagal mengambil tagihan: " + e.message);
             }
-        }
-
-        function getUnpaidMonthsString(count) {
-            const schoolMonths = ['Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'];
-            if (count <= 0) return '';
-            if (count > 12) count = 12;
-            return schoolMonths.slice(0, count).join(', ');
         }
 
         function renderCashBills(student, history) {
@@ -1029,7 +1047,7 @@
             if(selectAllContainer) selectAllContainer.classList.remove('hidden');
 
             const academicMonths = ['Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'];
-            let curMonthStr = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][new Date().getMonth()];
+            let curMonthStr = academicMonths[new Date().getMonth() >= 6 ? new Date().getMonth() - 6 : new Date().getMonth() + 6];
             
             let mult = (new Date().getMonth() >= 6) ? new Date().getMonth() - 5 : new Date().getMonth() + 7;
             let mList = ['spp','tahfidzPlus','tahfidz','icp','icpSore'];
@@ -1043,8 +1061,9 @@
                 if(isMonthly) {
                     if (history.length === 0) {
                         fAmt = b.amount * mult;
-                        ketBulan = `Jul s.d ${curMonthStr}`;
-                        if ('Jul' === curMonthStr) ketBulan = 'Jul';
+                        let sIdx = 0; let eIdx = academicMonths.indexOf(curMonthStr) || 0;
+                        if(eIdx < 0) eIdx = 0;
+                        ketBulan = academicMonths.slice(sIdx, eIdx + 1).join(', ');
                     } else {
                         ketBulan = curMonthStr;
                     }
@@ -1129,13 +1148,11 @@
             if(adminData.cashSelectedBills.length === 0) return;
             if(!confirm("Proses pembayaran tunai sebesar " + document.getElementById('cash-total-rp').innerText + " ?")) return;
 
-            // 1. Tampilkan layar loading
             showMessageBox('Menyimpan...', 'Mencatat transaksi tunai ke server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
             
             let s = adminData.cashSelectedStudent;
             let txId = 'TUNAI-' + Math.floor(100000 + Math.random() * 900000);
             
-            // 2. Siapkan payload / data yang akan dikirim ke database
             let payload = {
                 id: txId,
                 token: s.token,
@@ -1145,13 +1162,11 @@
                 kelas: s.kelas,
                 status: 'success',
                 kasir: adminData.loggedInUser,
-                buktiTF: 'PEMBAYARAN_TUNAI' // Penanda bahwa ini bukan transfer
+                buktiTF: 'PEMBAYARAN_TUNAI'
             };
 
-            // Inisialisasi semua kolom rincian dengan nilai 0
             BILL_COLUMNS.forEach(c => payload[c.db] = 0); 
             
-            // Masukkan nominal sesuai tagihan yang dicentang oleh Kasir
             adminData.cashSelectedBills.forEach(cb => {
                 let code = cb.value; 
                 let db = cb.dataset.db; 
@@ -1167,7 +1182,6 @@
             });
 
             try {
-                // 3. Simpan ke database Supabase
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/transactions`, {
                     method: 'POST',
                     headers: { ...HEADERS, 'Prefer': 'return=minimal' },
@@ -1176,30 +1190,21 @@
 
                 if(!res.ok) throw new Error("Gagal menyimpan ke database Supabase.");
                 
-                // 4. Mencegah delay pembacaan server (Race-Condition) 
-                // Kita masukkan data payload langsung ke memori lokal secara paksa
+                // Mencegah delay pembacaan server: masukkan payload langsung ke memori lokal
                 adminData.transactions.unshift(payload);
+                fetchTransactions(); // Jalan di background
                 
-                // 5. Minta sistem untuk me-refresh data latar belakang secara diam-diam
-                fetchTransactions();
-                
-                // 6. Tutup modal loading dan kosongkan formulir
                 resetCashForm();
                 closeMessageBox(); 
                 
-                // 7. BUKA PREVIEW STRUK SECARA OTOMATIS
-                // (Diberi jeda 400ms agar animasi penutupan kotak loading selesai dengan mulus)
-                setTimeout(() => {
-                    openReceiptPreview(txId);
-                }, 400);
+                // Pop-up Preview Struk seketika!
+                setTimeout(() => { openReceiptPreview(txId); }, 400);
                 
             } catch (e) {
                 closeMessageBox();
                 showMessageBox('Gagal', e.message, 'fa-times', 'bg-red-50 text-danger');
             }
         }
-
-        // --- FITUR: VERIFIKASI TRANSFER ---
 
         function filterVerify(type) {
             adminData.currentFilter = type;
@@ -1234,7 +1239,6 @@
             pendings.forEach(tx => {
                 const total = calculateTxTotal(tx);
                 const desc = getTxDescriptionPreview(tx);
-                
                 const hasImage = tx.buktiTF && tx.buktiTF.includes('http');
                 const imgBadge = hasImage ? `<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[9px] font-bold ml-2"><i class="fas fa-image"></i> BUKTI</span>` : '';
 
@@ -1262,7 +1266,6 @@
             });
         }
 
-        // --- HISTORY (ALL TX) ---
         function searchHistory() { renderAllHistory(); }
 
         function renderAllHistory() {
@@ -1297,7 +1300,6 @@
                     statusInfo = `<span class="text-[10px] bg-orange-50 text-accent border border-orange-100 px-2 py-1 rounded font-bold"><i class="fas fa-clock"></i> PENDING</span>`;
                 }
 
-                // Cek Tunai atau TF
                 let isTunai = tx.buktiTF === 'PEMBAYARAN_TUNAI';
                 let iconTx = isTunai ? '<i class="fas fa-money-bill-wave text-gray-400"></i>' : '<i class="fas fa-mobile-alt text-blue-400"></i>';
 
@@ -1323,7 +1325,6 @@
             });
         }
 
-        // --- TRANSACTION DETAIL MODAL & ACTIONS ---
         function getTxDetailsArray(tx) {
             let details = [];
             BILL_COLUMNS.forEach(c => {
@@ -1341,6 +1342,7 @@
         }
 
         function calculateTxTotal(tx) { return getTxDetailsArray(tx).reduce((sum, item) => sum + item.amount, 0); }
+        
         function getTxDescriptionPreview(tx) {
             const arr = getTxDetailsArray(tx);
             if(arr.length === 0) return 'Tanpa Rincian';
@@ -1362,7 +1364,6 @@
             const imgEl = document.getElementById('dtl-img');
             const noImgEl = document.getElementById('dtl-no-img');
             
-            // Cek jika gambar adalah transfer atau tunai
             if(tx.buktiTF && tx.buktiTF.includes('http')) {
                 imgEl.src = tx.buktiTF;
                 imgEl.parentElement.classList.remove('hidden');
@@ -1372,7 +1373,6 @@
                 imgEl.src = '';
                 imgEl.classList.add('hidden');
                 noImgEl.classList.remove('hidden');
-                // Jika tunai, hilangkan area klik gambar
                 if(tx.buktiTF === 'PEMBAYARAN_TUNAI') {
                     noImgEl.innerHTML = `<i class="fas fa-money-bill-wave text-4xl mb-3 text-green-300"></i><span class="text-sm font-semibold text-gray-500">Transaksi Tunai</span><span class="text-xs mt-1 text-gray-400">Kasir: ${tx.kasir}</span>`;
                     imgEl.parentElement.classList.remove('cursor-pointer');
@@ -1408,31 +1408,75 @@
                 actContainer.classList.remove('hidden');
                 scrollArea.classList.remove('pb-5'); scrollArea.classList.add('pb-24');
                 
+                // Binding Tombol Verify (Tolak / Sukses) yang Aman
                 let btnA = document.getElementById('btn-approve');
                 let btnR = document.getElementById('btn-reject');
                 
                 let newBtnA = btnA.cloneNode(true);
                 let newBtnR = btnR.cloneNode(true);
-                
                 btnA.parentNode.replaceChild(newBtnA, btnA);
                 btnR.parentNode.replaceChild(newBtnR, btnR);
                 
-                // Set aksi dan tangkap adminData.loggedInUser saat ini (Kasir)
                 newBtnA.addEventListener('click', () => updateTxStatus(tx.id, 'success'));
                 newBtnR.addEventListener('click', () => updateTxStatus(tx.id, 'rejected'));
             }
 
             const modal = document.getElementById('modal-tx-detail');
             const content = document.getElementById('modal-tx-content');
-            modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('translate-y-full'); }, 10);
+            if (modal && content) {
+                modal.classList.remove('hidden');
+                setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('translate-y-full'); }, 10);
+            }
         }
 
         function closeTxModal() {
             const modal = document.getElementById('modal-tx-detail');
             const content = document.getElementById('modal-tx-content');
-            modal.classList.add('opacity-0'); content.classList.add('translate-y-full');
-            setTimeout(() => { modal.classList.add('hidden'); activeTxId = null; }, 300);
+            if (modal && content) {
+                modal.classList.add('opacity-0'); content.classList.add('translate-y-full');
+                setTimeout(() => { modal.classList.add('hidden'); activeTxId = null; }, 300);
+            }
+        }
+
+        async function updateTxStatus(id, newStatus) {
+            const confirmMsg = newStatus === 'success' ? 'Konfirmasi bahwa transfer sudah masuk ke rekening?' : 'Tolak pembayaran ini? (Tandai bukti tidak valid)';
+            if(!confirm(confirmMsg)) return;
+
+            closeTxModal();
+            showMessageBox('Memproses...', 'Menyimpan konfirmasi ke server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/transactions?id=eq.${id}`, {
+                    method: 'PATCH',
+                    headers: { ...HEADERS, 'Prefer': 'return=minimal' },
+                    body: JSON.stringify({ status: newStatus, kasir: adminData.loggedInUser })
+                });
+
+                if(!res.ok) {
+                    const err = await res.json().catch(() => ({ message: "Kesalahan server/koneksi tidak diketahui." }));
+                    throw new Error(err.message || "Gagal memperbarui status transaksi.");
+                }
+
+                const idx = adminData.transactions.findIndex(t => t.id === id);
+                if(idx > -1) {
+                    adminData.transactions[idx].status = newStatus;
+                    adminData.transactions[idx].kasir = adminData.loggedInUser;
+                }
+
+                closeMessageBox();
+                updateBadgePending();
+                
+                const active = document.querySelector('.screen.active');
+                if(active && active.id === 'screen-verify') renderPendingTransactions();
+                if(active && active.id === 'screen-history') renderAllHistory();
+                if(active && active.id === 'screen-rekap') renderRekap(); 
+
+                showMessageBox('Berhasil', newStatus === 'success' ? 'Transaksi berhasil dikonfirmasi.' : 'Transaksi telah ditolak.', 'fa-check-circle', 'bg-green-50 text-success');
+
+            } catch (e) {
+                closeMessageBox(); 
+                showMessageBox('Gagal', "Terjadi kesalahan: " + e.message, 'fa-times-circle', 'bg-red-50 text-danger');
+            }
         }
 
         function viewFullscreenImage(src) {
@@ -1442,15 +1486,15 @@
             fs.classList.remove('hidden');
             setTimeout(() => fs.classList.remove('opacity-0'), 10);
         }
+        
         function closeFullscreen() {
             const fs = document.getElementById('fs-viewer');
             fs.classList.add('opacity-0');
             setTimeout(() => { fs.classList.add('hidden'); document.getElementById('fs-img').src = ''; }, 300);
         }
 
-        // --- FITUR CETAK STRUK THERMAL ---
         function openReceiptPreview(txId) {
-            closeTxModal(); // Tutup detail dulu
+            closeTxModal();
             setTimeout(() => {
                 const tx = adminData.transactions.find(t => t.id === txId);
                 if(!tx) return;
@@ -1587,55 +1631,7 @@
             }, 500);
         }
 
-        async function updateTxStatus(id, newStatus) {
-            const confirmMsg = newStatus === 'success' ? 'Konfirmasi bahwa transfer sudah masuk ke rekening?' : 'Tolak pembayaran ini? (Tandai bukti tidak valid)';
-            if(!confirm(confirmMsg)) return;
-
-            closeTxModal();
-            showMessageBox('Memproses...', 'Menyimpan konfirmasi ke server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
-
-            try {
-                // UPDATE RECORD LAMA (Tidak nambah data baru)
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/transactions?id=eq.${id}`, {
-                    method: 'PATCH',
-                    headers: { ...HEADERS, 'Prefer': 'return=minimal' },
-                    // Set status dan rekam nama pengguna admin sebagai kasir
-                    body: JSON.stringify({ status: newStatus, kasir: adminData.loggedInUser })
-                });
-
-                if(!res.ok) {
-                    // Ambil pesan error spesifik jika ditolak oleh Database / RLS
-                    const err = await res.json().catch(() => ({ message: "Kesalahan server/koneksi tidak diketahui." }));
-                    throw new Error(err.message || "Gagal memperbarui status transaksi.");
-                }
-
-                // Update local memory
-                const idx = adminData.transactions.findIndex(t => t.id === id);
-                if(idx > -1) {
-                    adminData.transactions[idx].status = newStatus;
-                    adminData.transactions[idx].kasir = adminData.loggedInUser;
-                }
-
-                closeMessageBox();
-                updateBadgePending();
-                
-                const active = document.querySelector('.screen.active').id;
-                if(active === 'screen-verify') renderPendingTransactions();
-                if(active === 'screen-history') renderAllHistory();
-                if(active === 'screen-rekap') renderRekap(); // Refresh rekap if open
-
-                showMessageBox('Berhasil', newStatus === 'success' ? 'Transaksi berhasil dikonfirmasi.' : 'Transaksi telah ditolak.', 'fa-check-circle', 'bg-green-50 text-success');
-
-            } catch (e) {
-                closeMessageBox(); 
-                showMessageBox('Gagal', "Terjadi kesalahan: " + e.message, 'fa-times-circle', 'bg-red-50 text-danger');
-            }
-        }
-
-        // --- REKAPITULASI ---
-        
         function parseIdDate(dateStr) {
-            // Helper parsing tanggal ID format "DD/MM/YYYY, HH.mm.ss"
             if(!dateStr) return new Date(0);
             try {
                 let onlyDate = dateStr.split(',')[0].trim(); 
@@ -1646,14 +1642,12 @@
         }
 
         function renderRekap() {
-            // Ambil transaksi yang lunas/berhasil
             let validTxs = adminData.transactions.filter(t => t.status === 'success' || t.status === 'lunas');
             
             let filterDaily = document.getElementById('filter-date-daily');
             let filterMonthly = document.getElementById('filter-date-monthly');
             
             let now = new Date();
-            // Set default value (Hari ini & Bulan ini) jika masih kosong
             if(!filterDaily.value) {
                 let tzOffset = now.getTimezoneOffset() * 60000;
                 let localISOTime = (new Date(now - tzOffset)).toISOString().slice(0, -1);
@@ -1667,7 +1661,6 @@
             let selectedDaily = new Date(filterDaily.value);
             let selectedMonthly = new Date(filterMonthly.value + "-01");
             
-            // Logika Pekan Ini (Senin sebagai awal berdasarkan tanggal yang dipilih di filter Harian)
             let dayOfWeek = selectedDaily.getDay();
             let diff = selectedDaily.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
             let startOfWeek = new Date(selectedDaily); 
@@ -1677,38 +1670,27 @@
             endOfWeek.setDate(endOfWeek.getDate() + 6);
             endOfWeek.setHours(23,59,59,999);
             
-            // Logika Bulanan berdasarkan filter bulan
             let currentMonth = selectedMonthly.getMonth();
             let currentYear = selectedMonthly.getFullYear();
 
-            let stats = {
-                today: { tunai: 0, transfer: 0 },
-                week: { tunai: 0, transfer: 0 },
-                month: { tunai: 0, transfer: 0 }
-            };
+            let stats = { today: { tunai: 0, transfer: 0 }, week: { tunai: 0, transfer: 0 }, month: { tunai: 0, transfer: 0 } };
 
             validTxs.forEach(tx => {
                 let txDateObj = parseIdDate(tx.date);
                 let isTunai = tx.buktiTF === 'PEMBAYARAN_TUNAI';
                 let amt = calculateTxTotal(tx);
 
-                // HARI INI (Matching with selectedDaily)
                 if (txDateObj.getDate() === selectedDaily.getDate() && txDateObj.getMonth() === selectedDaily.getMonth() && txDateObj.getFullYear() === selectedDaily.getFullYear()) {
                     if(isTunai) stats.today.tunai += amt; else stats.today.transfer += amt;
                 }
-
-                // PEKAN INI (Matching with selectedDaily's week)
                 if (txDateObj >= startOfWeek && txDateObj <= endOfWeek) {
                     if(isTunai) stats.week.tunai += amt; else stats.week.transfer += amt;
                 }
-
-                // BULAN INI (Matching with selectedMonthly)
                 if (txDateObj.getMonth() === currentMonth && txDateObj.getFullYear() === currentYear) {
                     if(isTunai) stats.month.tunai += amt; else stats.month.transfer += amt;
                 }
             });
 
-            // Terapkan ke UI
             document.getElementById('rekap-today-tunai').innerText = formatCurrency(stats.today.tunai);
             document.getElementById('rekap-today-transfer').innerText = formatCurrency(stats.today.transfer);
             document.getElementById('rekap-today-total').innerText = formatCurrency(stats.today.tunai + stats.today.transfer);
@@ -1722,9 +1704,6 @@
             document.getElementById('rekap-month-total').innerText = formatCurrency(stats.month.tunai + stats.month.transfer);
         }
 
-        // --- EXPORT PDF REPORTS ---
-        
-        // Fungsi pembantu untuk memuat logo menjadi Base64
         function getLogoBase64() {
             return new Promise((resolve) => {
                 let img = new Image();
@@ -1737,13 +1716,12 @@
                     resolve(canvas.toDataURL('image/png'));
                 };
                 img.onerror = function() { resolve(null); };
-                img.src = 'https://iili.io/nHwYAuV.png'; // Logo Sudagaran
+                img.src = 'https://iili.io/nHwYAuV.png'; 
             });
         }
 
         async function generatePDFDoc(period) {
             const { jsPDF } = window.jspdf;
-            // Format F4 Landscape (330mm x 210mm)
             const doc = new jsPDF({ format: [330, 210], orientation: 'landscape' });
             
             let txs = adminData.transactions.filter(t => t.status === 'success' || t.status === 'lunas');
@@ -1787,14 +1765,11 @@
                 });
             }
 
-            // Margin kiri kanan 15mm
             let margin = 15;
             let yPos = margin;
 
-            // HEADER PDF DENGAN LOGO
             let logoData = await getLogoBase64();
             if(logoData) {
-                // Gambar logo di kiri atas (x: 15, y: 12, width: 16, height: 16)
                 doc.addImage(logoData, 'PNG', margin, 12, 16, 16);
             }
             
@@ -1808,23 +1783,19 @@
             doc.text(periodStr, 165, margin + 19, { align: "center" });
             
             doc.setLineWidth(0.5);
-            doc.line(margin, margin + 24, 330 - margin, margin + 24); // Garis header sepanjang F4 (330)
+            doc.line(margin, margin + 24, 330 - margin, margin + 24); 
 
-            // Pisahkan Data Tunai & Transfer
             let dataTunai = filteredTxs.filter(t => t.buktiTF === 'PEMBAYARAN_TUNAI');
             let dataTransfer = filteredTxs.filter(t => t.buktiTF !== 'PEMBAYARAN_TUNAI');
 
             yPos = margin + 32;
 
-            // Cetak Tabel Tunai (Format Lengkap 16 Kolom)
             if (dataTunai.length > 0) {
                 yPos = buildDetailedTable(doc, dataTunai, "RINCIAN PEMBAYARAN TUNAI", yPos, margin);
                 yPos += 15;
             }
-
-            // Cetak Tabel Transfer (Format Lengkap 16 Kolom)
             if (dataTransfer.length > 0) {
-                if (yPos > 170) { doc.addPage(); yPos = margin + 10; } // Pindah halaman jika sisa ruang sedikit
+                if (yPos > 170) { doc.addPage(); yPos = margin + 10; }
                 yPos = buildDetailedTable(doc, dataTransfer, "RINCIAN PEMBAYARAN TRANSFER", yPos, margin);
             }
             
@@ -1834,15 +1805,13 @@
                 yPos += 15;
             }
 
-            // FOOTER TTD KASIR
             let finalY = yPos + 15;
-            if (finalY > 170) { doc.addPage(); finalY = margin + 10; } // Pindah halaman jika batas bawah sudah penuh
+            if (finalY > 170) { doc.addPage(); finalY = margin + 10; }
             
             doc.setFont("helvetica", "normal");
             doc.setFontSize(10);
             let todayText = `Wonosobo, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}`;
             
-            // Tempatkan di sisi kanan laporan (F4 width = 330)
             doc.text(todayText, 330 - margin - doc.getTextWidth(todayText), finalY);
             doc.text("Mengetahui,", 330 - margin - 25, finalY + 5, {align: "center"});
             
@@ -1850,22 +1819,17 @@
             doc.text(adminData.loggedInUser || "Kasir 1", 330 - margin - 25, finalY + 25, {align: "center"});
             
             doc.setLineWidth(0.2);
-            doc.line(330 - margin - 45, finalY + 26, 330 - margin - 5, finalY + 26); // Garis bawah nama/jabatan
+            doc.line(330 - margin - 45, finalY + 26, 330 - margin - 5, finalY + 26); 
 
             return { doc: doc, title: `${titleStr.replace(/ /g, "_")}_${period}.pdf` };
         }
 
-        // Fungsi Cetak Tabel 17 Kolom F4 Landscape (Presisi 300mm)
         function buildDetailedTable(doc, txs, title, yPos, margin) {
             doc.setFontSize(11);
             doc.setFont("helvetica", "bold");
-            
-            // Menengahkan judul tabel secara presisi di tengah kertas F4 (Lebar 330 / 2 = 165)
-            doc.text(title, 165, yPos, { align: "center" });
+            doc.text(title, 165, yPos, { align: "center" }); 
             
             let body = [];
-            
-            // Variabel Akumulasi Total Keseluruhan
             let tBps=0, tSpp=0, tDu1=0, tDu2=0, tDu3=0, tTahfidzPlus=0, tTahfidz=0, tIcp=0, tTanggungan=0, tAll=0;
 
             txs.forEach((tx, index) => {
@@ -1888,7 +1852,6 @@
                 let tanggungan = parseInt(tx.tanggungan) || 0;
                 let kasir = tx.kasir || '-';
                 
-                // Hitung Total Per Baris Siswa (Kolom ke-17)
                 let rowTotal = bps + spp + du1 + du2 + du3 + tahfidzPlus + tahfidz + icp + tanggungan;
 
                 tBps += bps; tSpp += spp; tDu1 += du1; tDu2 += du2; tDu3 += du3; 
@@ -1906,7 +1869,6 @@
 
             const fT = (num) => num > 0 ? formatCurrency(num).replace('Rp ', '') : '-';
 
-            // Baris Total Bawah
             body.push([
                 { content: 'TOTAL KESELURUHAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
                 { content: fT(tBps), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
@@ -1921,10 +1883,9 @@
                 { content: fT(tIcp), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
                 { content: fT(tTanggungan), styles: { fontStyle: 'bold', fillColor: [230, 240, 250], textColor: [0, 0, 0] } },
                 { content: '', styles: { fillColor: [230, 240, 250] } },
-                { content: fT(tAll), styles: { fontStyle: 'bold', fillColor: [210, 230, 250], textColor: [0, 0, 0] } }  // Kolom Grand Total
+                { content: fT(tAll), styles: { fontStyle: 'bold', fillColor: [235, 247, 255], textColor: [0, 0, 0] } } 
             ]);
 
-            // Tabel dengan lebar kolom matematis yang dipastikan jumlahnya TEPAT 300mm
             doc.autoTable({
                 startY: yPos + 4,
                 head: [['No', 'Tanggal', 'Nama Siswa', 'Kelas', 'BPS', 'SPP', 'Ket SPP', 'DU 1', 'DU 2', 'DU 3', 'Tahfidz+', 'Ket Tahf+', 'Tahfidz', 'ICP', 'Tanggungan', 'Kasir', 'Total']],
@@ -1935,39 +1896,38 @@
                     textColor: [255, 255, 255],
                     fontSize: 7, 
                     halign: 'center',
-                    lineColor: [0, 0, 0], 
+                    lineColor: [200, 200, 200], 
                     lineWidth: 0.1
                 }, 
-                margin: { left: 15, right: 15 }, // Area 330 - 30 = 300mm
+                margin: { left: 15, right: 15 }, 
                 styles: { 
                     fontSize: 7, 
                     cellPadding: 1.5, 
                     overflow: 'linebreak',
-                    lineColor: [180, 180, 180], 
+                    lineColor: [200, 200, 200], 
                     lineWidth: 0.1 
                 },
                 alternateRowStyles: {
                     fillColor: [248, 250, 252] 
                 },
-                // Total Array Width = 7+14+42+9+15+16+19+15+15+15+15+19+15+15+16+13+20 = 300
                 columnStyles: {
                     0: { cellWidth: 7, halign: 'center' },      
-                    1: { cellWidth: 14 },     
-                    2: { cellWidth: 42 },     
-                    3: { cellWidth: 9, halign: 'center' },     
+                    1: { cellWidth: 15 },     
+                    2: { cellWidth: 43 },     
+                    3: { cellWidth: 8, halign: 'center' },     
                     4: { cellWidth: 15, halign: 'right' },      
                     5: { cellWidth: 16, halign: 'right' },      
-                    6: { cellWidth: 19 },     
+                    6: { cellWidth: 22 },     
                     7: { cellWidth: 15, halign: 'right' },      
                     8: { cellWidth: 15, halign: 'right' },      
                     9: { cellWidth: 15, halign: 'right' },      
-                    10: { cellWidth: 15, halign: 'right' },     
-                    11: { cellWidth: 19 },    
+                    10: { cellWidth: 16, halign: 'right' },     
+                    11: { cellWidth: 22 },    
                     12: { cellWidth: 15, halign: 'right' },     
                     13: { cellWidth: 15, halign: 'right' },     
-                    14: { cellWidth: 16, halign: 'right' },     
-                    15: { cellWidth: 13, halign: 'center' },
-                    16: { cellWidth: 20, halign: 'right', fillColor: [235, 247, 255], fontStyle: 'bold' } // Biru super soft
+                    14: { cellWidth: 20, halign: 'right' },     
+                    15: { cellWidth: 17, halign: 'center' },
+                    16: { cellWidth: 24, halign: 'right', fillColor: [235, 247, 255], fontStyle: 'bold' } 
                 }
             });
 
@@ -1991,6 +1951,7 @@
             
             try {
                 let pdfData = await generatePDFDoc(period);
+                
                 const pdfBlob = pdfData.doc.output('blob');
                 const blobUrl = URL.createObjectURL(pdfBlob);
                 
@@ -2017,7 +1978,9 @@
             content.classList.add('scale-95');
             setTimeout(() => { 
                 modal.classList.add('hidden'); 
-                URL.revokeObjectURL(document.getElementById('pdf-preview-frame').src);
+                if (document.getElementById('pdf-preview-frame').src) {
+                    URL.revokeObjectURL(document.getElementById('pdf-preview-frame').src);
+                }
                 document.getElementById('pdf-preview-frame').src = ''; 
             }, 300);
         }
