@@ -873,6 +873,18 @@
         // FUNGSI UMUM DAN BANTUAN
         function formatCurrency(num) { return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
 
+        function getCombinedKelas(obj) {
+            if (!obj) return '-';
+            let k = obj.kelas ? String(obj.kelas).trim() : '';
+            let nk = obj.namaKelas ? String(obj.namaKelas).trim() : '';
+            if (k && nk) {
+                // Hindari kata ganda jika nama kelas sudah mengandung kode kelas (contoh: Kelas "1", Nama "1 Abu Bakar" -> "1 Abu Bakar")
+                if (nk.toLowerCase().includes(k.toLowerCase())) return nk; 
+                return `${k} - ${nk}`;
+            }
+            return nk || k || '-';
+        }
+
         function showLoading(text = 'Memproses...') {
             document.getElementById('loadingText').innerText = text;
             document.getElementById('loadingOverlay').classList.remove('hidden');
@@ -1286,7 +1298,7 @@
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/students?select=*`, { headers: HEADERS });
                 if(res.ok) {
                     adminData.adminStudentList = await res.json();
-                    let classes = [...new Set(adminData.adminStudentList.map(s => s.namaKelas || s.kelas).filter(k => k))];
+                    let classes = [...new Set(adminData.adminStudentList.map(s => getCombinedKelas(s)).filter(k => k && k !== '-'))];
                     classes.sort();
                     let el = document.getElementById('filter-student-class');
                     el.innerHTML = '<option value="">Semua Kelas</option>';
@@ -1299,7 +1311,7 @@
         function renderStudentsAdmin() {
             const filterClass = document.getElementById('filter-student-class').value;
             let list = adminData.adminStudentList;
-            if (filterClass) list = list.filter(s => (s.namaKelas || s.kelas) === filterClass);
+            if (filterClass) list = list.filter(s => getCombinedKelas(s) === filterClass);
             list.sort((a,b) => a.nama.localeCompare(b.nama));
             
             document.getElementById('lbl-student-filter-count').innerText = `(${list.length} Siswa)`;
@@ -1309,7 +1321,7 @@
             if (list.length === 0) { container.innerHTML = `<div class="p-8 text-center text-gray-400 text-sm">Tidak ada data</div>`; return; }
 
             list.forEach(s => {
-                const k = s.namaKelas || s.kelas || '-';
+                const k = getCombinedKelas(s);
                 container.innerHTML += `
                     <div class="px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition group">
                         <div class="flex items-center gap-3 w-full overflow-hidden">
@@ -1446,7 +1458,7 @@
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/students?select=nis,nama,kelas,namaKelas,token`, { headers: HEADERS });
                 if(res.ok) {
                     adminData.allStudents = await res.json();
-                    let classes = [...new Set(adminData.allStudents.map(s => s.namaKelas || s.kelas).filter(k => k))];
+                    let classes = [...new Set(adminData.allStudents.map(s => getCombinedKelas(s)).filter(k => k && k !== '-'))];
                     classes.sort();
                     let el = document.getElementById('cash-kelas'); el.innerHTML = '<option value="">-- Pilih Kelas --</option>';
                     classes.forEach(c => el.innerHTML += `<option value="${c}">${c}</option>`);
@@ -1461,7 +1473,7 @@
             
             if(!k) { el.disabled = true; el.innerHTML = '<option value="">-- Pilih Kelas --</option>'; return; }
             
-            let stds = adminData.allStudents.filter(s => (s.namaKelas || s.kelas) === k); stds.sort((a,b) => a.nama.localeCompare(b.nama));
+            let stds = adminData.allStudents.filter(s => getCombinedKelas(s) === k); stds.sort((a,b) => a.nama.localeCompare(b.nama));
             el.innerHTML = '<option value="">-- Pilih Siswa --</option>';
             stds.forEach(s => el.innerHTML += `<option value="${s.nis}">${s.nama}</option>`); el.disabled = false;
         }
@@ -1480,7 +1492,7 @@
         }
 
         function renderCashBills(student, history) {
-            document.getElementById('cash-s-nama').innerText = student.nama; document.getElementById('cash-s-nis').innerText = student.nis; document.getElementById('cash-s-kelas').innerText = student.namaKelas || student.kelas;
+            document.getElementById('cash-s-nama').innerText = student.nama; document.getElementById('cash-s-nis').innerText = student.nis; document.getElementById('cash-s-kelas').innerText = getCombinedKelas(student);
             let area = document.getElementById('cash-bill-area'); let list = document.getElementById('cash-bills-list'); let actionBtn = document.getElementById('cash-pay-action'); let selectAllContainer = document.getElementById('cash-container-select-all');
             list.innerHTML = ''; area.classList.remove('hidden'); if(actionBtn) actionBtn.classList.remove('hidden'); if(selectAllContainer) selectAllContainer.classList.add('hidden');
 
@@ -1586,7 +1598,7 @@
             
             let payload = {
                 id: txId, token: s.token, date: new Date().toLocaleString('id-ID'),
-                nis: s.nis, nama: s.nama, kelas: s.namaKelas || s.kelas,
+                nis: s.nis, nama: s.nama, kelas: getCombinedKelas(s),
                 status: 'success', kasir: adminData.loggedInUser, buktiTF: 'PEMBAYARAN_TUNAI'
             };
 
@@ -1645,24 +1657,52 @@
             });
         }
 
-        function searchHistory() { renderAllHistory(); }
+        function clearHistoryDate() {
+            document.getElementById('filter-date-history').value = '';
+            renderAllHistory();
+        }
 
         function renderAllHistory() {
             const container = document.getElementById('all-history-container'); container.innerHTML = '';
+            
             const q = document.getElementById('search-history').value.toLowerCase();
+            const dateFilter = document.getElementById('filter-date-history').value;
+            
             let list = adminData.transactions;
-            if(q) list = list.filter(tx => (tx.nama?.toLowerCase().includes(q) || tx.nis?.toLowerCase().includes(q) || tx.id?.toLowerCase().includes(q)));
-            if(list.length === 0) { container.innerHTML = `<div class="text-center py-12">Tidak ditemukan.</div>`; return; }
+            
+            // 1. Filter by Text (Search)
+            if(q) {
+                list = list.filter(tx => (tx.nama?.toLowerCase().includes(q) || tx.nis?.toLowerCase().includes(q) || tx.id?.toLowerCase().includes(q)));
+            }
+            
+            // 2. Filter by Date
+            if(dateFilter) {
+                const fDate = new Date(dateFilter);
+                list = list.filter(tx => {
+                    let txDate = parseTxDate(tx.date);
+                    return txDate.getFullYear() === fDate.getFullYear() && 
+                           txDate.getMonth() === fDate.getMonth() && 
+                           txDate.getDate() === fDate.getDate();
+                });
+            }
+
+            if(list.length === 0) { container.innerHTML = `<div class="text-center py-12 text-gray-400">Tidak ada transaksi ditemukan.</div>`; return; }
 
             list.forEach(tx => {
                 const total = calculateTxTotal(tx);
-                let stat = (tx.status === 'success' || tx.status === 'lunas') ? '<span class="text-[10px] bg-green-50 text-success border px-2 py-1 rounded font-bold">LUNAS</span>' : '<span class="text-[10px] bg-red-50 text-danger border px-2 py-1 rounded font-bold">DITOLAK</span>';
-                if(tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected') stat = '<span class="text-[10px] bg-orange-50 text-accent border px-2 py-1 rounded font-bold">MENUNGGU</span>';
+                let stat = (tx.status === 'success' || tx.status === 'lunas') ? '<span class="text-[10px] bg-green-50 text-success border border-green-200 px-2 py-1 rounded font-bold">LUNAS</span>' : '<span class="text-[10px] bg-red-50 text-danger border border-red-200 px-2 py-1 rounded font-bold">DITOLAK</span>';
+                if(tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected') stat = '<span class="text-[10px] bg-orange-50 text-accent border border-orange-200 px-2 py-1 rounded font-bold">MENUNGGU</span>';
                 
                 container.innerHTML += `
-                    <div class="bg-white rounded-xl shadow-sm border p-4 mb-3 cursor-pointer" onclick="openTxDetail('${tx.id}')">
-                        <div class="flex justify-between border-b border-dashed pb-2 mb-2"><span class="text-xs font-mono text-gray-500">${tx.id}</span>${stat}</div>
-                        <div class="flex justify-between items-start"><div><h4 class="text-sm font-bold text-gray-800">${tx.nama}</h4><p class="text-xs text-gray-500">${tx.kelas} | NIS: ${tx.nis}</p></div><p class="text-sm font-bold text-primary">${formatCurrency(total)}</p></div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-3 cursor-pointer hover:border-primary transition" onclick="openTxDetail('${tx.id}')">
+                        <div class="flex justify-between border-b border-dashed border-gray-200 pb-2 mb-2">
+                            <span class="text-xs font-mono text-gray-500">${tx.id} <span class="ml-2 text-[10px] text-gray-400"><i class="fas fa-clock"></i> ${tx.date}</span></span>
+                            ${stat}
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <div><h4 class="text-sm font-bold text-gray-800">${tx.nama}</h4><p class="text-xs text-gray-500">${tx.kelas} | NIS: ${tx.nis}</p></div>
+                            <p class="text-sm font-bold text-primary">${formatCurrency(total)}</p>
+                        </div>
                     </div>`;
             });
         }
