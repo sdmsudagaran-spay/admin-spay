@@ -419,7 +419,7 @@
                 <!-- PEKAN INI -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="bg-orange-50 px-5 py-3 border-b border-orange-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                        <h3 class="font-bold text-orange-800"><i class="fas fa-calendar-week mr-2"></i>Pekan Ini</h3>
+                        <h3 class="font-bold text-orange-800 flex items-center"><i class="fas fa-calendar-week mr-2"></i>Pekan Ini <span class="text-[10px] font-bold bg-orange-200 text-orange-800 px-2 py-0.5 rounded ml-2">Senin - Sabtu</span></h3>
                         <div class="flex items-center gap-2 w-full md:w-auto">
                             <input type="week" id="filter-date-weekly" onchange="renderRekap()" class="text-sm px-3 py-1.5 rounded-lg border border-orange-200 text-orange-800 bg-white shadow-sm outline-none">
                             <div class="flex bg-gray-100 rounded-lg p-1 border border-gray-200">
@@ -1756,27 +1756,47 @@
             printWindow.document.close();
         }
 
-        // Helper untuk parse tanggal transaksi "21/09/2026, 14:30:00" atau "2026-09-21T14:30:00" menjadi Date object
+        // Helper untuk memparsing semua jenis format tanggal dari Supabase (DD/MM/YYYY atau YYYY-MM-DD)
         function parseTxDate(dateStr) {
             if(!dateStr) return new Date();
-            // Coba parsing format ISO dulu (jika dari Supabase langsung)
+            
+            // 1. Coba parser bawaan (Format ISO standard)
             let d = new Date(dateStr);
             if (!isNaN(d.getTime())) return d;
             
-            // Parsing format "DD/MM/YYYY, HH:MM:SS" (Format locale id-ID yang biasa digunakan)
+            // 2. Parser Manual Tahan Banting (Format id-ID: DD/MM/YYYY, HH:MM:SS)
             try {
-                let parts = dateStr.split(',');
-                let dateParts = parts[0].trim().split('/');
+                let cleanStr = dateStr.replace(/,/, ' '); // Hapus koma pemisah
+                let parts = cleanStr.trim().split(/\s+/); // Pisahkan tanggal & waktu
+                let dateOnly = parts[0];
+                let timeOnly = parts[1] || '00:00:00';
+                
+                let dateParts = dateOnly.includes('/') ? dateOnly.split('/') : dateOnly.split('-');
+                
                 if(dateParts.length === 3) {
-                    return new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T${parts[1] ? parts[1].trim() : '00:00:00'}`);
+                    let day = dateParts[0].padStart(2, '0');
+                    let month = dateParts[1].padStart(2, '0');
+                    let year = dateParts[2];
+                    
+                    // Deteksi jika format terbalik (YYYY-MM-DD)
+                    if(year.length === 2 || dateParts[0].length === 4) {
+                        year = dateParts[0]; day = dateParts[2].padStart(2, '0');
+                    }
+                    
+                    // Bersihkan pemisah waktu (contoh 14.30.00 jadi 14:30:00)
+                    timeOnly = timeOnly.replace(/\./g, ':');
+                    
+                    let isoStr = `${year}-${month}-${day}T${timeOnly}`;
+                    let finalDate = new Date(isoStr);
+                    if (!isNaN(finalDate.getTime())) return finalDate;
                 }
-            } catch(e) {}
-            return new Date();
+            } catch(e) { console.error("Error parsing date:", e); }
+            
+            return new Date(); // Fallback keamanan jika gagal memuat
         }
 
         function initRekapDates() {
             const now = new Date();
-            // Format YYYY-MM-DD
             const yyyy = now.getFullYear();
             const mm = String(now.getMonth() + 1).padStart(2, '0');
             const dd = String(now.getDate()).padStart(2, '0');
@@ -1787,7 +1807,6 @@
             const elMonthly = document.getElementById('filter-date-monthly');
             if (elMonthly && !elMonthly.value) elMonthly.value = `${yyyy}-${mm}`;
 
-            // Calculate current week (YYYY-Www)
             const elWeekly = document.getElementById('filter-date-weekly');
             if (elWeekly && !elWeekly.value) {
                 const startDate = new Date(now.getFullYear(), 0, 1);
@@ -1797,80 +1816,80 @@
             }
         }
 
-        // Fungsi bantuan untuk mengecek apakah sebuah tanggal (Date object) berada di dalam minggu ISO (YYYY-Www)
+        // Fungsi mengecek apakah tanggal masuk ke dalam rentang SENIN (00:00) hingga SABTU (23:59)
         function isDateInWeek(dateObj, weekString) {
             if (!weekString) return false;
             const year = parseInt(weekString.substring(0, 4));
             const week = parseInt(weekString.substring(6, 8));
             
-            // Get first day of the year
-            const simple = new Date(year, 0, 1 + (week - 1) * 7);
-            const dow = simple.getDay();
-            const ISOweekStart = simple;
-            if (dow <= 4)
-                ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
-            else
-                ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+            // Cari acuan hari Senin di minggu pertama standar ISO
+            const simple = new Date(year, 0, 4); 
+            const dayOfWeek = simple.getDay() || 7; 
+            simple.setDate(simple.getDate() - dayOfWeek + 1); 
             
-            const ISOweekEnd = new Date(ISOweekStart);
-            ISOweekEnd.setDate(ISOweekStart.getDate() + 6);
-            ISOweekEnd.setHours(23, 59, 59, 999);
+            // Hitung Tanggal Mulai (Senin, 00:00:00)
+            const startOfWeek = new Date(simple.getTime() + (week - 1) * 7 * 24 * 60 * 60 * 1000);
+            startOfWeek.setHours(0, 0, 0, 0); 
+            
+            // Hitung Tanggal Selesai (Sabtu, 23:59:59) -> Senin + 5 hari
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 5); 
+            endOfWeek.setHours(23, 59, 59, 999); 
 
-            return dateObj >= ISOweekStart && dateObj <= ISOweekEnd;
+            return dateObj >= startOfWeek && dateObj <= endOfWeek;
         }
 
         function renderRekap() {
-            initRekapDates(); // Pastikan tanggal terisi
+            initRekapDates(); 
 
             let validTxs = adminData.transactions.filter(t => t.status === 'success' || t.status === 'lunas');
             
             let stats = { today: { tunai: 0, transfer: 0 }, week: { tunai: 0, transfer: 0 }, month: { tunai: 0, transfer: 0 } };
             
-            const filterDaily = document.getElementById('filter-date-daily').value; // YYYY-MM-DD
-            const filterWeekly = document.getElementById('filter-date-weekly').value; // YYYY-Www
-            const filterMonthly = document.getElementById('filter-date-monthly').value; // YYYY-MM
+            const filterDaily = document.getElementById('filter-date-daily').value; 
+            const filterWeekly = document.getElementById('filter-date-weekly').value; 
+            const filterMonthly = document.getElementById('filter-date-monthly').value; 
 
             validTxs.forEach(tx => {
                 let amt = calculateTxTotal(tx); 
+                // Cek akurat apakah ini pembayaran tunai
                 let isTunai = tx.buktiTF === 'PEMBAYARAN_TUNAI';
                 let txDate = parseTxDate(tx.date);
 
-                // Check Daily
+                // Hitung Harian
                 if (filterDaily) {
                     let fDate = new Date(filterDaily);
                     if (txDate.getFullYear() === fDate.getFullYear() && txDate.getMonth() === fDate.getMonth() && txDate.getDate() === fDate.getDate()) {
-                        stats.today.tunai += isTunai ? amt : 0; 
-                        stats.today.transfer += !isTunai ? amt : 0;
+                        if (isTunai) stats.today.tunai += amt; 
+                        else stats.today.transfer += amt;
                     }
                 }
 
-                // Check Weekly
+                // Hitung Pekan Ini (Senin - Sabtu)
                 if (filterWeekly && isDateInWeek(txDate, filterWeekly)) {
-                    stats.week.tunai += isTunai ? amt : 0; 
-                    stats.week.transfer += !isTunai ? amt : 0;
+                    if (isTunai) stats.week.tunai += amt; 
+                    else stats.week.transfer += amt;
                 }
 
-                // Check Monthly
+                // Hitung Bulanan
                 if (filterMonthly) {
                     const [fYear, fMonth] = filterMonthly.split('-');
                     if (txDate.getFullYear() === parseInt(fYear) && (txDate.getMonth() + 1) === parseInt(fMonth)) {
-                        stats.month.tunai += isTunai ? amt : 0; 
-                        stats.month.transfer += !isTunai ? amt : 0;
+                        if (isTunai) stats.month.tunai += amt; 
+                        else stats.month.transfer += amt;
                     }
                 }
             });
 
-            // Update UI Daily
+            // Update Tampilan UI Rekapitulasi
             document.getElementById('rekap-today-tunai').innerText = formatCurrency(stats.today.tunai);
             document.getElementById('rekap-today-transfer').innerText = formatCurrency(stats.today.transfer);
             document.getElementById('rekap-today-total').innerText = formatCurrency(stats.today.tunai + stats.today.transfer);
 
-            // Update UI Weekly
             document.getElementById('rekap-week-tunai').innerText = formatCurrency(stats.week.tunai);
             document.getElementById('rekap-week-transfer').innerText = formatCurrency(stats.week.transfer);
             document.getElementById('rekap-week-total').innerText = formatCurrency(stats.week.tunai + stats.week.transfer);
 
-            // Update UI Monthly
             document.getElementById('rekap-month-tunai').innerText = formatCurrency(stats.month.tunai);
             document.getElementById('rekap-month-transfer').innerText = formatCurrency(stats.month.transfer);
             document.getElementById('rekap-month-total').innerText = formatCurrency(stats.month.tunai + stats.month.transfer);
