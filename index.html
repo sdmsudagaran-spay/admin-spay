@@ -153,7 +153,7 @@
                     
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                         <!-- Menu 1: Pembayaran Tunai -->
-                        <button onclick="showAdminScreen('screen-cash')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-blue-50 hover:border-blue-200 border border-transparent transition group">
+                        <button id="menu-cash" onclick="showAdminScreen('screen-cash')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-blue-50 hover:border-blue-200 border border-transparent transition group">
                             <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-money-bill-wave text-2xl"></i>
                             </div>
@@ -161,7 +161,7 @@
                         </button>
 
                         <!-- Menu 2: Verifikasi Transfer -->
-                        <button onclick="showAdminScreen('screen-verify')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-orange-50 hover:border-orange-200 border border-transparent transition group relative">
+                        <button id="menu-verify" onclick="showAdminScreen('screen-verify')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-orange-50 hover:border-orange-200 border border-transparent transition group relative">
                             <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-accent mb-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-university text-2xl"></i>
                             </div>
@@ -170,7 +170,7 @@
                         </button>
 
                         <!-- Menu 3: Riwayat -->
-                        <button onclick="showAdminScreen('screen-history')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-green-50 hover:border-green-200 border border-transparent transition group">
+                        <button id="menu-history" onclick="showAdminScreen('screen-history')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-green-50 hover:border-green-200 border border-transparent transition group">
                             <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-success mb-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-list-alt text-2xl"></i>
                             </div>
@@ -195,6 +195,14 @@
 
                         <!-- Menu 5: Rekap Data -->
                         <button id="menu-rekap" onclick="showAdminScreen('screen-rekap')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-teal-50 hover:border-teal-200 border border-transparent transition group">
+                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-teal-600 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-chart-pie text-2xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Rekap<br>Data</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- ================= PEMBAYARAN TUNAI SCREEN ================= -->
