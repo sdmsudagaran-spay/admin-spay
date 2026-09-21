@@ -821,7 +821,7 @@
             { id: 'u1', username: 'kasir1', name: 'Kasir 1', password: 'berkah', role: 'menu-cash,menu-verify,menu-history' },
             { id: 'u2', username: 'bendahara', name: 'Bendahara', password: 'berkah', role: 'menu-verify,menu-history,menu-rekap' },
             { id: 'u3', username: 'KS', name: 'Kepala Sekolah (KS)', password: 'berkah', role: 'menu-history,menu-rekap' },
-            { id: 'u4', username: 'admin', name: 'Admin System', password: 'berkah', role: 'menu-cash,menu-verify,menu-history,menu-rekap,menu-menus,menu-users' }
+            { id: 'u4', username: 'admin', name: 'Admin System', password: 'berkah', role: 'menu-cash,menu-verify,menu-history,menu-rekap,menu-menus,menu-users,menu-students' }
         ];
 
         let adminData = { 
@@ -840,10 +840,17 @@
 
         async function fetchAdminUsers() {
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*`, { headers: HEADERS });
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*&order=sortOrder.asc`, { headers: HEADERS });
                 if(res.ok) {
                     let data = await res.json();
-                    if(data.length > 0) adminData.users = data;
+                    if(data.length > 0) {
+                        // Auto-patch admin role agar otomatis mencakup Kelola Siswa jika terlewat di database
+                        let ad = data.find(u => u.username === 'admin');
+                        if(ad && !ad.role.includes('menu-students')) {
+                            ad.role += ',menu-students';
+                        }
+                        adminData.users = data;
+                    }
                     else adminData.users = [...DEFAULT_USERS];
                 } else {
                     adminData.users = [...DEFAULT_USERS];
@@ -859,8 +866,9 @@
             if(sel) {
                 sel.innerHTML = '';
                 adminData.users.forEach(u => {
+                    let roleCount = (u.role || '').split(',').filter(x => x).length;
                     let roleLabel = 'Akses Khusus';
-                    if(u.role === 'menu-cash,menu-verify,menu-history,menu-rekap,menu-menus,menu-users') roleLabel = 'Admin System';
+                    if(roleCount >= 7) roleLabel = 'Admin System';
                     else if(u.role === 'menu-history,menu-rekap') roleLabel = 'Kepala Sekolah';
                     else if(u.role === 'menu-verify,menu-history,menu-rekap') roleLabel = 'Bendahara';
                     else if(u.role === 'menu-cash,menu-verify,menu-history') roleLabel = 'Kasir';
@@ -977,7 +985,7 @@
                 document.getElementById('admin-user-name').innerText = found.name;
                 
                 let roleCount = (adminData.role).split(',').filter(x => x).length;
-                let roleLabel = roleCount >= 6 ? 'Admin System' : 'Akses Khusus';
+                let roleLabel = roleCount >= 7 ? 'Admin System' : 'Akses Khusus';
                 document.getElementById('badge-role').innerText = roleLabel.toUpperCase();
                 
                 document.getElementById('loginPass').value = '';
@@ -1262,11 +1270,14 @@
             document.getElementById('admin-user-count').innerText = `${adminData.users.length} Pengguna`;
             let ul = document.getElementById('admin-user-list'); 
             ul.innerHTML = '';
-            adminData.users.forEach(u => {
+            adminData.users.forEach((u, idx) => {
                 let roleCount = (u.role || '').split(',').filter(x => x).length;
-                let roleLabel = roleCount === 6 ? 'Full Akses' : `${roleCount} Akses`;
-                let roleColor = roleCount === 6 ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-blue-100 text-blue-700 border-blue-200';
+                let roleLabel = roleCount >= 7 ? 'Full Akses' : `${roleCount} Akses`;
+                let roleColor = roleCount >= 7 ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-blue-100 text-blue-700 border-blue-200';
                 
+                let upBtn = idx > 0 ? `<button onclick="moveUser(${idx}, -1)" class="text-gray-400 hover:text-primary p-2 transition"><i class="fas fa-chevron-up"></i></button>` : `<span class="w-8"></span>`;
+                let dnBtn = idx < adminData.users.length-1 ? `<button onclick="moveUser(${idx}, 1)" class="text-gray-400 hover:text-primary p-2 transition"><i class="fas fa-chevron-down"></i></button>` : `<span class="w-8"></span>`;
+
                 ul.innerHTML += `
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center justify-between mb-3">
                     <div class="flex items-center gap-3">
@@ -1277,7 +1288,10 @@
                             <span class="text-[9px] ${roleColor} border px-2 py-0.5 rounded font-bold uppercase inline-block mt-1.5">${roleLabel}</span>
                         </div>
                     </div>
-                    <button onclick="editUser('${u.id}')" class="text-xs font-bold text-primary px-3 py-2 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 transition">Edit</button>
+                    <div class="flex items-center gap-2">
+                        <div class="flex flex-col border-r border-gray-100 pr-2 mr-1">${upBtn}${dnBtn}</div>
+                        <button onclick="editUser('${u.id}')" class="text-xs font-bold text-primary px-3 py-2 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 transition">Edit</button>
+                    </div>
                 </div>`;
             });
         }
@@ -1324,8 +1338,8 @@
 
         async function syncUsersToServer() {
             try {
-                const payload = adminData.users.map(u => ({
-                    id: u.id.toString(), username: u.username, name: u.name, password: u.password, role: u.role
+                const payload = adminData.users.map((u, idx) => ({
+                    id: u.id.toString(), username: u.username, name: u.name, password: u.password, role: u.role, sortOrder: idx
                 }));
                 await fetch(`${SUPABASE_URL}/rest/v1/admin_users?on_conflict=id`, {
                     method: 'POST',
@@ -1387,6 +1401,18 @@
             } catch(e) { 
                 closeMessageBox(); showMessageBox('Gagal', 'Terjadi kesalahan saat menghapus.', 'fa-times', 'bg-red-50 text-danger'); 
             }
+        }
+
+        async function moveUser(index, dir) {
+            let temp = adminData.users[index];
+            adminData.users[index] = adminData.users[index + dir];
+            adminData.users[index + dir] = temp;
+            
+            showMessageBox('Menyimpan...', 'Mengupdate urutan di server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            await syncUsersToServer(); 
+            populateLoginDropdown(); // Update dropdown di menu login secara real-time
+            closeMessageBox();
+            renderUsers();
         }
 
         // --- END KELOLA PENGGUNA ---
