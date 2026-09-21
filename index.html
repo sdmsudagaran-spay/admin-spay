@@ -190,6 +190,14 @@
                             <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Kelola<br>Pengguna</span>
                         </button>
 
+                        <!-- Menu Baru: Kelola Siswa -->
+                        <button id="menu-students" onclick="showAdminScreen('screen-students')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-pink-50 hover:border-pink-200 border border-transparent transition group">
+                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-pink-600 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-user-graduate text-2xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Kelola<br>Siswa</span>
+                        </button>
+
                         <!-- Menu 5: Rekap Data -->
                         <button id="menu-rekap" onclick="showAdminScreen('screen-rekap')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-teal-50 hover:border-teal-200 border border-transparent transition group">
                             <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-teal-600 mb-3 group-hover:scale-110 transition-transform">
@@ -357,6 +365,45 @@
             </div>
         </div>
 
+        <!-- ================= KELOLA SISWA SCREEN ================= -->
+        <div id="screen-students" class="screen">
+            <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <button onclick="showAdminScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
+                    <h2 class="text-lg md:text-xl font-bold text-primary">Database Siswa</h2>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="downloadStudentTemplate()" class="bg-blue-50 text-primary hover:bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 border border-blue-100 shadow-sm"><i class="fas fa-file-download"></i> Template</button>
+                    <button onclick="openStudentUploadModal()" class="bg-green-50 text-success hover:bg-green-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 border border-green-100 shadow-sm"><i class="fas fa-file-upload"></i> Unggah</button>
+                </div>
+            </div>
+            
+            <div class="px-5 md:px-10 py-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div class="w-full md:w-auto relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-filter"></i></span>
+                        <select id="filter-student-class" onchange="renderStudentsAdmin()" class="w-full md:w-48 pl-10 pr-8 py-2.5 rounded-xl border border-gray-200 text-sm bg-white outline-none shadow-sm font-semibold text-gray-700 appearance-none focus:border-primary">
+                            <option value="">Semua Kelas</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-3 w-full md:w-auto">
+                        <button onclick="deleteSelectedStudents()" id="btn-delete-students" class="hidden bg-red-50 text-danger hover:bg-red-100 px-4 py-2.5 rounded-xl text-xs font-bold transition flex-1 md:flex-none justify-center border border-red-100 items-center shadow-sm"><i class="fas fa-trash-alt mr-1.5"></i> Hapus Terpilih</button>
+                        <button onclick="openStudentModal()" class="bg-primary text-white hover:bg-opacity-90 px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition flex-1 md:flex-none justify-center items-center"><i class="fas fa-plus mr-1.5"></i> Tambah Manual</button>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-24">
+                    <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center gap-3">
+                        <input type="checkbox" id="chk-all-students" onchange="toggleSelectAllStudents(this)" class="w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary cursor-pointer">
+                        <span class="text-sm font-bold text-gray-700">Pilih Semua <span id="lbl-student-filter-count" class="text-gray-400 font-normal ml-1"></span></span>
+                    </div>
+                    <div id="admin-student-list" class="divide-y divide-gray-100 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                        <!-- Data List Siswa -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- ================= REKAPITULASI SCREEN ================= -->
         <div id="screen-rekap" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
@@ -505,6 +552,10 @@
                                 <input type="checkbox" value="menu-users" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
                                 <span class="text-xs font-medium text-gray-700">Kelola Pengguna</span>
                             </label>
+                            <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                                <input type="checkbox" value="menu-students" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
+                                <span class="text-xs font-medium text-gray-700">Kelola Siswa</span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -581,6 +632,62 @@
                 <div class="pt-5 flex gap-3 mt-2 border-t border-gray-100">
                     <button id="btn-delete-menu" onclick="deleteMenu()" class="hidden flex-1 bg-red-50 text-danger font-bold py-3.5 rounded-xl border border-red-100 hover:bg-red-100 transition">Hapus</button>
                     <button onclick="saveMenu()" class="flex-[2] bg-primary text-white font-bold py-3.5 rounded-xl shadow-md hover:bg-opacity-90 transition">Simpan Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL TAMBAH/EDIT SISWA -->
+        <div id="modal-edit-student" class="fixed inset-0 bg-black/60 z-[60] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-end md:items-center justify-center">
+            <div class="modal-inner-card bg-white w-full max-w-[480px] rounded-t-[2rem] p-6 transform translate-y-full md:translate-y-0 transition-transform duration-300 shadow-2xl" id="modal-edit-student-content">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-bold text-gray-800" id="modal-student-title">Tambah Siswa</h3>
+                    <button onclick="closeStudentModal()" class="w-8 h-8 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 flex justify-center items-center"><i class="fas fa-times"></i></button>
+                </div>
+                <input type="hidden" id="edit-std-old-nis">
+                <div class="space-y-4 h-[60vh] overflow-y-auto no-scrollbar pb-4 px-1">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Nomor Induk Siswa (NIS)</label>
+                        <input type="text" id="edit-std-nis" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm bg-gray-50 outline-none" placeholder="Wajib Diisi (Unik)">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Nama Lengkap Siswa</label>
+                        <input type="text" id="edit-std-nama" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm bg-gray-50 outline-none" placeholder="Contoh: Ahmad Budi">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Kode Kelas</label>
+                            <input type="text" id="edit-std-kelas" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary text-sm bg-gray-50 outline-none" placeholder="Contoh: 1">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Nama Kelas</label>
+                            <input type="text" id="edit-std-namakelas" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary text-sm bg-gray-50 outline-none" placeholder="Contoh: 1 Abu Bakar">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Token Akses (Otomatis/Buat Sendiri)</label>
+                        <input type="text" id="edit-std-token" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary text-sm bg-gray-50 outline-none font-mono" placeholder="Kosongi untuk di-generate otomatis">
+                    </div>
+                </div>
+                <div class="pt-5 flex mt-2 border-t border-gray-100">
+                    <button onclick="saveStudent()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-md hover:bg-opacity-90 transition">Simpan Data Siswa</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL UPLOAD SISWA CSV -->
+        <div id="modal-upload-student" class="fixed inset-0 bg-black/60 z-[60] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-end md:items-center justify-center">
+            <div class="modal-inner-card bg-white w-full max-w-[480px] rounded-t-[2rem] p-6 transform translate-y-full md:translate-y-0 transition-transform duration-300 shadow-2xl" id="modal-upload-student-content">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-bold text-gray-800">Unggah Data Massal</h3>
+                    <button onclick="closeStudentUploadModal()" class="w-8 h-8 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 flex justify-center items-center"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="mb-6 bg-blue-50 border border-blue-100 p-4 rounded-xl text-xs text-blue-800 leading-relaxed">
+                    <i class="fas fa-info-circle mr-1"></i> Pastikan file berformat <b>.csv</b> (koma terpisah) dan memiliki *header* kolom yang sama persis dengan template yang diunduh. Jika NIS sudah ada, sistem akan <b>memperbarui (update)</b> datanya.
+                </div>
+                <input type="file" id="student-csv-file" accept=".csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-opacity-90 mb-6 cursor-pointer">
+                
+                <div class="pt-5 flex mt-2 border-t border-gray-100">
+                    <button onclick="processStudentCSV()" class="w-full bg-success text-white font-bold py-3.5 rounded-xl shadow-md hover:bg-opacity-90 transition flex items-center justify-center gap-2"><i class="fas fa-cloud-upload-alt"></i> Mulai Sinkronisasi</button>
                 </div>
             </div>
         </div>
@@ -724,6 +831,7 @@
             transactions: [], 
             menus: [], 
             allStudents: [], 
+            adminStudentList: [], // Data spesifik untuk kelola siswa
             currentFilter: 'all',
             cashSelectedStudent: null,
             cashSelectedBills: []
@@ -857,6 +965,33 @@
 
         function closeMessageBox() { document.getElementById('messageBox').classList.add('opacity-0'); setTimeout(()=>document.getElementById('messageBox').classList.add('hidden'),300); }
 
+        async function handleAdminLogin() {
+            let user = document.getElementById('loginId').value;
+            let pass = document.getElementById('loginPass').value;
+            
+            let found = adminData.users.find(u => u.username === user && u.password === pass);
+            if(found) {
+                adminData.loggedInUser = found.name;
+                adminData.role = found.role || '';
+                
+                document.getElementById('admin-user-name').innerText = found.name;
+                
+                let roleCount = (adminData.role).split(',').filter(x => x).length;
+                let roleLabel = roleCount >= 6 ? 'Admin System' : 'Akses Khusus';
+                document.getElementById('badge-role').innerText = roleLabel.toUpperCase();
+                
+                document.getElementById('loginPass').value = '';
+                
+                applyRoleRestrictions();
+                showAdminScreen('screen-home-admin');
+                
+                fetchTransactions(); 
+                fetchMenus(); 
+            } else {
+                showMessageBox('Gagal Login', 'Kata sandi salah atau akun tidak ditemukan.', 'fa-times-circle', 'bg-red-50 text-danger');
+            }
+        }
+
         function showAdminScreen(screenId) {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -866,7 +1001,6 @@
             
             bNav.classList.remove('hidden');
             
-            // Terapkan ulang batasan role pada navigasi bawah
             applyNavRoleRestrictions();
 
             document.querySelectorAll('.nav-btn-admin:not(.hidden)').forEach(btn => {
@@ -881,6 +1015,12 @@
             if(screenId === 'screen-menus') renderMenus();
             if(screenId === 'screen-users') renderUsers();
             if(screenId === 'screen-rekap') renderRekap();
+            
+            if(screenId === 'screen-students') {
+                if(adminData.adminStudentList && adminData.adminStudentList.length === 0) fetchStudentsForAdmin();
+                else renderStudentsAdmin();
+            }
+
             if(screenId === 'screen-cash') {
                 if(adminData.allStudents.length === 0) fetchAllStudentsForCash();
                 resetCashForm();
@@ -891,16 +1031,13 @@
             const roleStr = adminData.role || '';
             const allowedMenus = roleStr.split(',');
 
-            const allMenus = ['menu-cash', 'menu-verify', 'menu-history', 'menu-menus', 'menu-users', 'menu-rekap'];
+            const allMenus = ['menu-cash', 'menu-verify', 'menu-history', 'menu-menus', 'menu-users', 'menu-rekap', 'menu-students'];
             
             allMenus.forEach(menuId => {
                 const el = document.getElementById(menuId);
                 if(el) {
-                    if (allowedMenus.includes(menuId)) {
-                        el.classList.remove('hidden');
-                    } else {
-                        el.classList.add('hidden');
-                    }
+                    if (allowedMenus.includes(menuId)) el.classList.remove('hidden');
+                    else el.classList.add('hidden');
                 }
             });
         }
@@ -917,44 +1054,34 @@
                 if(target === 'screen-home-admin') { btn.classList.remove('hidden'); return; }
                 if(target === 'screen-verify') requiredMenu = 'menu-verify';
                 if(target === 'screen-history') requiredMenu = 'menu-history';
-
-                if (requiredMenu && !allowedMenus.includes(requiredMenu)) {
-                    btn.classList.add('hidden');
-                } else {
+                
+                if(requiredMenu && allowedMenus.includes(requiredMenu)) {
                     btn.classList.remove('hidden');
+                } else {
+                    btn.classList.add('hidden');
                 }
             });
         }
 
-        async function handleAdminLogin() {
-            const username = document.getElementById('loginId').value;
-            const pass = document.getElementById('loginPass').value;
-            
-            const user = adminData.users.find(u => u.username === username);
-
-            if(user && pass === user.password) {
-                showMessageBox('Memuat Sistem', 'Mengambil data server...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
-                
-                adminData.loggedInUser = user.name;
-                adminData.role = user.role;
-                document.getElementById('admin-user-name').innerText = user.name;
-                document.getElementById('badge-role').innerText = user.role.toUpperCase();
-
-                applyRoleRestrictions();
-
-                await Promise.all([fetchTransactions(), fetchMenus()]);
-                
-                closeMessageBox();
-                document.getElementById('loginForm').reset();
-                showAdminScreen('screen-home-admin');
-            } else {
-                showMessageBox('Akses Ditolak', 'Username atau kata sandi salah.', 'fa-lock', 'bg-red-50 text-danger');
-            }
+        function logoutAdmin() {
+            adminData = { loggedInUser: '', role: '', users: adminData.users, transactions: [], menus: [], allStudents: [], adminStudentList: [], currentFilter: 'all', cashSelectedStudent: null, cashSelectedBills: [] };
+            showAdminScreen('screen-login');
         }
 
-        function logoutAdmin() {
-            adminData = { loggedInUser: '', role: '', users: adminData.users, transactions: [], menus: [], allStudents: [], currentFilter: 'all', cashSelectedStudent: null, cashSelectedBills: [] };
-            showAdminScreen('screen-login');
+        function updateBadgePending() {
+            let count = adminData.transactions.filter(tx => tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected').length;
+            let badg1 = document.getElementById('home-badge-pending');
+            let badg2 = document.getElementById('nav-badge-pending');
+            let txt = document.getElementById('stat-pending');
+            
+            if(count > 0) {
+                if(badg1) { badg1.classList.remove('hidden'); badg1.innerText = count > 99 ? '99+' : count; }
+                if(badg2) { badg2.classList.remove('hidden'); badg2.innerText = count > 99 ? '99+' : count; }
+            } else {
+                if(badg1) badg1.classList.add('hidden');
+                if(badg2) badg2.classList.add('hidden');
+            }
+            if(txt) txt.innerText = count;
         }
 
         async function fetchTransactions() {
@@ -1264,23 +1391,294 @@
 
         // --- END KELOLA PENGGUNA ---
 
-        function updateBadgePending() {
-            const pendings = adminData.transactions.filter(tx => tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected');
-            const cnt = pendings.length;
-            const b2 = document.getElementById('home-badge-pending');
-            const b3 = document.getElementById('nav-badge-pending');
-            const txt = cnt > 99 ? '99+' : cnt;
-            
-            [b2, b3].forEach(b => {
-                if(b) {
-                    if(cnt > 0) { b.classList.remove('hidden'); b.innerText = txt; }
-                    else b.classList.add('hidden');
+        // --- KELOLA SISWA (ADMIN) FUNCTIONS ---
+        
+        async function fetchStudentsForAdmin() {
+            showMessageBox('Memuat...', 'Mengambil database siswa...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/students?select=nis,nama,kelas,namaKelas,token`, { headers: HEADERS });
+                if(res.ok) {
+                    adminData.adminStudentList = await res.json();
+                    
+                    let classes = [...new Set(adminData.adminStudentList.map(s => s.namaKelas || s.kelas).filter(k => k))];
+                    classes.sort();
+                    
+                    let el = document.getElementById('filter-student-class');
+                    el.innerHTML = '<option value="">Semua Kelas</option>';
+                    classes.forEach(c => el.innerHTML += `<option value="${c}">${c}</option>`);
+                    
+                    renderStudentsAdmin();
+                    closeMessageBox();
+                } else {
+                    throw new Error("Gagal mengambil data");
                 }
-            });
-            
-            const stat = document.getElementById('stat-pending');
-            if(stat) stat.innerText = cnt;
+            } catch (e) { 
+                closeMessageBox(); 
+                showMessageBox('Gagal', 'Terjadi kesalahan jaringan.', 'fa-wifi', 'bg-red-50 text-danger'); 
+            }
         }
+
+        function renderStudentsAdmin() {
+            const filterClass = document.getElementById('filter-student-class').value;
+            let list = adminData.adminStudentList;
+            
+            if (filterClass) {
+                list = list.filter(s => (s.namaKelas || s.kelas) === filterClass);
+            }
+            
+            list.sort((a,b) => a.nama.localeCompare(b.nama));
+            
+            document.getElementById('lbl-student-filter-count').innerText = `(${list.length} Siswa)`;
+            document.getElementById('chk-all-students').checked = false;
+            toggleDeleteStudentsButton();
+
+            const container = document.getElementById('admin-student-list');
+            container.innerHTML = '';
+            
+            if (list.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-gray-400 text-sm italic">Tidak ada data siswa ditemukan.</div>`;
+                return;
+            }
+
+            list.forEach(s => {
+                const k = s.namaKelas || s.kelas || '-';
+                container.innerHTML += `
+                    <div class="px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition group">
+                        <div class="flex items-center gap-3 w-full overflow-hidden">
+                            <input type="checkbox" value="${s.nis}" onchange="toggleDeleteStudentsButton()" class="chk-student w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary flex-shrink-0 cursor-pointer">
+                            <div class="flex-1 min-w-0" onclick="editStudent('${s.nis}')" class="cursor-pointer">
+                                <h4 class="font-bold text-sm text-gray-800 truncate">${s.nama}</h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5 truncate">NIS: ${s.nis} | Kelas: <span class="font-semibold text-gray-700">${k}</span> | Token: <span class="font-mono text-gray-400">${s.token || '-'}</span></p>
+                            </div>
+                        </div>
+                        <button onclick="editStudent('${s.nis}')" class="w-8 h-8 rounded-full bg-blue-50 text-primary flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-sm ml-2 flex-shrink-0"><i class="fas fa-pen text-xs"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleSelectAllStudents(cb) {
+            document.querySelectorAll('.chk-student').forEach(el => el.checked = cb.checked);
+            toggleDeleteStudentsButton();
+        }
+
+        function toggleDeleteStudentsButton() {
+            const btn = document.getElementById('btn-delete-students');
+            const checkedCount = document.querySelectorAll('.chk-student:checked').length;
+            if (checkedCount > 0) {
+                btn.classList.remove('hidden');
+                btn.innerHTML = `<i class="fas fa-trash-alt mr-1.5"></i> Hapus (${checkedCount})`;
+            } else {
+                btn.classList.add('hidden');
+            }
+        }
+
+        function openStudentModal() {
+            document.getElementById('modal-edit-student-content').classList.remove('translate-y-full'); 
+            document.getElementById('modal-edit-student').classList.remove('hidden');
+            setTimeout(()=>document.getElementById('modal-edit-student').classList.remove('opacity-0'), 10);
+            
+            document.getElementById('modal-student-title').innerText = 'Tambah Siswa Manual';
+            document.getElementById('edit-std-old-nis').value = '';
+            document.getElementById('edit-std-nis').value = '';
+            document.getElementById('edit-std-nama').value = '';
+            document.getElementById('edit-std-kelas').value = '';
+            document.getElementById('edit-std-namakelas').value = '';
+            document.getElementById('edit-std-token').value = '';
+        }
+
+        function closeStudentModal() {
+            document.getElementById('modal-edit-student').classList.add('opacity-0'); 
+            document.getElementById('modal-edit-student-content').classList.add('translate-y-full'); 
+            setTimeout(()=>document.getElementById('modal-edit-student').classList.add('hidden'), 300);
+        }
+
+        function editStudent(nis) {
+            const s = adminData.adminStudentList.find(x => x.nis === nis);
+            if (!s) return;
+            
+            openStudentModal();
+            document.getElementById('modal-student-title').innerText = 'Edit Data Siswa';
+            document.getElementById('edit-std-old-nis').value = s.nis;
+            document.getElementById('edit-std-nis').value = s.nis;
+            document.getElementById('edit-std-nama').value = s.nama;
+            document.getElementById('edit-std-kelas').value = s.kelas || '';
+            document.getElementById('edit-std-namakelas').value = s.namaKelas || '';
+            document.getElementById('edit-std-token').value = s.token || '';
+        }
+
+        async function saveStudent() {
+            const oldNis = document.getElementById('edit-std-old-nis').value;
+            const nis = document.getElementById('edit-std-nis').value.trim();
+            const nama = document.getElementById('edit-std-nama').value.trim();
+            const kelas = document.getElementById('edit-std-kelas').value.trim();
+            const namaKelas = document.getElementById('edit-std-namakelas').value.trim();
+            let token = document.getElementById('edit-std-token').value.trim();
+
+            if (!nis || !nama) {
+                showMessageBox('Peringatan', 'NIS dan Nama wajib diisi.', 'fa-exclamation-triangle', 'bg-orange-50 text-accent');
+                return;
+            }
+
+            if (!token) { token = 'TKN' + Math.floor(1000 + Math.random() * 9000); }
+
+            showMessageBox('Menyimpan...', 'Menyimpan data siswa ke database...', 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            
+            const payload = { nis, nama, kelas, namaKelas, token };
+
+            try {
+                if (oldNis && oldNis !== nis) {
+                    // Update dengan ganti NIS (Hapus lama, Insert baru) - Cukup tricky jika ada FK, tapi kita asumsikan simpel
+                    await fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${oldNis}`, { method: 'DELETE', headers: HEADERS });
+                }
+
+                await fetch(`${SUPABASE_URL}/rest/v1/students?on_conflict=nis`, {
+                    method: 'POST',
+                    headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
+                    body: JSON.stringify([payload])
+                });
+
+                closeStudentModal();
+                await fetchStudentsForAdmin(); // Reload dari server
+                adminData.allStudents = []; // Reset cache cash
+                
+                closeMessageBox();
+                showMessageBox('Sukses', 'Data siswa berhasil disimpan.', 'fa-check', 'bg-green-50 text-success');
+            } catch (e) {
+                closeMessageBox();
+                showMessageBox('Gagal', 'Terjadi kesalahan sistem.', 'fa-times', 'bg-red-50 text-danger');
+            }
+        }
+
+        async function deleteSelectedStudents() {
+            const chks = document.querySelectorAll('.chk-student:checked');
+            if(chks.length === 0) return;
+            if(!confirm(`Yakin ingin MENGHAPUS PERMANEN ${chks.length} siswa yang terpilih?`)) return;
+
+            showMessageBox('Menghapus...', 'Memproses penghapusan massal...', 'fa-spinner fa-spin', 'text-danger bg-red-50', '', 'hidden');
+            
+            try {
+                // Hapus Paralel agar cepat
+                const deletePromises = Array.from(chks).map(chk => 
+                    fetch(`${SUPABASE_URL}/rest/v1/students?nis=eq.${chk.value}`, { method: 'DELETE', headers: HEADERS })
+                );
+                
+                await Promise.all(deletePromises);
+                
+                await fetchStudentsForAdmin(); // Reload list
+                adminData.allStudents = []; // Reset cache cash
+                
+                closeMessageBox();
+                showMessageBox('Terhapus', `${chks.length} siswa berhasil dihapus.`, 'fa-trash', 'bg-red-50 text-danger');
+            } catch (e) {
+                closeMessageBox();
+                showMessageBox('Gagal', 'Gagal menghapus beberapa data.', 'fa-times', 'bg-red-50 text-danger');
+            }
+        }
+
+        function openStudentUploadModal() {
+            document.getElementById('modal-upload-student-content').classList.remove('translate-y-full'); 
+            document.getElementById('modal-upload-student').classList.remove('hidden');
+            setTimeout(()=>document.getElementById('modal-upload-student').classList.remove('opacity-0'), 10);
+            document.getElementById('student-csv-file').value = '';
+        }
+
+        function closeStudentUploadModal() {
+            document.getElementById('modal-upload-student').classList.add('opacity-0'); 
+            document.getElementById('modal-upload-student-content').classList.add('translate-y-full'); 
+            setTimeout(()=>document.getElementById('modal-upload-student').classList.add('hidden'), 300);
+        }
+
+        function downloadStudentTemplate() {
+            const csvContent = "nis,nama,kelas,namakelas,token\n112233,Ahmad Budi Santoso,1,1 Abu Bakar,TKN1234\n112234,Siti Aisyah,2,2 Umar,TKN5678";
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "Template_Upload_Siswa.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function processStudentCSV() {
+            const fileInput = document.getElementById('student-csv-file');
+            if(!fileInput.files.length) {
+                showMessageBox('Peringatan', 'Pilih file CSV terlebih dahulu!', 'fa-file-excel', 'bg-orange-50 text-accent');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                if(lines.length < 2) return alert("File CSV kosong atau format salah.");
+
+                const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/[^a-z0-9]/g, ''));
+                
+                // Cari Index Kolom
+                const idxNis = headers.indexOf('nis');
+                const idxNama = headers.indexOf('nama');
+                const idxKelas = headers.indexOf('kelas');
+                const idxNamaKelas = headers.indexOf('namakelas');
+                const idxToken = headers.indexOf('token');
+
+                if (idxNis === -1 || idxNama === -1) {
+                    showMessageBox('Format Salah', 'File CSV harus memiliki header "nis" dan "nama".', 'fa-times', 'bg-red-50 text-danger');
+                    return;
+                }
+
+                let payload = [];
+                for(let i = 1; i < lines.length; i++) {
+                    if(!lines[i].trim()) continue;
+                    let data = lines[i].split(',');
+                    
+                    let nis = data[idxNis] ? data[idxNis].trim() : '';
+                    let nama = data[idxNama] ? data[idxNama].trim() : '';
+                    let kelas = (idxKelas !== -1 && data[idxKelas]) ? data[idxKelas].trim() : '';
+                    let namaKelas = (idxNamaKelas !== -1 && data[idxNamaKelas]) ? data[idxNamaKelas].trim() : '';
+                    let token = (idxToken !== -1 && data[idxToken]) ? data[idxToken].trim() : ('TKN' + Math.floor(1000 + Math.random() * 9000));
+
+                    if(nis && nama) {
+                        payload.push({ nis, nama, kelas, namaKelas, token });
+                    }
+                }
+
+                if (payload.length > 0) {
+                    uploadStudentsToSupabase(payload);
+                } else {
+                    alert("Tidak ada baris data valid yang bisa dibaca.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        async function uploadStudentsToSupabase(payload) {
+            showMessageBox('Sinkronisasi...', `Menyimpan ${payload.length} data siswa... Jangan tutup halaman ini.`, 'fa-spinner fa-spin', 'text-primary bg-blue-50', '', 'hidden');
+            try {
+                // Kirim payload (bulk upsert)
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/students?on_conflict=nis`, {
+                    method: 'POST',
+                    headers: { ...HEADERS, 'Prefer': 'resolution=merge-duplicates' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if(!res.ok) throw new Error("Gagal mengunggah data.");
+
+                closeStudentUploadModal();
+                await fetchStudentsForAdmin(); // Reload data ke list
+                adminData.allStudents = []; // Reset cache kasir
+                
+                closeMessageBox();
+                showMessageBox('Berhasil', `${payload.length} Siswa sukses diunggah ke server.`, 'fa-cloud-download-alt', 'bg-green-50 text-success');
+            } catch(e) {
+                closeMessageBox();
+                showMessageBox('Gagal', e.message, 'fa-times', 'bg-red-50 text-danger');
+            }
+        }
+        // --- END KELOLA SISWA ---
 
         async function fetchAllStudentsForCash() {
             try {
