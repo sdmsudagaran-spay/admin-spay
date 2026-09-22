@@ -2308,7 +2308,7 @@
             });
 
             // Daftar tagihan yang BUKAN angsuran (Harus bayar utuh per bulan)
-            const mList = ['spp','tahfidzPlus','tahfidz','icp','icpSore'];
+            const mList = ['spp','tahfidzPlus','tahfidz','icp','icpSore', 'ajs', 'tpq', 'olimpiade'];
             
             history.forEach(tx => {
                 BILL_COLUMNS.forEach(c => {
@@ -2549,6 +2549,9 @@
                 if (code === 'tahfidz') payload.ketTahfidz = ket; 
                 if (code === 'icp') payload.ketIcp = ket; 
                 if (code === 'icpSore') payload.ketIcpSore = ket;
+                if (code === 'ajs') payload.ketAjs = ket;
+                if (code === 'tpq') payload.ketTpq = ket;
+                if (code === 'olimpiade') payload.ketOlimpiade = ket;
             });
 
             showLoading('Memproses Pembayaran...');
@@ -2770,6 +2773,13 @@
                 if(c.type === txMode && tx[c.db] && parseInt(tx[c.db]) > 0) {
                     let title = c.title; 
                     if(c.code === 'spp' && tx.ketSpp) title += ` (${tx.ketSpp})`;
+                    if(c.code === 'tahfidzPlus' && tx.ketTahfidzPlus) title += ` (${tx.ketTahfidzPlus})`;
+                    if(c.code === 'tahfidz' && tx.ketTahfidz) title += ` (${tx.ketTahfidz})`;
+                    if(c.code === 'icp' && tx.ketIcp) title += ` (${tx.ketIcp})`;
+                    if(c.code === 'icpSore' && tx.ketIcpSore) title += ` (${tx.ketIcpSore})`;
+                    if(c.code === 'ajs' && tx.ketAjs) title += ` (${tx.ketAjs})`;
+                    if(c.code === 'tpq' && tx.ketTpq) title += ` (${tx.ketTpq})`;
+                    if(c.code === 'olimpiade' && tx.ketOlimpiade) title += ` (${tx.ketOlimpiade})`;
                     details.push({ title: title, amount: parseInt(tx[c.db]) });
                 }
             }); 
