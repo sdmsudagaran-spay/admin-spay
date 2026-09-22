@@ -98,7 +98,7 @@
             pointer-events: none; 
         }
         
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
@@ -164,58 +164,96 @@
 
             <div class="px-5 md:px-10 -mt-10 relative z-20">
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 md:p-8">
-                    <h3 class="text-sm font-bold text-gray-800 mb-5 border-b border-gray-100 pb-2">Menu Layanan Petugas</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                        <button id="menu-cash" onclick="showAdminScreen('screen-cash')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-blue-50 hover:border-blue-200 border border-transparent transition group">
+                    
+                    <!-- MENU REGULER -->
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Layanan Reguler</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+                        <button id="menu-cash" onclick="openScreen('screen-cash', 'reguler')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-blue-50 hover:border-blue-200 border border-transparent transition group">
                             <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-money-bill-wave text-2xl"></i>
                             </div>
                             <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Bayar<br>Tunai</span>
                         </button>
-                        <button id="menu-verify" onclick="showAdminScreen('screen-verify')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-orange-50 hover:border-orange-200 border border-transparent transition group relative">
+                        <button id="menu-verify" onclick="openScreen('screen-verify', 'reguler')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-orange-50 hover:border-orange-200 border border-transparent transition group relative">
                             <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-accent mb-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-university text-2xl"></i>
                             </div>
                             <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Cek<br>Transfer</span>
-                            <span id="home-badge-pending" class="absolute top-2 right-2 bg-danger text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden shadow-md">0</span>
+                            <span id="badge-verify-reg" class="absolute top-2 right-2 bg-danger text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md" style="display:none;">0</span>
                         </button>
-                        <button id="menu-history" onclick="showAdminScreen('screen-history')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-green-50 hover:border-green-200 border border-transparent transition group">
+                        <button id="menu-history" onclick="openScreen('screen-history', 'reguler')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-green-50 hover:border-green-200 border border-transparent transition group">
                             <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-success mb-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-list-alt text-2xl"></i>
                             </div>
                             <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Riwayat<br>Transaksi</span>
                         </button>
-                        <button id="menu-menus" onclick="showAdminScreen('screen-menus')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-purple-50 hover:border-purple-200 border border-transparent transition group">
-                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-purple-600 mb-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-sliders-h text-2xl"></i>
-                            </div>
-                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Kelola<br>Aplikasi</span>
-                        </button>
-                        <button id="menu-users" onclick="showAdminScreen('screen-users')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-indigo-50 hover:border-indigo-200 border border-transparent transition group">
-                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-indigo-600 mb-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-users-cog text-2xl"></i>
-                            </div>
-                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Kelola<br>Pengguna</span>
-                        </button>
-                        <button id="menu-students" onclick="showAdminScreen('screen-students')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-pink-50 hover:border-pink-200 border border-transparent transition group">
-                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-pink-600 mb-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-user-graduate text-2xl"></i>
-                            </div>
-                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Kelola<br>Siswa</span>
-                        </button>
-                        <button id="menu-students-plus" onclick="showAdminScreen('screen-students-plus')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-rose-50 hover:border-rose-200 border border-transparent transition group">
-                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-rose-600 mb-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-user-plus text-2xl"></i>
-                            </div>
-                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Siswa<br>Plus</span>
-                        </button>
-                        <button id="menu-rekap" onclick="showAdminScreen('screen-rekap')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-teal-50 hover:border-teal-200 border border-transparent transition group">
+                        <button id="menu-rekap" onclick="openScreen('screen-rekap', 'reguler')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-teal-50 hover:border-teal-200 border border-transparent transition group">
                             <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-teal-600 mb-3 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-chart-pie text-2xl"></i>
                             </div>
                             <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Rekap<br>Data</span>
                         </button>
                     </div>
+
+                    <!-- MENU PLUS -->
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Layanan Plus</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+                        <button id="menu-cash-plus" onclick="openScreen('screen-cash', 'plus')" class="flex flex-col items-center justify-center p-4 bg-rose-50 rounded-xl hover:bg-rose-100 hover:border-rose-200 border border-transparent transition group">
+                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-rose-600 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-money-bill-wave text-2xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Tunai<br>Plus</span>
+                        </button>
+                        <button id="menu-verify-plus" onclick="openScreen('screen-verify', 'plus')" class="flex flex-col items-center justify-center p-4 bg-rose-50 rounded-xl hover:bg-rose-100 hover:border-rose-200 border border-transparent transition group relative">
+                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-rose-600 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-university text-2xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Cek TF<br>Plus</span>
+                            <span id="badge-verify-plus" class="absolute top-2 right-2 bg-danger text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md" style="display:none;">0</span>
+                        </button>
+                        <button id="menu-history-plus" onclick="openScreen('screen-history', 'plus')" class="flex flex-col items-center justify-center p-4 bg-rose-50 rounded-xl hover:bg-rose-100 hover:border-rose-200 border border-transparent transition group">
+                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-rose-600 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-list-alt text-2xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Riwayat<br>Plus</span>
+                        </button>
+                        <button id="menu-rekap-plus" onclick="openScreen('screen-rekap', 'plus')" class="flex flex-col items-center justify-center p-4 bg-rose-50 rounded-xl hover:bg-rose-100 hover:border-rose-200 border border-transparent transition group">
+                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-rose-600 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-chart-pie text-2xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Rekap<br>Plus</span>
+                        </button>
+                    </div>
+
+                    <!-- SISTEM & DATABASE -->
+                    <h3 class="text-sm font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Sistem & Database</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                        <button id="menu-menus" onclick="openScreen('screen-menus')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-purple-50 hover:border-purple-200 border border-transparent transition group">
+                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-purple-600 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-sliders-h text-2xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Kelola<br>Aplikasi</span>
+                        </button>
+                        <button id="menu-users" onclick="openScreen('screen-users')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-indigo-50 hover:border-indigo-200 border border-transparent transition group">
+                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-indigo-600 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-users-cog text-2xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Kelola<br>Pengguna</span>
+                        </button>
+                        <button id="menu-students" onclick="openScreen('screen-students')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-pink-50 hover:border-pink-200 border border-transparent transition group">
+                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-pink-600 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-user-graduate text-2xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Kelola<br>Siswa</span>
+                        </button>
+                        <button id="menu-students-plus" onclick="openScreen('screen-students-plus')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-rose-50 hover:border-rose-200 border border-transparent transition group">
+                            <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-rose-600 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-user-plus text-2xl"></i>
+                            </div>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Siswa<br>Plus</span>
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -224,8 +262,8 @@
         <div id="screen-cash" class="screen relative">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center justify-between">
                 <div class="flex items-center gap-4">
-                    <button onclick="showAdminScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
-                    <h2 class="text-lg md:text-xl font-bold text-primary">Pembayaran Tunai</h2>
+                    <button onclick="openScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
+                    <h2 class="text-lg md:text-xl font-bold text-primary" id="title-cash">Pembayaran Tunai</h2>
                 </div>
                 <div class="text-xs font-semibold bg-blue-50 text-blue-700 px-3 py-1 rounded-full"><i class="fas fa-cash-register mr-1"></i> Kasir</div>
             </div>
@@ -290,7 +328,7 @@
         <!-- ================= CEK TRANSFER SCREEN ================= -->
         <div id="screen-verify" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex justify-between items-center">
-                <h2 class="text-lg md:text-xl font-bold text-primary">Cek Transferan</h2>
+                <h2 class="text-lg md:text-xl font-bold text-primary" id="title-verify">Cek Transferan</h2>
                 <div class="flex gap-2">
                     <button onclick="filterVerify('all')" id="btn-filter-all" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-primary transition">Semua</button>
                     <button onclick="filterVerify('today')" id="btn-filter-today" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-gray-500 hover:bg-gray-50 transition border border-gray-100">Hari Ini</button>
@@ -308,7 +346,7 @@
         <!-- ================= RIWAYAT SCREEN ================= -->
         <div id="screen-history" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex justify-between items-center">
-                <h2 class="text-lg md:text-xl font-bold text-primary">Semua Transaksi</h2>
+                <h2 class="text-lg md:text-xl font-bold text-primary" id="title-history">Semua Transaksi</h2>
                 <button onclick="fetchTransactions()" class="text-gray-400 hover:text-primary p-2"><i class="fas fa-sync-alt"></i></button>
             </div>
             <div class="px-5 md:px-10 py-6">
@@ -317,6 +355,16 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400"><i class="fas fa-search"></i></span>
                         <input type="text" id="search-history" onkeyup="renderAllHistory()" class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none focus:border-primary text-sm bg-white shadow-sm" placeholder="Cari NIS, Nama, atau No Transaksi...">
                     </div>
+                    <!-- FILTER KATEGORI PLUS (KHUSUS MODE PLUS) -->
+                    <select id="filter-history-plus" onchange="renderAllHistory()" class="hidden md:w-auto px-4 py-3 rounded-xl border border-rose-200 text-sm bg-rose-50 text-rose-700 font-semibold focus:outline-none focus:border-rose-400 shadow-sm">
+                        <option value="">Semua Tagihan Plus</option>
+                        <option value="icpSore">ICP Sore</option>
+                        <option value="ajs">AJS</option>
+                        <option value="tpq">TPQ</option>
+                        <option value="olimpiade">Olimpiade</option>
+                        <option value="rihlah">Rihlah</option>
+                    </select>
+                    <!-- RENTANG TANGGAL -->
                     <div class="flex items-center gap-2 w-full md:w-auto bg-white rounded-xl border border-gray-200 px-3 py-2 shadow-sm">
                         <input type="date" id="filter-date-history-start" onchange="renderAllHistory()" class="text-sm focus:outline-none text-gray-700 bg-transparent">
                         <span class="text-xs text-gray-400 font-bold">s.d</span>
@@ -331,7 +379,7 @@
         <!-- ================= KELOLA MENU SCREEN ================= -->
         <div id="screen-menus" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
-                <button onclick="showAdminScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
+                <button onclick="openScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
                 <div>
                     <h2 class="text-lg md:text-xl font-bold text-primary">Kelola Menu Aplikasi</h2>
                     <p class="text-xs text-gray-500 mt-1">Atur tampilan beranda wali murid</p>
@@ -349,7 +397,7 @@
         <!-- ================= KELOLA PENGGUNA SCREEN ================= -->
         <div id="screen-users" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
-                <button onclick="showAdminScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
+                <button onclick="openScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
                 <div>
                     <h2 class="text-lg md:text-xl font-bold text-primary">Kelola Pengguna</h2>
                     <p class="text-xs text-gray-500 mt-1">Atur akses, akun admin & urutan login</p>
@@ -368,7 +416,7 @@
         <div id="screen-students" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center justify-between">
                 <div class="flex items-center gap-4">
-                    <button onclick="showAdminScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
+                    <button onclick="openScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
                     <h2 class="text-lg md:text-xl font-bold text-primary">Database Siswa</h2>
                 </div>
                 <div class="flex gap-2">
@@ -385,6 +433,7 @@
                                 <option value="">Semua Kelas</option>
                             </select>
                         </div>
+                        <!-- KOTAK PENCARIAN SISWA -->
                         <div class="relative w-full md:w-64">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-search"></i></span>
                             <input type="text" id="search-student-name" onkeyup="renderStudentsAdmin()" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white outline-none shadow-sm font-medium text-gray-700 focus:border-primary" placeholder="Cari Nama / NIS...">
@@ -409,7 +458,7 @@
         <!-- ================= KELOLA SISWA PLUS SCREEN ================= -->
         <div id="screen-students-plus" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex items-center gap-4">
-                <button onclick="showAdminScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
+                <button onclick="openScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
                 <div>
                     <h2 class="text-lg md:text-xl font-bold text-primary">Database Siswa Plus</h2>
                     <p class="text-xs text-gray-500 mt-1">Atur tagihan tambahan khusus</p>
@@ -442,15 +491,27 @@
         <div id="screen-rekap" class="screen">
             <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                    <button onclick="showAdminScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
-                    <h2 class="text-lg md:text-xl font-bold text-primary">Rekapitulasi</h2>
+                    <button onclick="openScreen('screen-home-admin')" class="text-gray-500 hover:text-primary"><i class="fas fa-arrow-left text-xl"></i></button>
+                    <h2 class="text-lg md:text-xl font-bold text-primary" id="title-rekap">Rekapitulasi</h2>
                 </div>
-                <div class="relative w-full md:w-64">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-filter"></i></span>
-                    <select id="filter-rekap-class" onchange="renderRekap()" class="w-full pl-10 pr-8 py-2.5 rounded-xl border border-gray-200 text-sm bg-gray-50 outline-none shadow-sm font-semibold text-gray-700 appearance-none focus:border-primary">
-                        <option value="">Semua Kelas</option>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <!-- FILTER KATEGORI PLUS (KHUSUS MODE PLUS) -->
+                    <select id="filter-rekap-plus" onchange="renderRekap()" class="hidden w-full md:w-40 px-3 py-2.5 rounded-xl border border-rose-200 text-sm bg-rose-50 text-rose-700 font-semibold focus:outline-none shadow-sm">
+                        <option value="">Semua Plus</option>
+                        <option value="icpSore">ICP Sore</option>
+                        <option value="ajs">AJS</option>
+                        <option value="tpq">TPQ</option>
+                        <option value="olimpiade">Olimpiade</option>
+                        <option value="rihlah">Rihlah</option>
                     </select>
-                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down text-xs"></i></span>
+                    <!-- FILTER KELAS -->
+                    <div class="relative w-full md:w-48">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-filter"></i></span>
+                        <select id="filter-rekap-class" onchange="renderRekap()" class="w-full pl-10 pr-8 py-2.5 rounded-xl border border-gray-200 text-sm bg-gray-50 outline-none shadow-sm font-semibold text-gray-700 appearance-none focus:border-primary">
+                            <option value="">Semua Kelas</option>
+                        </select>
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down text-xs"></i></span>
+                    </div>
                 </div>
             </div>
             
@@ -605,10 +666,6 @@
                                 <input type="checkbox" value="menu-students" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
                                 <span class="text-xs font-medium text-gray-700">Kelola Siswa</span>
                             </label>
-                            <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
-                                <input type="checkbox" value="menu-students-plus" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
-                                <span class="text-xs font-medium text-gray-700">Siswa Plus</span>
-                            </label>
                         </div>
                     </div>
                 </div>
@@ -692,6 +749,7 @@
                         <label class="block text-xs font-semibold text-gray-600 mb-1.5">Nama Lengkap Siswa</label>
                         <input type="text" id="edit-std-nama" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm bg-gray-50 outline-none" placeholder="Contoh: Ahmad Budi">
                     </div>
+                    <!-- INPUT DROPDOWN DATALIST -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1.5">Kode Kelas</label>
@@ -710,7 +768,7 @@
                     </div>
                     
                     <div class="pt-4 mt-2 border-t border-gray-100">
-                        <h4 class="text-sm font-bold text-gray-700 mb-3"><i class="fas fa-file-invoice-dollar mr-1.5 text-primary"></i> Pengaturan Tagihan Awal (Rp)</h4>
+                        <h4 class="text-sm font-bold text-gray-700 mb-3"><i class="fas fa-file-invoice-dollar mr-1.5 text-primary"></i> Pengaturan Tagihan Reguler (Rp)</h4>
                         <div class="grid grid-cols-2 gap-3">
                             <div><label class="block text-[10px] font-semibold text-gray-500 mb-1">BPS</label><input type="number" id="edit-std-bps" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0"></div>
                             <div><label class="block text-[10px] font-semibold text-gray-500 mb-1">SPP Juli</label><input type="number" id="edit-std-sppJuli" class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary text-xs bg-white outline-none" placeholder="0"></div>
@@ -881,14 +939,14 @@
         <!-- ================= NAVIGATION & UTILITY ================= -->
         <nav id="bottom-nav-admin" class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-40 hidden pb-2 pt-1 shadow-[0_-5px_20px_rgba(0,0,0,0.03)]">
             <div class="flex justify-around items-center py-2 px-4">
-                <button onclick="showAdminScreen('screen-home-admin')" class="nav-btn-admin flex flex-col items-center p-2 w-16 text-primary" data-target="screen-home-admin">
+                <button onclick="openScreen('screen-home-admin')" class="nav-btn-admin flex flex-col items-center p-2 w-16 text-primary" data-target="screen-home-admin">
                     <i class="fas fa-home text-xl mb-1"></i><span class="text-[10px] font-bold">Beranda</span>
                 </button>
-                <button onclick="showAdminScreen('screen-verify')" class="nav-btn-admin flex flex-col items-center p-2 w-16 text-gray-400 relative" data-target="screen-verify">
+                <button onclick="openScreen('screen-verify', currentAppMode)" class="nav-btn-admin flex flex-col items-center p-2 w-16 text-gray-400 relative" data-target="screen-verify">
                     <i class="fas fa-check-double text-xl mb-1"></i><span class="text-[10px] font-bold">Cek TF</span>
                     <span id="nav-badge-pending" class="absolute top-1 right-2 bg-danger text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
                 </button>
-                <button onclick="showAdminScreen('screen-history')" class="nav-btn-admin flex flex-col items-center p-2 w-16 text-gray-400" data-target="screen-history">
+                <button onclick="openScreen('screen-history', currentAppMode)" class="nav-btn-admin flex flex-col items-center p-2 w-16 text-gray-400" data-target="screen-history">
                     <i class="fas fa-list-alt text-xl mb-1"></i><span class="text-[10px] font-bold">Riwayat</span>
                 </button>
                 <button onclick="logoutAdmin()" class="nav-btn-admin flex flex-col items-center p-2 w-16 text-gray-400 hover:text-danger">
@@ -947,22 +1005,24 @@
             'fa-wifi', 'fa-bus-alt', 'fa-circle'
         ];
         
+        let currentAppMode = 'reguler';
+
         const BILL_COLUMNS = [
-            {code: 'bps', title: 'BPS', db: 'bps'}, 
-            {code: 'sppJuli', title: 'SPP Juli', db: 'sppJuli'},
-            {code: 'spp', title: 'SPP', db: 'spp'}, 
-            {code: 'daftarUlang1', title: 'Daftar Ulang I', db: 'daftarUlang1'},
-            {code: 'daftarUlang2', title: 'Daftar Ulang II', db: 'daftarUlang2'}, 
-            {code: 'daftarUlang3', title: 'Daftar Ulang III', db: 'daftarUlang3'},
-            {code: 'tahfidzPlus', title: 'Kelas Tahfidz Plus', db: 'tahfidzPlus'}, 
-            {code: 'tahfidz', title: 'Kelas Tahfidz', db: 'tahfidz'},
-            {code: 'icp', title: 'Kelas ICP', db: 'icp'}, 
-            {code: 'icpSore', title: 'ICP Sore', db: 'icpSore'},
-            {code: 'tanggungan', title: 'Tanggungan Tahun Lalu', db: 'tanggungan'},
-            {code: 'ajs', title: 'AJS', db: 'ajs'}, 
-            {code: 'tpq', title: 'TPQ', db: 'tpq'},
-            {code: 'olimpiade', title: 'Olimpiade', db: 'olimpiade'}, 
-            {code: 'rihlah', title: 'Rihlah', db: 'rihlah'}
+            {code: 'bps', title: 'BPS', db: 'bps', type: 'reguler'}, 
+            {code: 'sppJuli', title: 'SPP Juli', db: 'sppJuli', type: 'reguler'},
+            {code: 'spp', title: 'SPP', db: 'spp', type: 'reguler'}, 
+            {code: 'daftarUlang1', title: 'Daftar Ulang I', db: 'daftarUlang1', type: 'reguler'},
+            {code: 'daftarUlang2', title: 'Daftar Ulang II', db: 'daftarUlang2', type: 'reguler'}, 
+            {code: 'daftarUlang3', title: 'Daftar Ulang III', db: 'daftarUlang3', type: 'reguler'},
+            {code: 'tahfidzPlus', title: 'Kelas Tahfidz Plus', db: 'tahfidzPlus', type: 'reguler'}, 
+            {code: 'tahfidz', title: 'Kelas Tahfidz', db: 'tahfidz', type: 'reguler'},
+            {code: 'icp', title: 'Kelas ICP', db: 'icp', type: 'reguler'}, 
+            {code: 'tanggungan', title: 'Tanggungan Tahun Lalu', db: 'tanggungan', type: 'reguler'},
+            {code: 'icpSore', title: 'ICP Sore', db: 'icpSore', type: 'plus'},
+            {code: 'ajs', title: 'AJS', db: 'ajs', type: 'plus'}, 
+            {code: 'tpq', title: 'TPQ', db: 'tpq', type: 'plus'},
+            {code: 'olimpiade', title: 'Olimpiade', db: 'olimpiade', type: 'plus'}, 
+            {code: 'rihlah', title: 'Rihlah', db: 'rihlah', type: 'plus'}
         ];
 
         const DEFAULT_USERS = [
@@ -1006,6 +1066,14 @@
             return nk || k || '-';
         }
 
+        function getTxKategori(tx) {
+            if (tx.kategori) return tx.kategori;
+            if (parseInt(tx.icpSore)>0 || parseInt(tx.ajs)>0 || parseInt(tx.tpq)>0 || parseInt(tx.olimpiade)>0 || parseInt(tx.rihlah)>0) {
+                return 'plus';
+            }
+            return 'reguler';
+        }
+
         function showLoading(text = 'Memproses...') {
             document.getElementById('loadingText').innerText = text;
             document.getElementById('loadingOverlay').classList.remove('hidden');
@@ -1034,7 +1102,7 @@
             
             let x = document.getElementById('messageBox'); 
             x.classList.remove('hidden'); 
-            void x.offsetWidth; // trigger reflow
+            void x.offsetWidth;
             x.classList.remove('opacity-0');
         }
 
@@ -1113,23 +1181,6 @@
             
             let found = adminData.users.find(u => u.username === user && u.password === pass);
             if(found) {
-                // Auto-upgrade admin role if missing new menus
-                if(found.username === 'admin') {
-                    let updateNeeded = false;
-                    if(!found.role.includes('menu-students')) { found.role += ',menu-students'; updateNeeded = true; }
-                    if(!found.role.includes('menu-students-plus')) { found.role += ',menu-students-plus'; updateNeeded = true; }
-                    
-                    if(updateNeeded) { 
-                        try { 
-                            fetch(`${SUPABASE_URL}/rest/v1/admin_users?id=eq.${found.id}`, { 
-                                method: 'PATCH', 
-                                headers: { ...HEADERS, 'Prefer': 'return=minimal' }, 
-                                body: JSON.stringify({ role: found.role }) 
-                            }); 
-                        } catch(e) {} 
-                    }
-                }
-
                 adminData.loggedInUser = found.name;
                 adminData.role = found.role || '';
                 
@@ -1142,7 +1193,7 @@
                 document.getElementById('loginPass').value = '';
                 
                 applyRoleRestrictions();
-                showAdminScreen('screen-home-admin');
+                openScreen('screen-home-admin', 'reguler');
                 
                 fetchTransactions(); 
                 fetchMenus(); 
@@ -1164,7 +1215,26 @@
                 cashSelectedStudent: null, 
                 cashSelectedBills: [] 
             };
-            showAdminScreen('screen-login');
+            openScreen('screen-login', 'reguler');
+        }
+
+        function openScreen(screenId, mode = 'reguler') {
+            currentAppMode = mode;
+
+            if(screenId === 'screen-cash') {
+                document.getElementById('title-cash').innerText = mode === 'plus' ? 'Bayar Tunai (Plus)' : 'Pembayaran Tunai';
+            }
+            if(screenId === 'screen-verify') {
+                document.getElementById('title-verify').innerText = mode === 'plus' ? 'Cek Transfer (Plus)' : 'Cek Transferan';
+            }
+            if(screenId === 'screen-history') {
+                document.getElementById('title-history').innerText = mode === 'plus' ? 'Riwayat (Plus)' : 'Semua Transaksi';
+            }
+            if(screenId === 'screen-rekap') {
+                document.getElementById('title-rekap').innerText = mode === 'plus' ? 'Rekapitulasi (Plus)' : 'Rekapitulasi';
+            }
+
+            showAdminScreen(screenId);
         }
 
         function showAdminScreen(screenId) {
@@ -1189,10 +1259,22 @@
                     btn.classList.remove('text-primary'); 
                 }
             });
+
+            // Tampilkan/Sembunyikan Filter Plus (AJS, ICP, dsb) di Riwayat dan Rekap
+            if(screenId === 'screen-history' || screenId === 'screen-rekap') {
+                const histFilter = document.getElementById('filter-history-plus');
+                const rekFilter = document.getElementById('filter-rekap-plus');
+                if (currentAppMode === 'plus') {
+                    if(histFilter) histFilter.classList.remove('hidden');
+                    if(rekFilter) rekFilter.classList.remove('hidden');
+                } else {
+                    if(histFilter) { histFilter.classList.add('hidden'); histFilter.value = ''; }
+                    if(rekFilter) { rekFilter.classList.add('hidden'); rekFilter.value = ''; }
+                }
+            }
             
             document.getElementById('app-container').scrollTop = 0;
             
-            // Execute specific rendering based on screen
             if(screenId === 'screen-verify') renderPendingTransactions();
             if(screenId === 'screen-history') renderAllHistory();
             if(screenId === 'screen-menus') renderMenus();
@@ -1217,16 +1299,31 @@
         function applyRoleRestrictions() {
             const roleStr = adminData.role || '';
             const allowedMenus = roleStr.split(',');
-            const allMenus = [
-                'menu-cash', 'menu-verify', 'menu-history', 'menu-menus', 
-                'menu-users', 'menu-rekap', 'menu-students', 'menu-students-plus'
-            ];
             
-            allMenus.forEach(menuId => {
-                const el = document.getElementById(menuId);
-                if(el) {
-                    if (allowedMenus.includes(menuId)) el.classList.remove('hidden');
-                    else el.classList.add('hidden');
+            const roleMap = {
+                'menu-cash': ['menu-cash', 'menu-cash-plus'],
+                'menu-verify': ['menu-verify', 'menu-verify-plus'],
+                'menu-history': ['menu-history', 'menu-history-plus'],
+                'menu-rekap': ['menu-rekap', 'menu-rekap-plus'],
+                'menu-menus': ['menu-menus'],
+                'menu-users': ['menu-users'],
+                'menu-students': ['menu-students'],
+                'menu-students-plus': ['menu-students-plus']
+            };
+
+            Object.values(roleMap).forEach(btnIds => {
+                btnIds.forEach(id => {
+                    let el = document.getElementById(id);
+                    if(el) el.classList.add('hidden');
+                });
+            });
+
+            allowedMenus.forEach(roleKey => {
+                if(roleMap[roleKey]) {
+                    roleMap[roleKey].forEach(id => {
+                        let el = document.getElementById(id);
+                        if(el) el.classList.remove('hidden');
+                    });
                 }
             });
         }
@@ -2089,6 +2186,8 @@
 
             let rawBills = [];
             BILL_COLUMNS.forEach(c => {
+                if(c.type !== currentAppMode) return;
+                
                 if(student[c.db]) { 
                     let amt = parseInt(student[c.db]); 
                     if(!isNaN(amt) && amt > 0) {
@@ -2098,6 +2197,7 @@
             });
 
             const mList = ['spp','tahfidzPlus','tahfidz','icp','icpSore'];
+            
             history.forEach(tx => {
                 BILL_COLUMNS.forEach(c => {
                     let paidAmt = parseInt(tx[c.db]);
@@ -2126,7 +2226,7 @@
                         <i class="fas fa-check-circle text-2xl"></i>
                         <div>
                             <h4 class="font-bold">Lunas</h4>
-                            <p class="text-xs">Tidak ada tunggakan.</p>
+                            <p class="text-xs">Tidak ada tunggakan di kategori ini.</p>
                         </div>
                     </div>`; 
                 if(actionBtn) actionBtn.classList.add('hidden'); 
@@ -2316,7 +2416,8 @@
                 kelas: getCombinedKelas(s),
                 status: 'success', 
                 kasir: adminData.loggedInUser, 
-                buktiTF: 'PEMBAYARAN_TUNAI'
+                buktiTF: 'PEMBAYARAN_TUNAI',
+                kategori: currentAppMode 
             };
 
             BILL_COLUMNS.forEach(c => payload[c.db] = 0); 
@@ -2359,19 +2460,36 @@
         }
 
         function updateBadgePending() {
-            let count = adminData.transactions.filter(tx => tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected').length;
-            let badg1 = document.getElementById('home-badge-pending'); 
-            let badg2 = document.getElementById('nav-badge-pending'); 
-            let txt = document.getElementById('stat-pending');
+            let pendings = adminData.transactions.filter(tx => tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected');
             
-            if(count > 0) {
-                if(badg1) { badg1.classList.remove('hidden'); badg1.innerText = count > 99 ? '99+' : count; }
-                if(badg2) { badg2.classList.remove('hidden'); badg2.innerText = count > 99 ? '99+' : count; }
-            } else { 
-                if(badg1) badg1.classList.add('hidden'); 
-                if(badg2) badg2.classList.add('hidden'); 
+            let countReg = pendings.filter(tx => getTxKategori(tx) === 'reguler').length;
+            let countPlus = pendings.filter(tx => getTxKategori(tx) === 'plus').length;
+
+            let badgeReg = document.getElementById('badge-verify-reg');
+            if(badgeReg) {
+                badgeReg.innerText = countReg > 99 ? '99+' : countReg;
+                badgeReg.style.display = countReg > 0 ? 'flex' : 'none';
             }
-            if(txt) txt.innerText = count;
+
+            let badgePlus = document.getElementById('badge-verify-plus');
+            if(badgePlus) {
+                badgePlus.innerText = countPlus > 99 ? '99+' : countPlus;
+                badgePlus.style.display = countPlus > 0 ? 'flex' : 'none';
+            }
+
+            let totalCount = countReg + countPlus;
+            let navBadge = document.getElementById('nav-badge-pending');
+            if(navBadge) {
+                if(totalCount > 0) {
+                    navBadge.classList.remove('hidden');
+                    navBadge.innerText = totalCount > 99 ? '99+' : totalCount;
+                } else {
+                    navBadge.classList.add('hidden');
+                }
+            }
+            
+            let statText = document.getElementById('stat-pending');
+            if(statText) statText.innerText = currentAppMode === 'reguler' ? countReg : countPlus;
         }
 
         async function fetchTransactions() {
@@ -2408,6 +2526,7 @@
             container.innerHTML = '';
             
             let pendings = adminData.transactions.filter(tx => tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected');
+            pendings = pendings.filter(tx => getTxKategori(tx) === currentAppMode);
             
             if(pendings.length === 0) { 
                 container.innerHTML = `
@@ -2457,8 +2576,14 @@
             const q = searchEl ? searchEl.value.toLowerCase() : '';
             const dateStart = document.getElementById('filter-date-history-start') ? document.getElementById('filter-date-history-start').value : '';
             const dateEnd = document.getElementById('filter-date-history-end') ? document.getElementById('filter-date-history-end').value : '';
+            const filterPlus = document.getElementById('filter-history-plus') ? document.getElementById('filter-history-plus').value : '';
             
             let list = adminData.transactions;
+            list = list.filter(tx => getTxKategori(tx) === currentAppMode);
+            
+            if (currentAppMode === 'plus' && filterPlus) {
+                list = list.filter(tx => parseInt(tx[filterPlus]) > 0);
+            }
             
             if(q) {
                 list = list.filter(tx => (tx.nama?.toLowerCase().includes(q) || tx.nis?.toLowerCase().includes(q) || tx.id?.toLowerCase().includes(q)));
@@ -2509,8 +2634,10 @@
 
         function getTxDetailsArray(tx) {
             let details = [];
+            let txMode = getTxKategori(tx); 
+            
             BILL_COLUMNS.forEach(c => {
-                if(tx[c.db] && parseInt(tx[c.db]) > 0) {
+                if(c.type === txMode && tx[c.db] && parseInt(tx[c.db]) > 0) {
                     let title = c.title; 
                     if(c.code === 'spp' && tx.ketSpp) title += ` (${tx.ketSpp})`;
                     details.push({ title: title, amount: parseInt(tx[c.db]) });
@@ -2593,6 +2720,22 @@
             setTimeout(() => document.getElementById('modal-tx-detail').classList.remove('opacity-0'), 10);
         }
 
+        function viewFullscreenImage(src) { 
+            let img = document.getElementById('fs-img'); 
+            let viewer = document.getElementById('fs-viewer');
+            if(!src) return; 
+            
+            img.src = src; 
+            viewer.classList.remove('hidden'); 
+            setTimeout(() => viewer.classList.remove('opacity-0'), 10);
+        }
+        
+        function closeFullscreen() { 
+            let viewer = document.getElementById('fs-viewer'); 
+            viewer.classList.add('opacity-0'); 
+            setTimeout(() => viewer.classList.add('hidden'), 300); 
+        }
+
         function closeTxModal() { 
             let el = document.getElementById('modal-tx-detail'); 
             if(el) { 
@@ -2632,22 +2775,6 @@
                 hideLoading(); 
                 showMessageBox('Gagal', 'Tidak dapat mengubah status.', 'fa-times-circle', 'bg-red-50 text-danger'); 
             }
-        }
-
-        function viewFullscreenImage(src) { 
-            let img = document.getElementById('fs-img'); 
-            let viewer = document.getElementById('fs-viewer');
-            if(!src) return; 
-            
-            img.src = src; 
-            viewer.classList.remove('hidden'); 
-            setTimeout(() => viewer.classList.remove('opacity-0'), 10);
-        }
-        
-        function closeFullscreen() { 
-            let viewer = document.getElementById('fs-viewer'); 
-            viewer.classList.add('opacity-0'); 
-            setTimeout(() => viewer.classList.add('hidden'), 300); 
         }
 
         function openReceiptPreview(txId) {
@@ -2809,11 +2936,14 @@
         function renderRekap() {
             initRekapDates(); 
             let validTxs = adminData.transactions.filter(t => t.status === 'success' || t.status === 'lunas');
-            
+            validTxs = validTxs.filter(t => getTxKategori(t) === currentAppMode);
+
             const filterClass = document.getElementById('filter-rekap-class') ? document.getElementById('filter-rekap-class').value : '';
             if (filterClass) {
                 validTxs = validTxs.filter(t => getCombinedKelas(t) === filterClass);
             }
+
+            const filterPlus = document.getElementById('filter-rekap-plus') ? document.getElementById('filter-rekap-plus').value : '';
 
             let stats = { 
                 today: { tunai: 0, transfer: 0 }, 
@@ -2827,7 +2957,14 @@
             const filterMonthly = document.getElementById('filter-date-monthly').value; 
 
             validTxs.forEach(tx => {
-                let amt = calculateTxTotal(tx); 
+                let amt = 0;
+                if (currentAppMode === 'plus' && filterPlus) {
+                    amt = parseInt(tx[filterPlus]) || 0;
+                    if(amt === 0) return; 
+                } else {
+                    amt = calculateTxTotal(tx); 
+                }
+                
                 let isTunai = tx.buktiTF === 'PEMBAYARAN_TUNAI'; 
                 let txDate = parseTxDate(tx.date);
                 
@@ -2870,10 +3007,16 @@
         function getFilteredTransactions(period) {
             initRekapDates();
             let txs = adminData.transactions.filter(t => t.status === 'success' || t.status === 'lunas');
-            
+            txs = txs.filter(t => getTxKategori(t) === currentAppMode);
+
             const filterClass = document.getElementById('filter-rekap-class') ? document.getElementById('filter-rekap-class').value : '';
             if (filterClass) {
                 txs = txs.filter(t => getCombinedKelas(t) === filterClass);
+            }
+
+            const filterPlus = document.getElementById('filter-rekap-plus') ? document.getElementById('filter-rekap-plus').value : '';
+            if (currentAppMode === 'plus' && filterPlus) {
+                txs = txs.filter(t => parseInt(t[filterPlus]) > 0);
             }
 
             if (period === 'harian') {
@@ -2920,55 +3063,84 @@
                 filtered = transactions.filter(t => t.buktiTF !== 'PEMBAYARAN_TUNAI');
             }
 
-            const colWidths = [7, 15, 40, 10, 17, 17, 18, 17, 17, 17, 17, 18, 17, 17, 18, 15, 23];
-            const head = [['No', 'Tanggal', 'Nama Siswa', 'Kelas', 'BPS', 'SPP', 'Ket SPP', 'DU 1', 'DU 2', 'DU 3', 'Tahfidz+', 'Ket Tahf+', 'Tahfidz', 'ICP', 'Tanggungan', 'Kasir', 'Total']];
+            let colWidths, head, body = [];
             
-            let body = []; 
-            let colSums = new Array(17).fill(0);
-            
-            filtered.forEach((tx, i) => {
-                let t = tx.date ? tx.date.split(',')[0].substring(0,10) : '-';
-                let b = parseInt(tx.bps||0); 
-                let s = parseInt(tx.spp||0); 
-                let d1 = parseInt(tx.daftarUlang1||0); 
-                let d2 = parseInt(tx.daftarUlang2||0); 
-                let d3 = parseInt(tx.daftarUlang3||0);
-                let tp = parseInt(tx.tahfidzPlus||0); 
-                let th = parseInt(tx.tahfidz||0); 
-                let ic = parseInt(tx.icp||0); 
-                let tg = parseInt(tx.tanggungan||0);
-                
-                let ics = parseInt(tx.icpSore||0); 
-                let ajs = parseInt(tx.ajs||0); 
-                let tpq = parseInt(tx.tpq||0); 
-                let olim = parseInt(tx.olimpiade||0); 
-                let rih = parseInt(tx.rihlah||0);
-
-                let totalRow = b+s+d1+d2+d3+tp+th+ic+tg + ics + ajs + tpq + olim + rih;
-                
-                colSums[4]+=b; colSums[5]+=s; colSums[7]+=d1; colSums[8]+=d2; colSums[9]+=d3; 
-                colSums[10]+=tp; colSums[12]+=th; colSums[13]+=ic; colSums[14]+=tg; colSums[16]+=totalRow;
-
-                let fm = (n) => n > 0 ? formatCurrency(n).replace('Rp ','') : '-';
-                body.push([
-                    (i+1).toString(), t, (tx.nama||'-').substring(0,15), getCombinedKelas(tx),
-                    fm(b), fm(s), tx.ketSpp||'-', fm(d1), fm(d2), fm(d3), fm(tp), tx.ketTahfidzPlus||'-', fm(th), fm(ic), fm(tg), (tx.kasir||'-').substring(0,7), fm(totalRow)
-                ]);
-            });
-
+            let fm = (n) => n > 0 ? formatCurrency(n).replace('Rp ','') : '-';
             let fmS = (n) => n > 0 ? formatCurrency(n).replace('Rp ','') : '-';
-            body.push([
-                { content: 'TOTAL KESELURUHAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } }, 
-                fmS(colSums[4]), fmS(colSums[5]), '-', fmS(colSums[7]), fmS(colSums[8]), fmS(colSums[9]), 
-                fmS(colSums[10]), '-', fmS(colSums[12]), fmS(colSums[13]), fmS(colSums[14]), '-', fmS(colSums[16])
-            ]);
+
+            if (currentAppMode === 'reguler') {
+                colWidths = [7, 15, 38, 10, 16, 16, 17, 16, 16, 16, 16, 17, 16, 16, 16, 15, 22];
+                head = [['No', 'Tanggal', 'Nama Siswa', 'Kelas', 'BPS', 'SPP', 'Ket SPP', 'DU 1', 'DU 2', 'DU 3', 'Tahfidz+', 'Ket Tahf+', 'Tahfidz', 'ICP', 'Tanggungan', 'Kasir', 'Total']];
+                let colSums = new Array(17).fill(0);
+                
+                filtered.forEach((tx, i) => {
+                    let t = tx.date ? tx.date.split(',')[0].substring(0,10) : '-';
+                    let b = parseInt(tx.bps||0); let s = parseInt(tx.spp||0); let d1 = parseInt(tx.daftarUlang1||0); 
+                    let d2 = parseInt(tx.daftarUlang2||0); let d3 = parseInt(tx.daftarUlang3||0);
+                    let tp = parseInt(tx.tahfidzPlus||0); let th = parseInt(tx.tahfidz||0); let ic = parseInt(tx.icp||0); 
+                    let tg = parseInt(tx.tanggungan||0);
+                    let totalRow = b+s+d1+d2+d3+tp+th+ic+tg;
+                    
+                    colSums[4]+=b; colSums[5]+=s; colSums[7]+=d1; colSums[8]+=d2; colSums[9]+=d3; 
+                    colSums[10]+=tp; colSums[12]+=th; colSums[13]+=ic; colSums[14]+=tg; colSums[16]+=totalRow;
+
+                    body.push([
+                        (i+1).toString(), t, (tx.nama||'-').substring(0,15), getCombinedKelas(tx),
+                        fm(b), fm(s), tx.ketSpp||'-', fm(d1), fm(d2), fm(d3), fm(tp), tx.ketTahfidzPlus||'-', fm(th), fm(ic), fm(tg), (tx.kasir||'-').substring(0,7), fm(totalRow)
+                    ]);
+                });
+
+                body.push([
+                    { content: 'TOTAL KESELURUHAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } }, 
+                    fmS(colSums[4]), fmS(colSums[5]), '-', fmS(colSums[7]), fmS(colSums[8]), fmS(colSums[9]), 
+                    fmS(colSums[10]), '-', fmS(colSums[12]), fmS(colSums[13]), fmS(colSums[14]), '-', fmS(colSums[16])
+                ]);
+            } else {
+                colWidths = [10, 20, 50, 20, 20, 20, 20, 20, 20, 20, 30];
+                head = [['No', 'Tanggal', 'Nama Siswa', 'Kelas', 'ICP Sore', 'AJS', 'TPQ', 'Olimpiade', 'Rihlah', 'Kasir', 'Total']];
+                let colSums = new Array(11).fill(0);
+
+                const filterPlus = document.getElementById('filter-rekap-plus') ? document.getElementById('filter-rekap-plus').value : '';
+
+                filtered.forEach((tx, i) => {
+                    let t = tx.date ? tx.date.split(',')[0].substring(0,10) : '-';
+                    let ics = parseInt(tx.icpSore||0); let ajs = parseInt(tx.ajs||0); let tpq = parseInt(tx.tpq||0); 
+                    let olim = parseInt(tx.olimpiade||0); let rih = parseInt(tx.rihlah||0);
+                    
+                    let totalRow = 0;
+                    if (filterPlus) {
+                        if (filterPlus === 'icpSore') totalRow = ics;
+                        if (filterPlus === 'ajs') totalRow = ajs;
+                        if (filterPlus === 'tpq') totalRow = tpq;
+                        if (filterPlus === 'olimpiade') totalRow = olim;
+                        if (filterPlus === 'rihlah') totalRow = rih;
+                    } else {
+                        totalRow = ics+ajs+tpq+olim+rih;
+                    }
+                    
+                    colSums[4]+=ics; colSums[5]+=ajs; colSums[6]+=tpq; colSums[7]+=olim; colSums[8]+=rih; colSums[10]+=totalRow;
+
+                    body.push([
+                        (i+1).toString(), t, (tx.nama||'-').substring(0,25), getCombinedKelas(tx),
+                        fm(ics), fm(ajs), fm(tpq), fm(olim), fm(rih), (tx.kasir||'-').substring(0,10), fm(totalRow)
+                    ]);
+                });
+
+                body.push([
+                    { content: 'TOTAL KESELURUHAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } }, 
+                    fmS(colSums[4]), fmS(colSums[5]), fmS(colSums[6]), fmS(colSums[7]), fmS(colSums[8]), '-', fmS(colSums[10])
+                ]);
+            }
 
             doc.autoTable({
                 startY: startY + 5, head: head, body: body, theme: 'grid',
-                styles: { fontSize: 6, cellPadding: 1, halign: 'center', valign: 'middle' },
+                styles: { fontSize: currentAppMode === 'reguler' ? 6 : 8, cellPadding: 1, halign: 'center', valign: 'middle' },
                 headStyles: { fillColor: [30, 58, 95], textColor: 255, fontStyle: 'bold' },
-                columnStyles: { 2: { halign: 'left' }, 16: { fillColor: [235, 247, 255], fontStyle: 'bold', textColor: [0,0,0] } },
-                margin: { left: 15, right: 15 }, tableWidth: 300,
+                columnStyles: { 
+                    2: { halign: 'left' }, 
+                    [currentAppMode === 'reguler' ? 16 : 10]: { fillColor: [235, 247, 255], fontStyle: 'bold', textColor: [0,0,0] } 
+                },
+                margin: { left: 15, right: 15 }, tableWidth: 267,
                 didParseCell: function(data) {
                     if(data.section === 'head' || data.section === 'body') { 
                         data.cell.width = colWidths[data.column.index]; 
@@ -2988,29 +3160,34 @@
                 }
                 
                 const { jsPDF } = window.jspdf; 
-                const doc = new jsPDF('landscape', 'mm', [330, 210]);
+                const doc = new jsPDF('landscape', 'mm', [297, 210]);
                 const txs = getFilteredTransactions(period);
 
                 doc.setFont("helvetica", "bold"); 
                 doc.setFontSize(14); 
-                doc.text("SD MUHAMMADIYAH SUDAGARAN WONOSOBO", 165, 15, { align: "center" });
+                doc.text("SD MUHAMMADIYAH SUDAGARAN WONOSOBO", 148, 15, { align: "center" });
                 
                 doc.setFontSize(12); 
-                doc.text("LAPORAN KEUANGAN TRANSAKSI", 165, 22, { align: "center" });
+                let mainTitle = currentAppMode === 'plus' ? "LAPORAN KEUANGAN TRANSAKSI PLUS" : "LAPORAN KEUANGAN TRANSAKSI";
+                doc.text(mainTitle, 148, 22, { align: "center" });
                 
                 const filterClass = document.getElementById('filter-rekap-class') ? document.getElementById('filter-rekap-class').value : '';
+                const filterPlus = document.getElementById('filter-rekap-plus') ? document.getElementById('filter-rekap-plus').value : '';
                 let subtitle = `Periode: Cetak Saat Ini`;
                 if (filterClass) subtitle += ` | Kelas: ${filterClass}`;
+                if (currentAppMode === 'plus' && filterPlus) subtitle += ` | Kategori: ${filterPlus.toUpperCase()}`;
                 
                 doc.setFont("helvetica", "normal"); 
                 doc.setFontSize(10); 
-                doc.text(subtitle, 165, 28, { align: "center" });
+                doc.text(subtitle, 148, 28, { align: "center" });
                 
                 doc.setLineWidth(0.5); 
-                doc.line(15, 33, 315, 33);
+                doc.line(15, 33, 282, 33);
 
                 let nextY = buildDetailedTable(doc, 45, txs, "RINCIAN PEMBAYARAN TUNAI");
                 buildDetailedTable(doc, nextY, txs, "RINCIAN PEMBAYARAN TRANSFER");
+
+                let tagSuffix = currentAppMode === 'plus' ? 'Plus' : 'Reguler';
 
                 if(isPreview) {
                     const blob = doc.output('blob'); 
@@ -3021,10 +3198,10 @@
                     document.getElementById('pdf-preview-modal').classList.add('flex');
                     
                     document.getElementById('btn-download-pdf-viewer').onclick = () => { 
-                        doc.save(`Laporan_Sudagaran_${period}.pdf`); 
+                        doc.save(`Laporan_Sudagaran_${tagSuffix}_${period}.pdf`); 
                     };
                 } else { 
-                    doc.save(`Laporan_Sudagaran_${period}.pdf`); 
+                    doc.save(`Laporan_Sudagaran_${tagSuffix}_${period}.pdf`); 
                 }
             } catch (e) { 
                 showMessageBox('Gagal', 'Terjadi kesalahan saat memproses PDF: ' + e.message, 'fa-times-circle', 'bg-red-50 text-danger'); 
@@ -3036,7 +3213,7 @@
 
         window.onload = () => {
             fetchAdminUsers();
-            showAdminScreen('screen-login');
+            openScreen('screen-login', 'reguler');
         };
     </script>
 </body>
