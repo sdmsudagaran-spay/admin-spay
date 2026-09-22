@@ -271,7 +271,8 @@
             <div class="p-6 md:px-10 pb-10">
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6">
                     <h3 class="text-sm font-bold text-gray-700 mb-4 border-b border-gray-100 pb-2">Cari Data Siswa</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="cash-filter-container">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1.5">Pilih Kelas</label>
                             <div class="relative">
@@ -288,6 +289,21 @@
                                     <option value="">-- Pilih Kelas Dahulu --</option>
                                 </select>
                                 <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down"></i></span>
+                            </div>
+                        </div>
+                        <!-- FILTER KATEGORI PLUS (KHUSUS MODE PLUS) -->
+                        <div id="box-filter-cash-plus" class="hidden">
+                            <label class="block text-xs font-medium text-rose-700 mb-1.5">Filter Kategori (Plus)</label>
+                            <div class="relative">
+                                <select id="filter-cash-plus" onchange="onCashPlusFilterChange()" class="w-full pl-4 pr-10 py-3 rounded-xl border border-rose-200 focus:outline-none focus:border-rose-400 text-sm appearance-none bg-rose-50 text-rose-700 font-semibold cursor-pointer">
+                                    <option value="">Semua Tagihan Plus</option>
+                                    <option value="icpSore">ICP Sore</option>
+                                    <option value="ajs">AJS</option>
+                                    <option value="tpq">TPQ</option>
+                                    <option value="olimpiade">Olimpiade</option>
+                                    <option value="rihlah">Rihlah</option>
+                                </select>
+                                <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-rose-400 pointer-events-none"><i class="fas fa-chevron-down"></i></span>
                             </div>
                         </div>
                     </div>
@@ -327,11 +343,23 @@
 
         <!-- ================= CEK TRANSFER SCREEN ================= -->
         <div id="screen-verify" class="screen">
-            <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex justify-between items-center">
-                <h2 class="text-lg md:text-xl font-bold text-primary" id="title-verify">Cek Transferan</h2>
-                <div class="flex gap-2">
-                    <button onclick="filterVerify('all')" id="btn-filter-all" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-primary transition">Semua</button>
-                    <button onclick="filterVerify('today')" id="btn-filter-today" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-gray-500 hover:bg-gray-50 transition border border-gray-100">Hari Ini</button>
+            <div class="bg-white px-6 md:px-10 py-5 shadow-sm sticky top-0 z-30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <h2 class="text-lg md:text-xl font-bold text-primary whitespace-nowrap" id="title-verify">Cek Transferan</h2>
+                <div class="flex flex-col md:flex-row items-center gap-2 w-full md:w-auto">
+                    <!-- FILTER KATEGORI PLUS -->
+                    <select id="filter-verify-plus" onchange="renderPendingTransactions()" class="hidden w-full md:w-auto px-3 py-2 rounded-lg border border-rose-200 text-xs bg-rose-50 text-rose-700 font-semibold focus:outline-none shadow-sm">
+                        <option value="">Semua Tagihan Plus</option>
+                        <option value="icpSore">ICP Sore</option>
+                        <option value="ajs">AJS</option>
+                        <option value="tpq">TPQ</option>
+                        <option value="olimpiade">Olimpiade</option>
+                        <option value="rihlah">Rihlah</option>
+                    </select>
+                    <!-- BUTTONS -->
+                    <div class="flex gap-2 w-full md:w-auto justify-end">
+                        <button onclick="filterVerify('all')" id="btn-filter-all" class="px-4 py-2 text-xs font-semibold rounded-lg bg-blue-50 text-primary transition whitespace-nowrap border border-blue-100">Semua</button>
+                        <button onclick="filterVerify('today')" id="btn-filter-today" class="px-4 py-2 text-xs font-semibold rounded-lg text-gray-500 hover:bg-gray-50 transition border border-gray-100 whitespace-nowrap">Hari Ini</button>
+                    </div>
                 </div>
             </div>
             <div class="px-5 md:px-10 py-6">
@@ -356,7 +384,7 @@
                         <input type="text" id="search-history" onkeyup="renderAllHistory()" class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none focus:border-primary text-sm bg-white shadow-sm" placeholder="Cari NIS, Nama, atau No Transaksi...">
                     </div>
                     <!-- FILTER KATEGORI PLUS (KHUSUS MODE PLUS) -->
-                    <select id="filter-history-plus" onchange="renderAllHistory()" class="hidden md:w-auto px-4 py-3 rounded-xl border border-rose-200 text-sm bg-rose-50 text-rose-700 font-semibold focus:outline-none focus:border-rose-400 shadow-sm">
+                    <select id="filter-history-plus" onchange="renderAllHistory()" class="hidden w-full md:w-auto px-4 py-3 rounded-xl border border-rose-200 text-sm bg-rose-50 text-rose-700 font-semibold focus:outline-none focus:border-rose-400 shadow-sm">
                         <option value="">Semua Tagihan Plus</option>
                         <option value="icpSore">ICP Sore</option>
                         <option value="ajs">AJS</option>
@@ -497,7 +525,7 @@
                 <div class="flex gap-2 w-full md:w-auto">
                     <!-- FILTER KATEGORI PLUS (KHUSUS MODE PLUS) -->
                     <select id="filter-rekap-plus" onchange="renderRekap()" class="hidden w-full md:w-40 px-3 py-2.5 rounded-xl border border-rose-200 text-sm bg-rose-50 text-rose-700 font-semibold focus:outline-none shadow-sm">
-                        <option value="">Semua Plus</option>
+                        <option value="">Semua Tagihan Plus</option>
                         <option value="icpSore">ICP Sore</option>
                         <option value="ajs">AJS</option>
                         <option value="tpq">TPQ</option>
@@ -1050,6 +1078,7 @@
             return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); 
         }
 
+        // Fungsi Cerdas Menggabungkan Kode & Nama Kelas (Resolusi Bug Al Ikhlas)
         function getCombinedKelas(obj) {
             if (!obj) return '-';
             let k = obj.kelas ? String(obj.kelas).trim() : '';
@@ -1058,6 +1087,7 @@
             if (k && nk) {
                 let kUpper = k.toUpperCase();
                 let nkUpper = nk.toUpperCase();
+                // Hanya abaikan penggabungan JIKA nama kelas "DIAWALI" dengan kode kelas
                 if (nkUpper.startsWith(kUpper + ' ') || nkUpper.startsWith(kUpper + '-')) {
                     return nk;
                 }
@@ -1149,6 +1179,7 @@
 
         async function fetchAdminUsers() {
             try {
+                // Diperbaiki sortorder kecil semua agar cocok dengan PostgreSQL
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*&order=sortorder.asc`, { headers: HEADERS });
                 if(res.ok) {
                     let data = await res.json();
@@ -1260,7 +1291,7 @@
                 }
             });
 
-            // Tampilkan/Sembunyikan Filter Plus (AJS, ICP, dsb) di Riwayat dan Rekap
+            // Tampilkan/Sembunyikan Filter Kategori Plus (AJS, ICP, dsb) 
             if(screenId === 'screen-history' || screenId === 'screen-rekap') {
                 const histFilter = document.getElementById('filter-history-plus');
                 const rekFilter = document.getElementById('filter-rekap-plus');
@@ -1272,10 +1303,34 @@
                     if(rekFilter) { rekFilter.classList.add('hidden'); rekFilter.value = ''; }
                 }
             }
+
+            // Tampilkan/Sembunyikan Filter di Cash dan Verify
+            if(screenId === 'screen-cash') {
+                const cashFilterBox = document.getElementById('box-filter-cash-plus');
+                const cashGrid = document.getElementById('cash-filter-container');
+                if (currentAppMode === 'plus') {
+                    if(cashFilterBox) cashFilterBox.classList.remove('hidden');
+                    if(cashGrid) { cashGrid.classList.remove('md:grid-cols-2'); cashGrid.classList.add('md:grid-cols-3'); }
+                } else {
+                    if(cashFilterBox) { cashFilterBox.classList.add('hidden'); document.getElementById('filter-cash-plus').value = ''; }
+                    if(cashGrid) { cashGrid.classList.remove('md:grid-cols-3'); cashGrid.classList.add('md:grid-cols-2'); }
+                }
+                if(adminData.allStudents.length === 0) fetchAllStudentsForCash();
+                resetCashForm();
+            }
+
+            if(screenId === 'screen-verify') {
+                const verFilter = document.getElementById('filter-verify-plus');
+                if (currentAppMode === 'plus') {
+                    if(verFilter) verFilter.classList.remove('hidden');
+                } else {
+                    if(verFilter) { verFilter.classList.add('hidden'); verFilter.value = ''; }
+                }
+                renderPendingTransactions();
+            }
             
             document.getElementById('app-container').scrollTop = 0;
             
-            if(screenId === 'screen-verify') renderPendingTransactions();
             if(screenId === 'screen-history') renderAllHistory();
             if(screenId === 'screen-menus') renderMenus();
             if(screenId === 'screen-users') renderUsers();
@@ -1288,11 +1343,6 @@
                     if (screenId === 'screen-students') renderStudentsAdmin();
                     if (screenId === 'screen-students-plus') renderStudentsPlusAdmin();
                 }
-            }
-
-            if(screenId === 'screen-cash') {
-                if(adminData.allStudents.length === 0) fetchAllStudentsForCash();
-                resetCashForm();
             }
         }
 
@@ -2143,6 +2193,12 @@
             stds.forEach(s => el.innerHTML += `<option value="${s.nis}">${s.nama}</option>`); 
             el.disabled = false;
         }
+        
+        function onCashPlusFilterChange() {
+            if (document.getElementById('cash-siswa').value) {
+                onStudentChange(); 
+            }
+        }
 
         async function onStudentChange() {
             let nis = document.getElementById('cash-siswa').value;
@@ -2185,9 +2241,14 @@
             if(selectAllContainer) selectAllContainer.classList.add('hidden');
 
             let rawBills = [];
+            let filterPlusVal = document.getElementById('filter-cash-plus') ? document.getElementById('filter-cash-plus').value : '';
+            
             BILL_COLUMNS.forEach(c => {
                 if(c.type !== currentAppMode) return;
                 
+                // Terapkan filter jika di mode plus dan dropdown dipilih
+                if (currentAppMode === 'plus' && filterPlusVal && c.db !== filterPlusVal) return;
+
                 if(student[c.db]) { 
                     let amt = parseInt(student[c.db]); 
                     if(!isNaN(amt) && amt > 0) {
@@ -2225,8 +2286,8 @@
                     <div class="bg-green-50 text-success p-4 rounded-xl flex items-center gap-3">
                         <i class="fas fa-check-circle text-2xl"></i>
                         <div>
-                            <h4 class="font-bold">Lunas</h4>
-                            <p class="text-xs">Tidak ada tunggakan di kategori ini.</p>
+                            <h4 class="font-bold">Selesai / Lunas</h4>
+                            <p class="text-xs">Tidak ada tagihan aktif untuk kategori ini.</p>
                         </div>
                     </div>`; 
                 if(actionBtn) actionBtn.classList.add('hidden'); 
@@ -2514,8 +2575,8 @@
             let bA = document.getElementById('btn-filter-all'); 
             let bT = document.getElementById('btn-filter-today');
             
-            if(bA) bA.className = type === 'all' ? 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-primary transition' : 'px-3 py-1.5 text-xs font-semibold rounded-lg text-gray-500 hover:bg-gray-50 transition border border-gray-100';
-            if(bT) bT.className = type === 'today' ? 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-primary transition' : 'px-3 py-1.5 text-xs font-semibold rounded-lg text-gray-500 hover:bg-gray-50 transition border border-gray-100';
+            if(bA) bA.className = type === 'all' ? 'px-4 py-2 text-xs font-semibold rounded-lg bg-blue-50 text-primary transition whitespace-nowrap border border-blue-100' : 'px-4 py-2 text-xs font-semibold rounded-lg text-gray-500 hover:bg-gray-50 transition border border-gray-100 whitespace-nowrap';
+            if(bT) bT.className = type === 'today' ? 'px-4 py-2 text-xs font-semibold rounded-lg bg-blue-50 text-primary transition whitespace-nowrap border border-blue-100' : 'px-4 py-2 text-xs font-semibold rounded-lg text-gray-500 hover:bg-gray-50 transition border border-gray-100 whitespace-nowrap';
             
             renderPendingTransactions();
         }
@@ -2527,6 +2588,22 @@
             
             let pendings = adminData.transactions.filter(tx => tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected');
             pendings = pendings.filter(tx => getTxKategori(tx) === currentAppMode);
+            
+            // Filter Berdasarkan "Hari Ini" jika dipilih
+            if (adminData.currentFilter === 'today') {
+                const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+                const todayEnd = new Date(); todayEnd.setHours(23,59,59,999);
+                pendings = pendings.filter(tx => {
+                    let txDate = parseTxDate(tx.date);
+                    return txDate >= todayStart && txDate <= todayEnd;
+                });
+            }
+
+            // Filter Berdasarkan Kategori Plus 
+            const verifyFilterVal = document.getElementById('filter-verify-plus') ? document.getElementById('filter-verify-plus').value : '';
+            if (currentAppMode === 'plus' && verifyFilterVal) {
+                pendings = pendings.filter(tx => parseInt(tx[verifyFilterVal]) > 0);
+            }
             
             if(pendings.length === 0) { 
                 container.innerHTML = `
@@ -2727,6 +2804,7 @@
             
             img.src = src; 
             viewer.classList.remove('hidden'); 
+            // Animasi agar layar hitam menghilang opacity-nya
             setTimeout(() => viewer.classList.remove('opacity-0'), 10);
         }
         
