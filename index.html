@@ -282,15 +282,7 @@
                                 <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down"></i></span>
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1.5">Pilih Nama Siswa</label>
-                            <div class="relative">
-                                <select id="cash-siswa" onchange="onStudentChange()" disabled class="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary text-sm appearance-none bg-gray-50 disabled:opacity-50">
-                                    <option value="">-- Pilih Kelas Dahulu --</option>
-                                </select>
-                                <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down"></i></span>
-                            </div>
-                        </div>
+                        
                         <!-- FILTER KATEGORI PLUS (KHUSUS MODE PLUS) -->
                         <div id="box-filter-cash-plus" class="hidden">
                             <label class="block text-xs font-medium text-rose-700 mb-1.5">Filter Kategori (Plus)</label>
@@ -304,6 +296,16 @@
                                     <option value="rihlah">Rihlah</option>
                                 </select>
                                 <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-rose-400 pointer-events-none"><i class="fas fa-chevron-down"></i></span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1.5">Pilih Nama Siswa</label>
+                            <div class="relative">
+                                <select id="cash-siswa" onchange="onStudentChange()" disabled class="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary text-sm appearance-none bg-gray-50 disabled:opacity-50">
+                                    <option value="">-- Pilih Kelas Dahulu --</option>
+                                </select>
+                                <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down"></i></span>
                             </div>
                         </div>
                     </div>
@@ -665,7 +667,9 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-3">Pilih Hak Akses (Bisa lebih dari satu)</label>
-                        <div class="grid grid-cols-2 gap-3" id="edit-user-roles-container">
+                        
+                        <div class="mb-2 text-[10px] font-bold text-primary uppercase tracking-wide">Layanan Reguler</div>
+                        <div class="grid grid-cols-2 gap-3 mb-4" id="edit-user-roles-reguler">
                             <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
                                 <input type="checkbox" value="menu-cash" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
                                 <span class="text-xs font-medium text-gray-700">Bayar Tunai</span>
@@ -682,6 +686,30 @@
                                 <input type="checkbox" value="menu-rekap" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
                                 <span class="text-xs font-medium text-gray-700">Rekap Data</span>
                             </label>
+                        </div>
+
+                        <div class="mb-2 text-[10px] font-bold text-rose-600 uppercase tracking-wide">Layanan Plus</div>
+                        <div class="grid grid-cols-2 gap-3 mb-4" id="edit-user-roles-plus">
+                            <label class="flex items-center gap-2 p-3 border border-rose-100 rounded-xl cursor-pointer hover:bg-rose-50 transition">
+                                <input type="checkbox" value="menu-cash-plus" class="user-role-chk w-4 h-4 text-rose-500 rounded border-rose-300 focus:ring-rose-500">
+                                <span class="text-xs font-medium text-gray-700">Tunai Plus</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-rose-100 rounded-xl cursor-pointer hover:bg-rose-50 transition">
+                                <input type="checkbox" value="menu-verify-plus" class="user-role-chk w-4 h-4 text-rose-500 rounded border-rose-300 focus:ring-rose-500">
+                                <span class="text-xs font-medium text-gray-700">Cek TF Plus</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-rose-100 rounded-xl cursor-pointer hover:bg-rose-50 transition">
+                                <input type="checkbox" value="menu-history-plus" class="user-role-chk w-4 h-4 text-rose-500 rounded border-rose-300 focus:ring-rose-500">
+                                <span class="text-xs font-medium text-gray-700">Riwayat Plus</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-rose-100 rounded-xl cursor-pointer hover:bg-rose-50 transition">
+                                <input type="checkbox" value="menu-rekap-plus" class="user-role-chk w-4 h-4 text-rose-500 rounded border-rose-300 focus:ring-rose-500">
+                                <span class="text-xs font-medium text-gray-700">Rekap Plus</span>
+                            </label>
+                        </div>
+
+                        <div class="mb-2 text-[10px] font-bold text-gray-500 uppercase tracking-wide">Sistem & Database</div>
+                        <div class="grid grid-cols-2 gap-3" id="edit-user-roles-system">
                             <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
                                 <input type="checkbox" value="menu-menus" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
                                 <span class="text-xs font-medium text-gray-700">Kelola Aplikasi</span>
@@ -693,6 +721,10 @@
                             <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
                                 <input type="checkbox" value="menu-students" class="user-role-chk w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
                                 <span class="text-xs font-medium text-gray-700">Kelola Siswa</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-rose-100 rounded-xl cursor-pointer hover:bg-rose-50 transition">
+                                <input type="checkbox" value="menu-students-plus" class="user-role-chk w-4 h-4 text-rose-500 rounded border-rose-300 focus:ring-rose-500">
+                                <span class="text-xs font-medium text-gray-700">Siswa Plus</span>
                             </label>
                         </div>
                     </div>
@@ -1054,10 +1086,10 @@
         ];
 
         const DEFAULT_USERS = [
-            { id: 'u1', username: 'kasir1', name: 'Kasir 1', password: 'berkah', role: 'menu-cash,menu-verify,menu-history', sortorder: 0 },
-            { id: 'u2', username: 'bendahara', name: 'Bendahara', password: 'berkah', role: 'menu-verify,menu-history,menu-rekap', sortorder: 1 },
-            { id: 'u3', username: 'KS', name: 'Kepala Sekolah (KS)', password: 'berkah', role: 'menu-history,menu-rekap', sortorder: 2 },
-            { id: 'u4', username: 'admin', name: 'Admin System', password: 'berkah', role: 'menu-cash,menu-verify,menu-history,menu-rekap,menu-menus,menu-users,menu-students,menu-students-plus', sortorder: 3 }
+            { id: 'u1', username: 'kasir1', name: 'Kasir 1', password: 'berkah', role: 'menu-cash,menu-cash-plus,menu-verify,menu-verify-plus,menu-history,menu-history-plus', sortorder: 0 },
+            { id: 'u2', username: 'bendahara', name: 'Bendahara', password: 'berkah', role: 'menu-verify,menu-verify-plus,menu-history,menu-history-plus,menu-rekap,menu-rekap-plus', sortorder: 1 },
+            { id: 'u3', username: 'KS', name: 'Kepala Sekolah (KS)', password: 'berkah', role: 'menu-history,menu-history-plus,menu-rekap,menu-rekap-plus', sortorder: 2 },
+            { id: 'u4', username: 'admin', name: 'Admin System', password: 'berkah', role: 'menu-cash,menu-cash-plus,menu-verify,menu-verify-plus,menu-history,menu-history-plus,menu-rekap,menu-rekap-plus,menu-menus,menu-users,menu-students,menu-students-plus', sortorder: 3 }
         ];
 
         let adminData = { 
@@ -1078,7 +1110,7 @@
             return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); 
         }
 
-        // Fungsi Cerdas Menggabungkan Kode & Nama Kelas (Resolusi Bug Al Ikhlas)
+        // Fungsi Cerdas Menggabungkan Kode & Nama Kelas
         function getCombinedKelas(obj) {
             if (!obj) return '-';
             let k = obj.kelas ? String(obj.kelas).trim() : '';
@@ -1087,7 +1119,6 @@
             if (k && nk) {
                 let kUpper = k.toUpperCase();
                 let nkUpper = nk.toUpperCase();
-                // Hanya abaikan penggabungan JIKA nama kelas "DIAWALI" dengan kode kelas
                 if (nkUpper.startsWith(kUpper + ' ') || nkUpper.startsWith(kUpper + '-')) {
                     return nk;
                 }
@@ -1179,7 +1210,6 @@
 
         async function fetchAdminUsers() {
             try {
-                // Diperbaiki sortorder kecil semua agar cocok dengan PostgreSQL
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*&order=sortorder.asc`, { headers: HEADERS });
                 if(res.ok) {
                     let data = await res.json();
@@ -1200,7 +1230,7 @@
                 sel.innerHTML = '';
                 adminData.users.forEach(u => {
                     let roleCount = (u.role || '').split(',').filter(x => x).length;
-                    let roleLabel = roleCount >= 7 ? 'Admin System' : 'Akses Khusus';
+                    let roleLabel = roleCount >= 11 ? 'Admin System' : 'Akses Khusus';
                     sel.innerHTML += `<option value="${u.username}">${u.name} (${roleLabel})</option>`;
                 });
             }
@@ -1218,7 +1248,7 @@
                 document.getElementById('admin-user-name').innerText = found.name;
                 
                 let roleCount = (adminData.role).split(',').filter(x => x).length;
-                let roleLabel = roleCount >= 7 ? 'Admin System' : (roleCount + ' Akses');
+                let roleLabel = roleCount >= 11 ? 'Admin System' : (roleCount + ' Akses');
                 document.getElementById('badge-role').innerText = roleLabel.toUpperCase();
                 
                 document.getElementById('loginPass').value = '';
@@ -1351,10 +1381,14 @@
             const allowedMenus = roleStr.split(',');
             
             const roleMap = {
-                'menu-cash': ['menu-cash', 'menu-cash-plus'],
-                'menu-verify': ['menu-verify', 'menu-verify-plus'],
-                'menu-history': ['menu-history', 'menu-history-plus'],
-                'menu-rekap': ['menu-rekap', 'menu-rekap-plus'],
+                'menu-cash': ['menu-cash'],
+                'menu-cash-plus': ['menu-cash-plus'],
+                'menu-verify': ['menu-verify'],
+                'menu-verify-plus': ['menu-verify-plus'],
+                'menu-history': ['menu-history'],
+                'menu-history-plus': ['menu-history-plus'],
+                'menu-rekap': ['menu-rekap'],
+                'menu-rekap-plus': ['menu-rekap-plus'],
                 'menu-menus': ['menu-menus'],
                 'menu-users': ['menu-users'],
                 'menu-students': ['menu-students'],
@@ -1410,8 +1444,8 @@
             
             adminData.users.forEach((u, idx) => {
                 let roleCount = (u.role || '').split(',').filter(x => x).length;
-                let roleLabel = roleCount >= 7 ? 'Full Akses' : `${roleCount} Akses`;
-                let roleColor = roleCount >= 7 ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-blue-100 text-blue-700 border-blue-200';
+                let roleLabel = roleCount >= 11 ? 'Full Akses' : `${roleCount} Akses`;
+                let roleColor = roleCount >= 11 ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-blue-100 text-blue-700 border-blue-200';
                 
                 let upBtn = idx > 0 ? `<button onclick="moveUser(${idx}, -1)" class="text-gray-400 hover:text-primary p-2 transition"><i class="fas fa-chevron-up"></i></button>` : `<span class="w-8"></span>`;
                 let dnBtn = idx < adminData.users.length-1 ? `<button onclick="moveUser(${idx}, 1)" class="text-gray-400 hover:text-primary p-2 transition"><i class="fas fa-chevron-down"></i></button>` : `<span class="w-8"></span>`;
@@ -2159,7 +2193,7 @@
 
         async function fetchAllStudentsForCash() {
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/students?select=nis,nama,kelas,namaKelas,token`, { headers: HEADERS });
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/students?select=*`, { headers: HEADERS });
                 if(res.ok) {
                     adminData.allStudents = await res.json();
                     let classes = [...new Set(adminData.allStudents.map(s => getCombinedKelas(s)).filter(k => k && k !== '-'))];
@@ -2172,31 +2206,47 @@
             } catch (e) {}
         }
 
-        function onClassChange() {
-            let k = document.getElementById('cash-kelas').value; 
+        function updateCashStudentDropdown() {
+            let k = document.getElementById('cash-kelas').value;
             let el = document.getElementById('cash-siswa');
-            
+
             document.getElementById('cash-bill-area').classList.add('hidden');
-            let actionBtn = document.getElementById('cash-pay-action'); 
+            let actionBtn = document.getElementById('cash-pay-action');
             if (actionBtn) actionBtn.classList.add('hidden');
-            
-            if(!k) { 
-                el.disabled = true; 
-                el.innerHTML = '<option value="">-- Pilih Kelas --</option>'; 
-                return; 
+
+            if(!k) {
+                el.disabled = true;
+                el.innerHTML = '<option value="">-- Pilih Kelas Dahulu --</option>';
+                return;
             }
-            
-            let stds = adminData.allStudents.filter(s => getCombinedKelas(s) === k); 
+
+            let stds = adminData.allStudents.filter(s => getCombinedKelas(s) === k);
+
+            // Filter pintar: Hanya tampilkan siswa yang memiliki tagihan pada kategori plus tersebut
+            if (currentAppMode === 'plus') {
+                let filterPlusVal = document.getElementById('filter-cash-plus') ? document.getElementById('filter-cash-plus').value : '';
+                if (filterPlusVal) {
+                    stds = stds.filter(s => {
+                        let amt = parseInt(s[filterPlusVal]);
+                        return !isNaN(amt) && amt > 0;
+                    });
+                }
+            }
+
             stds.sort((a,b) => a.nama.localeCompare(b.nama));
-            
+
             el.innerHTML = '<option value="">-- Pilih Siswa --</option>';
-            stds.forEach(s => el.innerHTML += `<option value="${s.nis}">${s.nama}</option>`); 
+            stds.forEach(s => el.innerHTML += `<option value="${s.nis}">${s.nama}</option>`);
             el.disabled = false;
         }
-        
+
+        function onClassChange() {
+            updateCashStudentDropdown();
+        }
+
         function onCashPlusFilterChange() {
-            if (document.getElementById('cash-siswa').value) {
-                onStudentChange(); 
+            if (document.getElementById('cash-kelas').value) {
+                updateCashStudentDropdown();
             }
         }
 
@@ -2257,6 +2307,7 @@
                 }
             });
 
+            // Daftar tagihan yang BUKAN angsuran (Harus bayar utuh per bulan)
             const mList = ['spp','tahfidzPlus','tahfidz','icp','icpSore'];
             
             history.forEach(tx => {
@@ -2268,6 +2319,7 @@
                             if (mList.includes(b.id)) {
                                 b.status = 'paid';
                             } else { 
+                                // Jika BUKAN bulanan (berarti Angsuran seperti Rihlah/Daftar Ulang), kurangi sisanya
                                 b.amount -= paidAmt; 
                                 if (b.amount <= 0) b.status = 'paid'; 
                             }
@@ -2321,11 +2373,12 @@
                             <select id="end-month-${b.id}" class="border rounded px-1 py-1" onchange="updateMonthlyAmount('${b.id}', ${b.amount})">${endOptionsHtml}</select>
                         </div>`;
                 } else {
+                    // Karena Rihlah, TPQ, AJS, Olimpiade tidak ada di mList, mereka otomatis jadi Angsuran!
                     optionsHtml = `
                         <div class="flex items-center gap-2 text-xs bg-gray-50 border px-3 py-2 rounded-lg w-fit hidden mt-1.5" id="options-ui-${b.id}">
                             <span class="font-medium">Angsuran: Rp</span>
-                            <input type="number" id="angsuran-input-${b.id}" value="${fAmt}" max="${fAmt}" class="border rounded px-2 py-1 w-28 font-bold" oninput="updateAngsuranAmount('${b.id}', ${fAmt})">
-                            <span class="text-[10px] text-gray-400">Sisa: ${formatCurrency(fAmt)}</span>
+                            <input type="number" id="angsuran-input-${b.id}" value="${fAmt}" max="${fAmt}" class="border rounded px-2 py-1 w-28 font-bold text-primary" oninput="updateAngsuranAmount('${b.id}', ${fAmt})">
+                            <span class="text-[10px] text-gray-400">Maks: ${formatCurrency(fAmt)}</span>
                         </div>`;
                 }
                 
@@ -2804,7 +2857,6 @@
             
             img.src = src; 
             viewer.classList.remove('hidden'); 
-            // Animasi agar layar hitam menghilang opacity-nya
             setTimeout(() => viewer.classList.remove('opacity-0'), 10);
         }
         
