@@ -1401,40 +1401,62 @@
 
         async function fetchAdminUsers() {
             let sel = document.getElementById('loginId');
+            let btn = document.querySelector('#loginForm button[type="submit"]');
+            
+            // 1. Kunci UI agar interaksi dicegah saat sistem sedang mencoba terhubung
             if(sel) {
-                sel.innerHTML = '<option value="">Membangunkan Database...</option>';
-                sel.disabled = true; // Kunci saat memuat
+                sel.innerHTML = '<option value="">Menghubungkan ke server...</option>';
+                sel.disabled = true; 
+            }
+            if(btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Loading...';
             }
 
             try {
-                // Logika Anti-Hang: Berlomba antara Fetch Server vs Batas Waktu 4 Detik
-                const fetchPromise = fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*`, { headers: HEADERS });
-                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout Database')), 4000));
+                // 2. Terapkan batas waktu maksimal 5 detik. Jika lebih, putus paksa (Abort).
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*`, { 
+                    headers: HEADERS,
+                    signal: controller.signal
+                });
                 
-                const res = await Promise.race([fetchPromise, timeoutPromise]);
-                
+                clearTimeout(timeoutId); // Hapus timer jika respons sukses diterima lebih cepat
+
                 if(res.ok) {
                     let data = await res.json();
                     if(data && Array.isArray(data) && data.length > 0) {
-                        // Pengurutan aman di sisi klien
                         data.sort((a, b) => (a.sortorder || 0) - (b.sortorder || 0));
                         adminData.users = data;
                     } else {
                         adminData.users = [...DEFAULT_USERS];
                     }
-                } else { 
-                    adminData.users = [...DEFAULT_USERS]; 
+                } else {
+                    console.warn("Respons database tidak dikenali. Beralih ke data lokal.");
+                    adminData.users = [...DEFAULT_USERS];
                 }
-            } catch (e) { 
-                console.warn("Server Supabase lambat/gangguan. Memuat akun fallback lokal.");
-                adminData.users = [...DEFAULT_USERS]; 
+            } catch (e) {
+                // Triggered otomatis jika koneksi lambat, offline, atau diputus paksa setelah 5 detik
+                console.warn("Server timeout atau offline. Memuat akun cadangan.");
+                adminData.users = [...DEFAULT_USERS];
             }
             
-            populateLoginDropdown();
+            // 3. Apapun hasilnya (sukses/gagal), wajib lepaskan kunci UI agar tidak freeze
+            try {
+                populateLoginDropdown();
+            } catch (err) {
+                console.error("Gagal menyusun daftar dropdown:", err);
+                if(sel) { sel.innerHTML = '<option value="">Error Sistem</option>'; sel.disabled = false; }
+                if(btn) { btn.disabled = false; btn.innerHTML = 'Masuk Sistem <i class="fas fa-arrow-right ml-1"></i>'; }
+            }
         }
 
         function populateLoginDropdown() {
             let sel = document.getElementById('loginId');
+            let btn = document.querySelector('#loginForm button[type="submit"]');
+            
             if(sel) {
                 sel.innerHTML = '';
                 if(!adminData.users || adminData.users.length === 0) {
@@ -1446,8 +1468,12 @@
                         sel.innerHTML += `<option value="${u.username}">${u.name} (${roleLabel})</option>`;
                     });
                 }
-                // Paksa buka kunci dropdown apa pun yang terjadi
-                sel.disabled = false; 
+                sel.disabled = false; // Buka kunci dropdown
+            }
+            
+            if(btn) {
+                btn.disabled = false; // Buka kunci tombol login
+                btn.innerHTML = 'Masuk Sistem <i class="fas fa-arrow-right ml-1"></i>';
             }
         }
 
