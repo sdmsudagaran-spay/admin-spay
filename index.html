@@ -1403,54 +1403,36 @@
             let sel = document.getElementById('loginId');
             let btn = document.querySelector('#loginForm button[type="submit"]');
             
-            // 1. Kunci UI agar interaksi dicegah saat sistem sedang mencoba terhubung
             if(sel) {
                 sel.innerHTML = '<option value="">Menghubungkan ke server...</option>';
                 sel.disabled = true; 
             }
-            if(btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Loading...';
-            }
+            if(btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Loading...'; }
 
             try {
-                // 2. Terapkan batas waktu maksimal 5 detik. Jika lebih, putus paksa (Abort).
+                // Terapkan batas waktu maksimal 4 detik agar tidak freeze
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
 
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*`, { 
-                    headers: HEADERS,
-                    signal: controller.signal
+                    headers: HEADERS, signal: controller.signal 
                 });
                 
-                clearTimeout(timeoutId); // Hapus timer jika respons sukses diterima lebih cepat
+                clearTimeout(timeoutId);
 
                 if(res.ok) {
                     let data = await res.json();
                     if(data && Array.isArray(data) && data.length > 0) {
                         data.sort((a, b) => (a.sortorder || 0) - (b.sortorder || 0));
                         adminData.users = data;
-                    } else {
-                        adminData.users = [...DEFAULT_USERS];
-                    }
-                } else {
-                    console.warn("Respons database tidak dikenali. Beralih ke data lokal.");
-                    adminData.users = [...DEFAULT_USERS];
-                }
+                    } else { adminData.users = [...DEFAULT_USERS]; }
+                } else { adminData.users = [...DEFAULT_USERS]; }
             } catch (e) {
-                // Triggered otomatis jika koneksi lambat, offline, atau diputus paksa setelah 5 detik
-                console.warn("Server timeout atau offline. Memuat akun cadangan.");
+                console.warn("Koneksi lambat. Menggunakan data lokal.");
                 adminData.users = [...DEFAULT_USERS];
             }
             
-            // 3. Apapun hasilnya (sukses/gagal), wajib lepaskan kunci UI agar tidak freeze
-            try {
-                populateLoginDropdown();
-            } catch (err) {
-                console.error("Gagal menyusun daftar dropdown:", err);
-                if(sel) { sel.innerHTML = '<option value="">Error Sistem</option>'; sel.disabled = false; }
-                if(btn) { btn.disabled = false; btn.innerHTML = 'Masuk Sistem <i class="fas fa-arrow-right ml-1"></i>'; }
-            }
+            try { populateLoginDropdown(); } catch (err) {}
         }
 
         function populateLoginDropdown() {
@@ -1468,11 +1450,11 @@
                         sel.innerHTML += `<option value="${u.username}">${u.name} (${roleLabel})</option>`;
                     });
                 }
-                sel.disabled = false; // Buka kunci dropdown
+                sel.disabled = false;
             }
             
             if(btn) {
-                btn.disabled = false; // Buka kunci tombol login
+                btn.disabled = false;
                 btn.innerHTML = 'Masuk Sistem <i class="fas fa-arrow-right ml-1"></i>';
             }
         }
@@ -3044,6 +3026,7 @@
                         </div>
                     </div>`;
             });
+        } // <--- INI ADALAH KURUNG KURAWAL PENUTUP YANG HILANG
 
         function getTxDetailsArray(tx) {
             let details = [];
