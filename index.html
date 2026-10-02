@@ -3413,7 +3413,31 @@
         function downloadReport(period) { generatePdf(period, false); }
         function previewReport(period) { generatePdf(period, true); }
 
-        // --- SAAS 2026 MODERNIZATION LOGIC (Auto Icon Mapper & Dark Mode) ---
+        // --- 1. GLOBAL DATABASE SYNC LOGIC ---
+        async function syncAllDatabase() {
+            showLoading('Sinkronisasi Database...');
+            try {
+                await Promise.all([fetchAdminUsers(), fetchMenus(), fetchTransactions(), fetchStudentsForAdmin()]);
+                const activeScreen = document.querySelector('.screen.active');
+                if (activeScreen) {
+                    if (activeScreen.id === 'screen-history') renderAllHistory();
+                    if (activeScreen.id === 'screen-verify') renderPendingTransactions();
+                    if (activeScreen.id === 'screen-rekap') renderRekap();
+                    if (activeScreen.id === 'screen-students') renderStudentsAdmin();
+                    if (activeScreen.id === 'screen-students-plus') renderStudentsPlusAdmin();
+                    if (activeScreen.id === 'screen-menus') renderMenus();
+                    if (activeScreen.id === 'screen-users') renderUsers();
+                    if (activeScreen.id === 'screen-cash' && adminData.cashSelectedStudent) onStudentChange();
+                }
+                hideLoading();
+                showMessageBox('Sinkronisasi Selesai', 'Semua data terbaru telah ditarik dari server.', 'fa-check-circle', 'bg-green-50 text-success');
+            } catch (error) {
+                hideLoading();
+                showMessageBox('Sinkronisasi Gagal', 'Gagal terhubung. Periksa koneksi internet.', 'fa-exclamation-triangle', 'bg-red-50 text-danger');
+            }
+        }
+
+        // --- 2. SAAS 2026 MODERNIZATION & LUCIDE MAPPER ---
         const faToLucideMap = {
             'fa-user-tie': 'user', 'fa-chevron-down': 'chevron-down', 'fa-lock': 'lock',
             'fa-eye': 'eye', 'fa-eye-slash': 'eye-off', 'fa-sign-in-alt': 'log-in',
@@ -3432,20 +3456,18 @@
 
         function renderLucideIcons() {
             if(!window.lucide) return;
-            document.querySelectorAll('i.fas').forEach(i => {
+            document.querySelectorAll('i.fas, i.far, i.fa').forEach(i => {
                 let faClass = Array.from(i.classList).find(c => c.startsWith('fa-'));
                 if (faClass) {
                     let lName = faToLucideMap[faClass] || 'circle';
                     i.setAttribute('data-lucide', lName);
-                    // Extract existing tailwind layout/color classes to keep structure identical
-                    let colorClasses = Array.from(i.classList).filter(c => c.startsWith('text-') || c === 'mr-1.5' || c === 'mr-1' || c === 'mr-2' || c === 'mb-1').join(' ');
-                    i.className = `${colorClasses} w-5 h-5 inline-block`;
+                    let cls = Array.from(i.classList).filter(c => c.startsWith('text-') || c.startsWith('m') || c.startsWith('w-') || c.startsWith('h-')).join(' ');
+                    i.className = `${cls} w-5 h-5 inline-block`;
                 }
             });
             lucide.createIcons();
         }
 
-        // MutationObserver to auto-swap icons dynamically whenever logic updates the DOM
         const domObserver = new MutationObserver((mutations) => {
             let shouldRender = false;
             mutations.forEach(m => { if (m.addedNodes.length > 0) shouldRender = true; });
@@ -3453,40 +3475,25 @@
         });
         domObserver.observe(document.body, { childList: true, subtree: true });
 
-        // Auto-inject Dark Mode Toggle without changing layout structure
-        setTimeout(() => {
-            const headerRow = document.querySelector('.bg-gradient-primary .flex.justify-between.items-center');
-            if(headerRow && !document.getElementById('theme-toggle-btn')) {
-                const leftGroup = document.createElement('div');
-                leftGroup.className = 'flex items-center gap-3';
-                while(headerRow.firstChild) leftGroup.appendChild(headerRow.firstChild);
-                
-                const toggleBtn = document.createElement('button');
-                toggleBtn.id = 'theme-toggle-btn';
-                toggleBtn.className = 'w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all shadow-sm';
-                toggleBtn.innerHTML = '<i data-lucide="moon" id="theme-icon" class="w-5 h-5 text-white"></i>';
-                toggleBtn.onclick = () => {
-                    document.body.classList.toggle('dark-mode');
-                    const isDark = document.body.classList.contains('dark-mode');
-                    localStorage.setItem('saas_theme', isDark ? 'dark' : 'light');
-                    document.getElementById('theme-icon').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
-                    lucide.createIcons();
-                };
-                
-                headerRow.appendChild(leftGroup);
-                headerRow.appendChild(toggleBtn);
-                renderLucideIcons();
+        // --- 3. DARK MODE LOGIC ---
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('saas_theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-icon').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+            lucide.createIcons();
+        }
 
-                if(localStorage.getItem('saas_theme') === 'dark') {
-                    document.body.classList.add('dark-mode');
-                    document.getElementById('theme-icon').setAttribute('data-lucide', 'sun');
-                    lucide.createIcons();
-                }
-            }
-        }, 300);
+        if(localStorage.getItem('saas_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
 
         window.onload = () => {
             renderLucideIcons();
+            if(document.getElementById('theme-icon') && document.body.classList.contains('dark-mode')) {
+                document.getElementById('theme-icon').setAttribute('data-lucide', 'sun');
+                lucide.createIcons();
+            }
             fetchAdminUsers();
             openScreen('screen-login', 'reguler');
         };
