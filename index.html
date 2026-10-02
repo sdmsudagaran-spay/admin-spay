@@ -187,24 +187,25 @@
             background-color: #F8FAFC !important;
             border: 1px solid #E2E8F0 !important;
             border-radius: 14px !important;
-            color: #0F172A !important;
+            color: #0F172A !important; /* Warna Teks Navy Pekat */
             font-family: 'Inter', sans-serif !important;
             font-weight: 700 !important;
-            height: 48px !important;
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-            line-height: 48px !important;
+            min-height: 48px !important; /* Pastikan minimal tinggi proporsional */
             box-shadow: none !important;
             transition: all 0.3s ease !important;
-            -webkit-appearance: none;
-            appearance: none;
         }
         select option {
             background-color: #FFFFFF !important;
             color: #0F172A !important;
             font-weight: 600 !important;
+            padding: 10px !important; /* Memberikan ruang pada daftar dropdown */
         }
-        input:focus, select:focus { border-color: #1E3A8A !important; background-color: #FFFFFF !important; box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1) !important; outline: none !important; }
+        input:focus, select:focus { 
+            border-color: #1E3A8A !important; 
+            background-color: #FFFFFF !important; 
+            box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1) !important; 
+            outline: none !important; 
+        }
 
         /* BOTTOM NAV - Glassmorphism Premium */
         #bottom-nav-admin { background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(20px) !important; border-top: 1px solid rgba(255,255,255,0.5) !important; box-shadow: 0 -10px 30px rgba(112, 144, 176, 0.08) !important; padding-bottom: env(safe-area-inset-bottom, 16px); z-index: 50;}
