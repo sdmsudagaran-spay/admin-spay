@@ -171,36 +171,98 @@
                     
                     <!-- MENU REGULER -->
                     <div id="group-reguler">
-                        <h3 class="text-sm font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Layanan Reguler</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
-                            <button id="menu-cash" onclick="openScreen('screen-cash', 'reguler')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-blue-50 hover:border-blue-200 border border-transparent transition group hidden">
-                                <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="fas fa-money-bill-wave text-2xl"></i>
+                        <h3 class="text-xs font-bold text-theme-muted uppercase tracking-wider mb-4 border-b border-theme-border pb-3">Layanan Utama</h3>
+                        <div class="grid grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 mb-8 justify-items-center">
+                            <button id="menu-cash" onclick="openScreen('screen-cash', 'reguler')" class="glass-card interactive flex flex-col items-center justify-center p-3 hover:border-blue-500 group hidden aspect-square w-full max-w-[110px] bg-theme-surface border border-theme-border">
+                                <div class="w-12 h-12 rounded-[14px] bg-blue-50 text-blue-600 border border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-500 transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-money-bill-wave text-xl"></i>
                                 </div>
-                                <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Bayar<br>Tunai</span>
+                                <span class="text-[11px] font-bold text-theme-text text-center leading-tight">Bayar<br>Tunai</span>
                             </button>
-                            <button id="menu-verify" onclick="openScreen('screen-verify', 'reguler')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-orange-50 hover:border-orange-200 border border-transparent transition group relative hidden">
-                                <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-accent mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="fas fa-university text-2xl"></i>
+                            <button id="menu-verify" onclick="openScreen('screen-verify', 'reguler')" class="glass-card interactive flex flex-col items-center justify-center p-3 hover:border-orange-500 group relative hidden aspect-square w-full max-w-[110px] bg-theme-surface border border-theme-border">
+                                <div class="w-12 h-12 rounded-[14px] bg-orange-50 text-orange-600 border border-orange-100 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-university text-xl"></i>
                                 </div>
-                                <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Cek<br>Transfer</span>
+                                <span class="text-[11px] font-bold text-theme-text text-center leading-tight">Cek<br>Transfer</span>
                                 <span id="badge-verify-reg" class="absolute top-2 right-2 bg-danger text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md" style="display:none;">0</span>
                             </button>
-                            <button id="menu-history" onclick="openScreen('screen-history', 'reguler')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-green-50 hover:border-green-200 border border-transparent transition group hidden">
-                                <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-success mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="fas fa-list-alt text-2xl"></i>
+                            <button id="menu-history" onclick="openScreen('screen-history', 'reguler')" class="glass-card interactive flex flex-col items-center justify-center p-3 hover:border-emerald-500 group hidden aspect-square w-full max-w-[110px] bg-theme-surface border border-theme-border">
+                                <div class="w-12 h-12 rounded-[14px] bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-list-alt text-xl"></i>
                                 </div>
-                                <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Riwayat<br>Transaksi</span>
+                                <span class="text-[11px] font-bold text-theme-text text-center leading-tight">Riwayat<br>Transaksi</span>
                             </button>
-                            <button id="menu-rekap" onclick="openScreen('screen-rekap', 'reguler')" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-teal-50 hover:border-teal-200 border border-transparent transition group hidden">
-                                <div class="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center text-teal-600 mb-3 group-hover:scale-110 transition-transform">
-                                    <i class="fas fa-chart-pie text-2xl"></i>
+                            <button id="menu-rekap" onclick="openScreen('screen-rekap', 'reguler')" class="glass-card interactive flex flex-col items-center justify-center p-3 hover:border-teal-500 group hidden aspect-square w-full max-w-[110px] bg-theme-surface border border-theme-border">
+                                <div class="w-12 h-12 rounded-[14px] bg-teal-50 text-teal-600 border border-teal-100 dark:bg-teal-500/10 dark:text-teal-400 dark:border-teal-500/20 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:bg-teal-500 group-hover:text-white group-hover:border-teal-500 transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-chart-pie text-xl"></i>
                                 </div>
-                                <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">Rekap<br>Data</span>
+                                <span class="text-[11px] font-bold text-theme-text text-center leading-tight">Rekap<br>Data</span>
                             </button>
                         </div>
                     </div>
 
+                    <!-- MENU PLUS -->
+                    <div id="group-plus">
+                        <h3 class="text-xs font-bold text-danger uppercase tracking-wider mb-4 border-b border-theme-border pb-3">Layanan Khusus (Plus)</h3>
+                        <div class="grid grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 mb-8 justify-items-center">
+                            <button id="menu-cash-plus" onclick="openScreen('screen-cash', 'plus')" class="glass-card interactive flex flex-col items-center justify-center p-3 hover:border-rose-500 group hidden aspect-square w-full max-w-[110px] bg-theme-surface border border-theme-border">
+                                <div class="w-12 h-12 rounded-[14px] bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:bg-rose-500 group-hover:text-white group-hover:border-rose-500 transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-money-bill-wave text-xl"></i>
+                                </div>
+                                <span class="text-[11px] font-bold text-theme-text text-center leading-tight">Tunai<br>Plus</span>
+                            </button>
+                            <button id="menu-verify-plus" onclick="openScreen('screen-verify', 'plus')" class="glass-card interactive flex flex-col items-center justify-center p-3 hover:border-pink-500 group relative hidden aspect-square w-full max-w-[110px] bg-theme-surface border border-theme-border">
+                                <div class="w-12 h-12 rounded-[14px] bg-pink-50 text-pink-600 border border-pink-100 dark:bg-pink-500/10 dark:text-pink-400 dark:border-pink-500/20 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:bg-pink-500 group-hover:text-white group-hover:border-pink-500 transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-university text-xl"></i>
+                                </div>
+                                <span class="text-[11px] font-bold text-theme-text text-center leading-tight">Cek TF<br>Plus</span>
+                                <span id="badge-verify-plus" class="absolute top-2 right-2 bg-danger text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md" style="display:none;">0</span>
+                            </button>
+                            <button id="menu-history-plus" onclick="openScreen('screen-history', 'plus')" class="glass-card interactive flex flex-col items-center justify-center p-3 hover:border-fuchsia-500 group hidden aspect-square w-full max-w-[110px] bg-theme-surface border border-theme-border">
+                                <div class="w-12 h-12 rounded-[14px] bg-fuchsia-50 text-fuchsia-600 border border-fuchsia-100 dark:bg-fuchsia-500/10 dark:text-fuchsia-400 dark:border-fuchsia-500/20 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:bg-fuchsia-500 group-hover:text-white group-hover:border-fuchsia-500 transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-list-alt text-xl"></i>
+                                </div>
+                                <span class="text-[11px] font-bold text-theme-text text-center leading-tight">Riwayat<br>Plus</span>
+                            </button>
+                            <button id="menu-rekap-plus" onclick="openScreen('screen-rekap', 'plus')" class="glass-card interactive flex flex-col items-center justify-center p-3 hover:border-red-500 group hidden aspect-square w-full max-w-[110px] bg-theme-surface border border-theme-border">
+                                <div class="w-12 h-12 rounded-[14px] bg-red-50 text-red-600 border border-red-100 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:bg-red-500 group-hover:text-white group-hover:border-red-500 transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-chart-pie text-xl"></i>
+                                </div>
+                                <span class="text-[11px] font-bold text-theme-text text-center leading-tight">Rekap<br>Plus</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SISTEM & DATABASE -->
+                    <div id="group-sistem">
+                        <h3 class="text-xs font-bold text-theme-muted uppercase tracking-wider mb-4 border-b border-theme-border pb-3">Sistem & Database</h3>
+                        <div class="grid grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 justify-items-center">
+                            <button id="menu-menus" onclick="openScreen('screen-menus')" class="glass-card interactive flex flex-col items-center justify-center p-3 hover:border-violet-500 group hidden aspect-square w-full max-w-[110px] bg-theme-surface border border-theme-border">
+                                <div class="w-12 h-12 rounded-[14px] bg-violet-50 text-violet-600 border border-violet-100 dark:bg-violet-500/10 dark:text-violet-400 dark:border-violet-500/20 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:bg-violet-500 group-hover:text-white group-hover:border-violet-500 transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-sliders-h text-xl"></i>
+                                </div>
+                                <span class="text-[11px] font-bold text-theme-text text-center leading-tight">Kelola<br>Aplikasi</span>
+                            </button>
+                            <button id="menu-users" onclick="openScreen('screen-users')" class="glass-card interactive flex flex-col items-center justify-center p-3 hover:border-indigo-500 group hidden aspect-square w-full max-w-[110px] bg-theme-surface border border-theme-border">
+                                <div class="w-12 h-12 rounded-[14px] bg-indigo-50 text-indigo-600 border border-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:bg-indigo-500 group-hover:text-white group-hover:border-indigo-500 transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-users-cog text-xl"></i>
+                                </div>
+                                <span class="text-[11px] font-bold text-theme-text text-center leading-tight">Kelola<br>Pengguna</span>
+                            </button>
+                            <button id="menu-students" onclick="openScreen('screen-students')" class="glass-card interactive flex flex-col items-center justify-center p-3 hover:border-cyan-500 group hidden aspect-square w-full max-w-[110px] bg-theme-surface border border-theme-border">
+                                <div class="w-12 h-12 rounded-[14px] bg-cyan-50 text-cyan-600 border border-cyan-100 dark:bg-cyan-500/10 dark:text-cyan-400 dark:border-cyan-500/20 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-white group-hover:border-cyan-500 transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-user-graduate text-xl"></i>
+                                </div>
+                                <span class="text-[11px] font-bold text-theme-text text-center leading-tight">Siswa<br>Reguler</span>
+                            </button>
+                            <button id="menu-students-plus" onclick="openScreen('screen-students-plus')" class="glass-card interactive flex flex-col items-center justify-center p-3 hover:border-sky-500 group hidden aspect-square w-full max-w-[110px] bg-theme-surface border border-theme-border">
+                                <div class="w-12 h-12 rounded-[14px] bg-sky-50 text-sky-600 border border-sky-100 dark:bg-sky-500/10 dark:text-sky-400 dark:border-sky-500/20 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:bg-sky-500 group-hover:text-white group-hover:border-sky-500 transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-user-plus text-xl"></i>
+                                </div>
+                                <span class="text-[11px] font-bold text-theme-text text-center leading-tight">Siswa<br>Plus</span>
+                            </button>
+                        </div>
+                    </div>
                     <!-- MENU PLUS -->
                     <div id="group-plus">
                         <h3 class="text-sm font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Layanan Plus</h3>
@@ -1314,20 +1376,24 @@
             document.getElementById(screenId).classList.add('active');
             
             const bNav = document.getElementById('bottom-nav-admin');
+            const dSide = document.getElementById('desktop-sidebar');
+            
             if(screenId === 'screen-login') { 
                 bNav.classList.add('hidden'); 
+                if(dSide) { dSide.classList.add('hidden'); dSide.classList.remove('md:flex'); }
                 return; 
             }
             
             bNav.classList.remove('hidden');
+            if(dSide) { dSide.classList.remove('hidden'); dSide.classList.add('md:flex'); }
             applyNavRoleRestrictions();
 
-            document.querySelectorAll('.nav-btn-admin:not(.hidden)').forEach(btn => {
+            document.querySelectorAll('.nav-btn-admin:not(.hidden), .nav-btn-sidebar:not(.hidden)').forEach(btn => {
                 if(btn.dataset.target === screenId){ 
                     btn.classList.add('text-primary'); 
-                    btn.classList.remove('text-gray-400'); 
+                    btn.classList.remove('text-gray-400', 'text-theme-muted'); 
                 } else { 
-                    btn.classList.add('text-gray-400'); 
+                    btn.classList.add('text-theme-muted', 'text-gray-400'); 
                     btn.classList.remove('text-primary'); 
                 }
             });
@@ -3415,20 +3481,14 @@
 
         // --- 2. DARK MODE LOGIC ---
         function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
             localStorage.setItem('saas_theme', isDark ? 'dark' : 'light');
-            document.getElementById('theme-icon').className = isDark ? 'fas fa-sun text-white' : 'fas fa-moon text-white';
         }
 
         window.onload = () => {
-            if(localStorage.getItem('saas_theme') === 'dark') {
-                document.body.classList.add('dark-mode');
-                if (document.getElementById('theme-icon')) {
-                    document.getElementById('theme-icon').className = 'fas fa-sun text-white';
-                }
-            }
-            fetchAdminUsers();
+            if(localStorage.getItem('saas_theme') === 'dark') { document.body.classList.add('dark'); }
+            fetchAdminUsers(); 
             openScreen('screen-login', 'reguler');
         };
     </script>
