@@ -240,7 +240,7 @@
                     <i class="fas fa-home text-lg w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="text-sm">Beranda</span>
                 </button>
                 <button onclick="openScreen('screen-verify', currentAppMode)" class="nav-btn-sidebar flex items-center justify-start gap-4 px-4 py-3.5 rounded-xl text-[#A3AED0] font-semibold transition-all group relative" data-target="screen-verify">
-                    <i class="fas fa-check-double text-lg w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="text-sm">Cek Transfer</span>
+                    <i class="fas fa-university text-lg w-6 text-center group-hover:scale-110 transition-transform"></i> <span class="text-sm">Cek Transfer</span>
                     <span id="sidebar-badge-pending" class="absolute right-3 bg-[#EE5D50] text-white text-[10px] px-2 py-0.5 rounded-full hidden shadow-sm">0</span>
                 </button>
                 <button onclick="openScreen('screen-history', currentAppMode)" class="nav-btn-sidebar flex items-center justify-start gap-4 px-4 py-3.5 rounded-xl text-[#A3AED0] font-semibold transition-all group" data-target="screen-history">
@@ -1087,43 +1087,46 @@
             <img id="fs-img" src="" class="max-w-[95%] max-h-[90%] object-contain rounded-xl shadow-2xl">
         </div>
 
-        <!-- MODAL DETAIL TRANSAKSI -->
-        <div id="modal-tx-detail" class="fixed inset-0 bg-black/60 z-[60] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-end md:items-center justify-center">
-            <div class="modal-inner-card bg-white w-full max-w-[480px] rounded-t-[2rem] p-6 transform translate-y-full md:translate-y-0 transition-transform duration-300 shadow-2xl flex flex-col max-h-[90vh]" id="modal-tx-content">
-                <div class="flex justify-between items-center mb-5">
-                    <h3 class="text-lg font-bold text-gray-800">Detail Pembayaran</h3>
-                    <button onclick="closeTxModal()" class="w-8 h-8 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200"><i class="fas fa-times"></i></button>
+        <!-- MODAL DETAIL TRANSAKSI (Centered Popup Wondr Style) -->
+        <div id="modal-tx-detail" class="fixed inset-0 bg-black/60 z-[60] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-[420px] rounded-[28px] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden" id="modal-tx-content">
+                <div class="flex justify-between items-center p-6 pb-4 border-b border-gray-100 bg-gray-50/50">
+                    <h3 class="text-lg font-extrabold text-gray-800 tracking-tight">Detail Pembayaran</h3>
+                    <button onclick="closeTxModal()" class="w-8 h-8 bg-gray-200 rounded-full text-gray-600 hover:bg-gray-300 transition-colors flex items-center justify-center"><i class="fas fa-times"></i></button>
                 </div>
                 
-                <div class="overflow-y-auto no-scrollbar pb-24 px-1 flex-1">
-                    <span class="text-xs font-mono text-gray-400 mb-4 block" id="dtl-id"></span>
+                <div class="overflow-y-auto custom-scrollbar p-6 flex-1 bg-white">
+                    <div class="flex justify-between items-start mb-6">
+                        <div><p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">ID Transaksi</p><p class="font-mono font-semibold text-gray-700 text-xs" id="dtl-id"></p></div>
+                        <div class="text-right"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Tanggal</p><p class="text-xs font-semibold text-gray-700" id="dtl-date"></p></div>
+                    </div>
                     
-                    <div class="mb-5 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 cursor-pointer hidden" onclick="viewFullscreenImage(document.getElementById('dtl-img').src)">
-                        <img id="dtl-img" src="" class="w-full h-40 object-cover hidden">
-                        <div id="dtl-no-img" class="w-full h-40 flex flex-col items-center justify-center text-gray-400 hidden">
-                            <i class="fas fa-image text-3xl mb-2"></i><span class="text-xs">Tanpa Gambar</span>
+                    <div class="mb-5 bg-gray-50 rounded-2xl overflow-hidden border border-gray-200 cursor-pointer hidden group relative shadow-sm" onclick="viewFullscreenImage(document.getElementById('dtl-img').src)">
+                        <img id="dtl-img" src="" class="w-full h-40 object-cover hidden group-hover:scale-105 transition-transform duration-500">
+                        <div id="dtl-no-img" class="w-full h-32 flex flex-col items-center justify-center text-green-500 bg-green-50/50 hidden">
+                            <i class="fas fa-money-bill-wave text-3xl mb-2"></i><span class="text-xs font-bold uppercase tracking-wide">Tunai (POS)</span>
                         </div>
                     </div>
 
-                    <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 mb-5 flex gap-4 items-center">
-                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary shadow-sm flex-shrink-0"><i class="fas fa-user-graduate text-xl"></i></div>
+                    <div class="bg-blue-50/50 rounded-2xl p-4 border border-blue-100 mb-6 flex gap-4 items-center">
+                        <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-blue-600 shadow-sm flex-shrink-0 border border-blue-50"><i class="fas fa-user-graduate text-xl"></i></div>
                         <div>
                             <h4 class="font-bold text-gray-800 text-sm" id="dtl-nama">Nama</h4>
-                            <p class="text-xs text-gray-600 mt-1">NIS: <span id="dtl-nis" class="font-semibold"></span> | Kelas: <span id="dtl-kelas" class="font-semibold"></span></p>
-                            <p class="text-[10px] text-gray-400 mt-1"><i class="fas fa-calendar-alt"></i> <span id="dtl-date"></span></p>
+                            <p class="text-[11px] text-gray-500 mt-1 font-medium">NIS: <span id="dtl-nis" class="font-bold text-gray-700"></span> | Kelas: <span id="dtl-kelas" class="font-bold text-gray-700"></span></p>
                         </div>
                     </div>
 
-                    <h3 class="text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider">Rincian Dibayar</h3>
-                    <div id="dtl-rincian" class="space-y-2 mb-4"></div>
-                    
-                    <div class="border-t border-dashed border-gray-300 pt-3 flex justify-between items-center mb-6">
-                        <span class="font-bold text-gray-800">Total</span>
-                        <span class="text-xl font-bold text-primary" id="dtl-total">Rp 0</span>
+                    <h3 class="text-[10px] font-bold text-gray-400 mb-3 uppercase tracking-wider">Rincian Tagihan</h3>
+                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                        <div id="dtl-rincian" class="space-y-3"></div>
+                        <div class="border-t border-dashed border-gray-300 mt-3 pt-3 flex justify-between items-center">
+                            <span class="font-extrabold text-gray-800 text-sm">TOTAL</span>
+                            <span class="text-xl font-extrabold text-[#4318FF]" id="dtl-total">Rp 0</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="absolute bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 rounded-b-[2rem] hidden" id="dtl-actions">
+                <div class="bg-white border-t border-gray-100 p-5 hidden z-10" id="dtl-actions">
                     <!-- Actions will be injected here by JS -->
                 </div>
             </div>
@@ -2500,19 +2503,18 @@
                 }
             });
 
-            // Daftar tagihan yang BUKAN angsuran (Harus bayar utuh per bulan)
+            // Daftar tagihan bulanan (selalu muncul, tidak boleh disembunyikan setelah dibayar)
             const mList = ['spp','tahfidzPlus','tahfidz','icp','icpSore', 'ajs', 'tpq', 'olimpiade'];
-            
+
             history.forEach(tx => {
                 BILL_COLUMNS.forEach(c => {
                     let paidAmt = parseInt(tx[c.db]);
                     if(paidAmt > 0) { 
                         let b = rawBills.find(x => x.id === c.code); 
                         if(b) {
-                            if (mList.includes(b.id)) {
-                                b.status = 'paid';
-                            } else { 
-                                // Jika BUKAN bulanan (berarti Angsuran seperti Rihlah/Daftar Ulang), kurangi sisanya
+                            // HANYA sembunyikan (paid) jika tagihan tersebut BUKAN tagihan bulanan (Angsuran)
+                            if (!mList.includes(b.id)) { 
+                                // Kurangi sisa tagihan angsuran
                                 b.amount -= paidAmt; 
                                 if (b.amount <= 0) b.status = 'paid'; 
                             }
@@ -2940,31 +2942,37 @@
             list.forEach(tx => {
                 const total = calculateTxTotal(tx);
                 let stat = (tx.status === 'success' || tx.status === 'lunas') 
-                    ? '<span class="text-[10px] bg-green-50 text-success border border-green-200 px-2 py-1 rounded font-bold">LUNAS</span>' 
-                    : '<span class="text-[10px] bg-red-50 text-danger border border-red-200 px-2 py-1 rounded font-bold">DITOLAK</span>';
+                    ? '<span class="text-[9px] bg-green-50 text-success border border-green-200 px-2.5 py-1 rounded-[6px] font-bold uppercase tracking-wider">Lunas</span>' 
+                    : '<span class="text-[9px] bg-red-50 text-danger border border-red-200 px-2.5 py-1 rounded-[6px] font-bold uppercase tracking-wider">Ditolak</span>';
                 
                 if(tx.status !== 'success' && tx.status !== 'lunas' && tx.status !== 'rejected') {
-                    stat = '<span class="text-[10px] bg-orange-50 text-accent border border-orange-200 px-2 py-1 rounded font-bold">MENUNGGU</span>';
+                    stat = '<span class="text-[9px] bg-orange-50 text-accent border border-orange-200 px-2.5 py-1 rounded-[6px] font-bold uppercase tracking-wider">Menunggu</span>';
                 }
+
+                let jenisTrx = tx.buktiTF === 'PEMBAYARAN_TUNAI' ? 'Tunai' : 'Transfer';
+                let iconTrx = tx.buktiTF === 'PEMBAYARAN_TUNAI' ? 'fa-money-bill-wave text-green-500' : 'fa-university text-orange-500';
                 
                 container.innerHTML += `
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-3 cursor-pointer hover:border-primary transition" onclick="openTxDetail('${tx.id}')">
-                        <div class="flex justify-between border-b border-dashed border-gray-200 pb-2 mb-2">
-                            <span class="text-xs font-mono text-gray-500">
-                                ${tx.id} <span class="ml-2 text-[10px] text-gray-400"><i class="fas fa-clock"></i> ${tx.date}</span>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-3 cursor-pointer hover:border-blue-500 transition-all group" onclick="openTxDetail('${tx.id}')">
+                        <div class="flex justify-between border-b border-gray-100 pb-3 mb-3">
+                            <span class="text-[11px] font-mono text-gray-500 font-semibold flex items-center">
+                                ${tx.id} <span class="ml-2 text-[10px] text-gray-400 flex items-center"><i class="fas fa-clock mr-1"></i> ${tx.date}</span>
                             </span>
                             ${stat}
                         </div>
                         <div class="flex justify-between items-start">
                             <div>
                                 <h4 class="text-sm font-bold text-gray-800">${tx.nama}</h4>
-                                <p class="text-xs text-gray-500">${getCombinedKelas(tx)} | NIS: ${tx.nis}</p>
+                                <p class="text-[11px] text-gray-500 font-medium mt-1">${getCombinedKelas(tx)} | NIS: ${tx.nis}</p>
+                                <div class="flex items-center gap-2 mt-2.5">
+                                    <span class="text-[10px] bg-gray-50 border border-gray-200 px-2 py-1 rounded-md text-gray-600 font-bold flex items-center gap-1.5"><i class="fas ${iconTrx}"></i> ${jenisTrx}</span>
+                                    <span class="text-[10px] text-gray-500 font-bold flex items-center gap-1.5"><i class="fas fa-user-tie text-gray-400"></i> ${tx.kasir || '-'}</span>
+                                </div>
                             </div>
-                            <p class="text-sm font-bold text-primary">${formatCurrency(total)}</p>
+                            <p class="text-base font-extrabold text-[#4318FF]">${formatCurrency(total)}</p>
                         </div>
                     </div>`;
             });
-        }
 
         function getTxDetailsArray(tx) {
             let details = [];
