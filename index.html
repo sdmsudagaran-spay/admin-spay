@@ -3,10 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sudagaran Pay - Admin Panel</title>
+    <title>Sudagaran Pay - Admin SaaS</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Modern SaaS Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -14,95 +21,127 @@
     
     <script>
         tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { 
-                        primary: '#1E3A5F', 
-                        accent: '#F59E0B', 
-                        bglight: '#F8FAFC', 
-                        success: '#22C55E', 
-                        danger: '#EF4444', 
-                        cardbg: '#FFFFFF' 
-                    },
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    boxShadow: { 'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)' }
-                }
-            }
+            darkMode: 'class',
+            theme: { extend: { colors: { primary: '#2563EB', accent: '#F59E0B', bglight: '#F8FAFC', success: '#10B981', danger: '#EF4444', cardbg: '#FFFFFF' } } }
         }
     </script>
 
     <style>
-        body { 
-            background-color: #cbd5e1; 
-            display: flex; justify-content: center; align-items: flex-start; 
-            font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; 
-            margin: 0; padding: 0; 
+        /* Modern SaaS 2026 Design System - Override Engine */
+        :root {
+            --saas-bg: #F8FAFC; --saas-card: #FFFFFF;
+            --saas-border: rgba(15,23,42,0.06);
+            --saas-shadow: 0 8px 30px rgba(15,23,42,0.08);
+            --saas-shadow-hover: 0 12px 40px rgba(15,23,42,0.12);
+            --saas-text: #0F172A; --saas-text-muted: #64748B;
+            --saas-input-bg: #FFFFFF; --saas-input-border: #E2E8F0;
         }
-        
+
+        .dark-mode {
+            --saas-bg: #0F172A; --saas-card: #1E293B;
+            --saas-border: rgba(255,255,255,0.08);
+            --saas-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            --saas-shadow-hover: 0 12px 40px rgba(0,0,0,0.5);
+            --saas-text: #F8FAFC; --saas-text-muted: #94A3B8;
+            --saas-input-bg: #0F172A; --saas-input-border: rgba(255,255,255,0.1);
+        }
+
+        body { 
+            background-color: var(--saas-bg) !important; 
+            display: flex; justify-content: center; align-items: flex-start; 
+            font-family: 'Inter', sans-serif !important; color: var(--saas-text) !important;
+            margin: 0; padding: 0; transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-bold { font-family: 'Plus Jakarta Sans', sans-serif !important; letter-spacing: -0.02em; color: var(--saas-text); }
+
         #app-container { 
-            width: 100%; 
-            max-width: 480px; 
-            min-height: 100vh; 
-            background-color: #F8FAFC; 
-            position: relative; 
-            box-shadow: 0 0 30px rgba(0,0,0,0.15); 
-            overflow-x: hidden; 
-            overflow-y: auto; 
-            scrollbar-width: none; 
-            margin: 0 auto;
+            width: 100%; max-width: 480px; min-height: 100vh; 
+            background-color: var(--saas-bg) !important; position: relative; 
+            box-shadow: 0 0 40px rgba(0,0,0,0.03) !important; 
+            overflow-x: hidden; overflow-y: auto; scrollbar-width: none; margin: 0 auto;
+            transition: background-color 0.3s ease;
         }
         #app-container::-webkit-scrollbar { display: none; }
         
         @media (min-width: 768px) {
-            body { padding: 2vh 0; }
-            #app-container { 
-                max-width: 800px; 
-                min-height: 96vh; 
-                height: 96vh; 
-                border-radius: 24px; 
-            }
-            #bottom-nav-admin { 
-                max-width: 800px !important; 
-                left: 50% !important; 
-                transform: translateX(-50%) !important; 
-                border-bottom-left-radius: 24px; 
-                border-bottom-right-radius: 24px; 
-            }
-            .modal-inner-card { 
-                max-width: 500px !important; 
-                margin: 0 auto; 
-                border-radius: 24px !important; 
-                margin-bottom: auto; 
-                margin-top: auto; 
-            }
+            body { padding: 2vh 0; background-color: #E2E8F0 !important; }
+            .dark-mode body { background-color: #020617 !important; }
+            #app-container { max-width: 800px; height: 96vh; border-radius: 24px; box-shadow: var(--saas-shadow) !important; }
+            #bottom-nav-admin { max-width: 800px !important; left: 50% !important; transform: translateX(-50%) !important; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
+            .modal-inner-card { max-width: 500px !important; margin: 0 auto; border-radius: 24px !important; margin-bottom: auto; margin-top: auto; }
         }
 
-        .screen { 
-            display: none; 
-            animation: fadeIn 0.3s ease-in-out; 
-            padding-bottom: 90px; 
-        }
+        /* Animations */
+        .screen { display: none; animation: saasFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); padding-bottom: 90px; }
         .screen.active { display: block; }
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(10px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        @keyframes saasFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* SaaS Components: Automatic Conversion */
+        .bg-white, .bg-gray-50, .modal-inner-card { background-color: var(--saas-card) !important; border: 1px solid var(--saas-border) !important; color: var(--saas-text) !important; }
+        .text-gray-800, .text-gray-700 { color: var(--saas-text) !important; }
+        .text-gray-600, .text-gray-500, .text-gray-400 { color: var(--saas-text-muted) !important; }
+        .border-gray-100, .border-gray-200 { border-color: var(--saas-border) !important; }
         
-        .bg-gradient-primary { background: linear-gradient(135deg, #1E3A5F 0%, #2A528A 100%); }
-        .islamic-pattern { 
-            background-image: radial-gradient(#F59E0B 1px, transparent 1px); 
-            background-size: 20px 20px; 
-            opacity: 0.05; 
-            position: absolute; 
-            top: 0; left: 0; right: 0; bottom: 0; 
-            pointer-events: none; 
-        }
+        /* Shape & Depth */
+        .rounded-xl, .rounded-2xl, .rounded-3xl { border-radius: 20px !important; }
+        .shadow-sm, .shadow-md, .shadow-lg, .shadow-2xl, .shadow-soft { box-shadow: var(--saas-shadow) !important; }
         
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        /* Micro-Interactions (Hover Lift) */
+        .hover\:bg-gray-50:hover, .hover\:bg-blue-50:hover, .hover\:bg-orange-50:hover, .hover\:bg-green-50:hover, .hover\:bg-rose-50:hover, .hover\:bg-teal-50:hover, .hover\:bg-purple-50:hover, .hover\:bg-pink-50:hover, .cursor-pointer:hover {
+            transform: translateY(-2px); box-shadow: var(--saas-shadow-hover) !important;
+            background-color: var(--saas-card) !important; border-color: #2563EB !important;
+        }
+
+        /* Standardized Buttons */
+        button { transition: all 0.25s ease !important; border-radius: 14px !important; }
+        button.bg-primary {
+            background-color: #2563EB !important; height: 44px;
+            display: flex !important; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(37,99,235,0.2) !important; border: none !important; color: white !important; font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+        button.bg-primary:hover { background-color: #1D4ED8 !important; box-shadow: 0 8px 25px rgba(37,99,235,0.3) !important; transform: translateY(-1px); }
+        button:active { transform: scale(0.97) !important; }
+
+        /* Standardized Inputs */
+        input, select {
+            background-color: var(--saas-input-bg) !important; border: 1px solid var(--saas-input-border) !important;
+            border-radius: 14px !important; height: 44px !important; color: var(--saas-text) !important;
+            transition: all 0.25s ease !important; box-shadow: none !important;
+        }
+        input:focus, select:focus { border-color: #2563EB !important; box-shadow: 0 0 0 3px rgba(37,99,235,0.1) !important; outline: none !important; }
+
+        /* SaaS Checkboxes */
+        input[type="checkbox"] {
+            appearance: none; background-color: var(--saas-input-bg) !important;
+            margin: 0; width: 1.25em !important; height: 1.25em !important;
+            border: 1px solid var(--saas-border) !important; border-radius: 6px !important;
+            display: grid !important; place-content: center !important; cursor: pointer; transition: all 0.2s;
+        }
+        input[type="checkbox"]::before {
+            content: ""; width: 0.65em; height: 0.65em; transform: scale(0);
+            transition: 120ms transform ease-in-out; background-color: white;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        input[type="checkbox"]:checked { background-color: #2563EB !important; border-color: #2563EB !important; }
+        input[type="checkbox"]:checked::before { transform: scale(1); }
+
+        /* Status Badges */
+        .bg-green-50, .text-success { background-color: rgba(16, 185, 129, 0.1) !important; color: #10B981 !important; border: 1px solid rgba(16, 185, 129, 0.2) !important; }
+        .bg-red-50, .text-danger { background-color: rgba(239, 68, 68, 0.1) !important; color: #EF4444 !important; border: 1px solid rgba(239, 68, 68, 0.2) !important; }
+        .bg-orange-50, .text-accent { background-color: rgba(245, 158, 11, 0.1) !important; color: #F59E0B !important; border: 1px solid rgba(245, 158, 11, 0.2) !important; }
+        .bg-blue-50 { background-color: rgba(59, 130, 246, 0.1) !important; color: #3B82F6 !important; border: 1px solid rgba(59, 130, 246, 0.2) !important; }
+
+        /* Sticky Header Glassmorphism */
+        nav, .sticky { backdrop-filter: blur(12px) !important; background-color: rgba(255, 255, 255, 0.8) !important; border-color: var(--saas-border) !important; }
+        .dark-mode nav, .dark-mode .sticky { background-color: rgba(30, 41, 59, 0.8) !important; }
+
+        .bg-gradient-primary { background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%) !important; }
+        .dark-mode .bg-gradient-primary { background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%) !important; border-bottom: 1px solid var(--saas-border); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--saas-border); border-radius: 10px; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -3385,7 +3424,80 @@
         function downloadReport(period) { generatePdf(period, false); }
         function previewReport(period) { generatePdf(period, true); }
 
+        // --- SAAS 2026 MODERNIZATION LOGIC (Auto Icon Mapper & Dark Mode) ---
+        const faToLucideMap = {
+            'fa-user-tie': 'user', 'fa-chevron-down': 'chevron-down', 'fa-lock': 'lock',
+            'fa-eye': 'eye', 'fa-eye-slash': 'eye-off', 'fa-sign-in-alt': 'log-in',
+            'fa-money-bill-wave': 'banknote', 'fa-university': 'landmark', 'fa-list-alt': 'list-todo',
+            'fa-chart-pie': 'pie-chart', 'fa-sliders-h': 'sliders-horizontal', 'fa-users-cog': 'users-round',
+            'fa-user-graduate': 'graduation-cap', 'fa-user-plus': 'user-plus', 'fa-arrow-left': 'arrow-left',
+            'fa-cash-register': 'calculator', 'fa-check-circle': 'check-circle', 'fa-sync-alt': 'refresh-cw',
+            'fa-search': 'search', 'fa-times-circle': 'x-circle', 'fa-plus': 'plus', 'fa-file-download': 'download',
+            'fa-file-upload': 'upload', 'fa-filter': 'filter', 'fa-trash-alt': 'trash-2', 'fa-pen': 'pencil',
+            'fa-calendar-day': 'calendar-days', 'fa-calendar-week': 'calendar-range', 'fa-calendar-alt': 'calendar',
+            'fa-times': 'x', 'fa-file-invoice-dollar': 'receipt', 'fa-cloud-upload-alt': 'cloud-upload',
+            'fa-image': 'image', 'fa-print': 'printer', 'fa-clock': 'clock', 'fa-question-circle': 'help-circle',
+            'fa-sign-out-alt': 'log-out', 'fa-home': 'home', 'fa-check-double': 'check-square', 'fa-info-circle': 'info',
+            'fa-exclamation-triangle': 'alert-circle'
+        };
+
+        function renderLucideIcons() {
+            if(!window.lucide) return;
+            document.querySelectorAll('i.fas').forEach(i => {
+                let faClass = Array.from(i.classList).find(c => c.startsWith('fa-'));
+                if (faClass) {
+                    let lName = faToLucideMap[faClass] || 'circle';
+                    i.setAttribute('data-lucide', lName);
+                    // Extract existing tailwind layout/color classes to keep structure identical
+                    let colorClasses = Array.from(i.classList).filter(c => c.startsWith('text-') || c === 'mr-1.5' || c === 'mr-1' || c === 'mr-2' || c === 'mb-1').join(' ');
+                    i.className = `${colorClasses} w-5 h-5 inline-block`;
+                }
+            });
+            lucide.createIcons();
+        }
+
+        // MutationObserver to auto-swap icons dynamically whenever logic updates the DOM
+        const domObserver = new MutationObserver((mutations) => {
+            let shouldRender = false;
+            mutations.forEach(m => { if (m.addedNodes.length > 0) shouldRender = true; });
+            if (shouldRender) renderLucideIcons();
+        });
+        domObserver.observe(document.body, { childList: true, subtree: true });
+
+        // Auto-inject Dark Mode Toggle without changing layout structure
+        setTimeout(() => {
+            const headerRow = document.querySelector('.bg-gradient-primary .flex.justify-between.items-center');
+            if(headerRow && !document.getElementById('theme-toggle-btn')) {
+                const leftGroup = document.createElement('div');
+                leftGroup.className = 'flex items-center gap-3';
+                while(headerRow.firstChild) leftGroup.appendChild(headerRow.firstChild);
+                
+                const toggleBtn = document.createElement('button');
+                toggleBtn.id = 'theme-toggle-btn';
+                toggleBtn.className = 'w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all shadow-sm';
+                toggleBtn.innerHTML = '<i data-lucide="moon" id="theme-icon" class="w-5 h-5 text-white"></i>';
+                toggleBtn.onclick = () => {
+                    document.body.classList.toggle('dark-mode');
+                    const isDark = document.body.classList.contains('dark-mode');
+                    localStorage.setItem('saas_theme', isDark ? 'dark' : 'light');
+                    document.getElementById('theme-icon').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+                    lucide.createIcons();
+                };
+                
+                headerRow.appendChild(leftGroup);
+                headerRow.appendChild(toggleBtn);
+                renderLucideIcons();
+
+                if(localStorage.getItem('saas_theme') === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    document.getElementById('theme-icon').setAttribute('data-lucide', 'sun');
+                    lucide.createIcons();
+                }
+            }
+        }, 300);
+
         window.onload = () => {
+            renderLucideIcons();
             fetchAdminUsers();
             openScreen('screen-login', 'reguler');
         };
