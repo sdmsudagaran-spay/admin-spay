@@ -1402,22 +1402,17 @@
         async function fetchAdminUsers() {
             let sel = document.getElementById('loginId');
             if(sel) {
-                sel.innerHTML = '<option value="">Sedang sinkronisasi data...</option>';
-                sel.disabled = true; // Mengunci dropdown agar tidak bisa diklik saat loading
+                sel.innerHTML = '<option value="">Membangunkan Database...</option>';
+                sel.disabled = true; // Kunci saat memuat
             }
 
             try {
-                // Menambahkan Timeout 8 detik agar sistem tidak freeze jika koneksi error
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 8000);
-
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*`, { 
-                    headers: HEADERS,
-                    signal: controller.signal
-                });
+                // Logika Anti-Hang: Berlomba antara Fetch Server vs Batas Waktu 4 Detik
+                const fetchPromise = fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*`, { headers: HEADERS });
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout Database')), 4000));
                 
-                clearTimeout(timeoutId);
-
+                const res = await Promise.race([fetchPromise, timeoutPromise]);
+                
                 if(res.ok) {
                     let data = await res.json();
                     if(data && Array.isArray(data) && data.length > 0) {
@@ -1431,7 +1426,7 @@
                     adminData.users = [...DEFAULT_USERS]; 
                 }
             } catch (e) { 
-                console.warn("Gagal terhubung ke database, menggunakan data lokal.");
+                console.warn("Server Supabase lambat/gangguan. Memuat akun fallback lokal.");
                 adminData.users = [...DEFAULT_USERS]; 
             }
             
@@ -1442,8 +1437,8 @@
             let sel = document.getElementById('loginId');
             if(sel) {
                 sel.innerHTML = '';
-                if(adminData.users.length === 0) {
-                    sel.innerHTML = '<option value="">(Tidak ada pengguna di database)</option>';
+                if(!adminData.users || adminData.users.length === 0) {
+                    sel.innerHTML = '<option value="">(Tidak ada akun tersedia)</option>';
                 } else {
                     adminData.users.forEach(u => {
                         let roleCount = (u.role || '').split(',').filter(x => x).length;
@@ -1451,7 +1446,8 @@
                         sel.innerHTML += `<option value="${u.username}">${u.name} (${roleLabel})</option>`;
                     });
                 }
-                sel.disabled = false; // Buka kunci dropdown setelah data masuk
+                // Paksa buka kunci dropdown apa pun yang terjadi
+                sel.disabled = false; 
             }
         }
 
