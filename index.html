@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -10,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Modern SaaS Icons (LineAwesome FA-compatible: 100% aman untuk JS lama) -->
+    <!-- Modern SaaS Icons (LineAwesome - Zero JS, 100% Aman, Anti-Loading Stuck) -->
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/font-awesome-line-awesome/css/all.min.css">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -33,7 +31,6 @@
             --saas-shadow-hover: 0 12px 40px rgba(15,23,42,0.12);
             --saas-text: #0F172A; --saas-text-muted: #64748B;
             --saas-input-bg: #FFFFFF; --saas-input-border: #E2E8F0;
-            --saas-primary: #2563EB;
         }
 
         body.dark-mode {
@@ -90,13 +87,13 @@
         /* Micro-Interactions (Hover Lift) */
         button.group:hover, .cursor-pointer:hover {
             transform: translateY(-2px); box-shadow: var(--saas-shadow-hover) !important;
-            background-color: var(--saas-card) !important; border-color: var(--saas-primary) !important;
+            background-color: var(--saas-card) !important; border-color: #2563EB !important;
         }
 
         /* Standardized Buttons */
         button { transition: all 0.25s ease !important; border-radius: 14px !important; }
         button.bg-primary {
-            background-color: var(--saas-primary) !important;
+            background-color: #2563EB !important; height: 44px;
             display: flex !important; align-items: center; justify-content: center;
             box-shadow: 0 4px 15px rgba(37,99,235,0.2) !important; border: none !important; color: white !important; font-family: 'Plus Jakarta Sans', sans-serif !important;
         }
@@ -109,7 +106,7 @@
             border-radius: 14px !important; height: 44px !important; color: var(--saas-text) !important;
             transition: all 0.25s ease !important; box-shadow: none !important;
         }
-        input:focus, select:focus { border-color: var(--saas-primary) !important; box-shadow: 0 0 0 3px rgba(37,99,235,0.1) !important; outline: none !important; }
+        input:focus, select:focus { border-color: #2563EB !important; box-shadow: 0 0 0 3px rgba(37,99,235,0.1) !important; outline: none !important; }
 
         /* SaaS Checkboxes */
         input[type="checkbox"] {
@@ -123,7 +120,7 @@
             transition: 120ms transform ease-in-out; background-color: white;
             clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
         }
-        input[type="checkbox"]:checked { background-color: var(--saas-primary) !important; border-color: var(--saas-primary) !important; }
+        input[type="checkbox"]:checked { background-color: #2563EB !important; border-color: #2563EB !important; }
         input[type="checkbox"]:checked::before { transform: scale(1); }
 
         /* Sticky Header Glassmorphism */
@@ -132,9 +129,7 @@
 
         .bg-gradient-primary { background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%) !important; }
         body.dark-mode .bg-gradient-primary { background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%) !important; border-bottom: 1px solid var(--saas-border); }
-        
-        /* Modern Icon Styles */
-        i.fas, i.far, i.fa { font-size: 1.15em; }
+        i.fas, i.far, i.fa { font-size: 1.15em; } /* Fix Icon Size */
     </style>
 </head>
 <body class="text-gray-800">
