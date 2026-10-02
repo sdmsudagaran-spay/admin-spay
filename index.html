@@ -1402,17 +1402,26 @@
         async function fetchAdminUsers() {
             let sel = document.getElementById('loginId');
             if(sel) {
-                sel.innerHTML = '<option value="">Memuat data dari server...</option>';
-                sel.disabled = true;
+                sel.innerHTML = '<option value="">Sedang sinkronisasi data...</option>';
+                sel.disabled = true; // Mengunci dropdown agar tidak bisa diklik saat loading
             }
 
             try {
-                // Menghapus order=sortorder.asc pada URL untuk mencegah error jika kolom tersebut belum ada di database
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*`, { headers: HEADERS });
+                // Menambahkan Timeout 8 detik agar sistem tidak freeze jika koneksi error
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*`, { 
+                    headers: HEADERS,
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+
                 if(res.ok) {
                     let data = await res.json();
-                    if(data.length > 0) {
-                        // Lakukan pengurutan dengan aman di sisi klien (browser)
+                    if(data && Array.isArray(data) && data.length > 0) {
+                        // Pengurutan aman di sisi klien
                         data.sort((a, b) => (a.sortorder || 0) - (b.sortorder || 0));
                         adminData.users = data;
                     } else {
@@ -1422,8 +1431,10 @@
                     adminData.users = [...DEFAULT_USERS]; 
                 }
             } catch (e) { 
+                console.warn("Gagal terhubung ke database, menggunakan data lokal.");
                 adminData.users = [...DEFAULT_USERS]; 
             }
+            
             populateLoginDropdown();
         }
 
@@ -1440,7 +1451,7 @@
                         sel.innerHTML += `<option value="${u.username}">${u.name} (${roleLabel})</option>`;
                     });
                 }
-                sel.disabled = false;
+                sel.disabled = false; // Buka kunci dropdown setelah data masuk
             }
         }
 
