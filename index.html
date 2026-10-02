@@ -297,7 +297,9 @@
                                 <label class="block text-[11px] font-bold text-[#A3AED0] uppercase tracking-wider mb-2">Akses Sebagai</label>
                                 <div class="relative group">
                                     <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-[#4318FF] transition-colors"><i class="fas fa-user-tie"></i></span>
-                                    <select id="loginId" class="w-full pl-11 pr-10 py-3.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#4318FF] transition appearance-none bg-[#F4F7FE] text-[#2B3674] font-bold cursor-pointer text-sm"></select>
+                                    <select id="loginId" class="w-full pl-11 pr-10 py-3.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#4318FF] transition appearance-none bg-[#F4F7FE] text-[#2B3674] font-bold cursor-pointer text-sm">
+                                        <option value="">Memuat data dari server...</option>
+                                    </select>
                                     <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down text-xs"></i></span>
                                 </div>
                             </div>
@@ -1398,12 +1400,24 @@
         }
 
         async function fetchAdminUsers() {
+            let sel = document.getElementById('loginId');
+            if(sel) {
+                sel.innerHTML = '<option value="">Memuat data dari server...</option>';
+                sel.disabled = true;
+            }
+
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*&order=sortorder.asc`, { headers: HEADERS });
+                // Menghapus order=sortorder.asc pada URL untuk mencegah error jika kolom tersebut belum ada di database
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?select=*`, { headers: HEADERS });
                 if(res.ok) {
                     let data = await res.json();
-                    if(data.length > 0) adminData.users = data;
-                    else adminData.users = [...DEFAULT_USERS];
+                    if(data.length > 0) {
+                        // Lakukan pengurutan dengan aman di sisi klien (browser)
+                        data.sort((a, b) => (a.sortorder || 0) - (b.sortorder || 0));
+                        adminData.users = data;
+                    } else {
+                        adminData.users = [...DEFAULT_USERS];
+                    }
                 } else { 
                     adminData.users = [...DEFAULT_USERS]; 
                 }
@@ -1417,11 +1431,16 @@
             let sel = document.getElementById('loginId');
             if(sel) {
                 sel.innerHTML = '';
-                adminData.users.forEach(u => {
-                    let roleCount = (u.role || '').split(',').filter(x => x).length;
-                    let roleLabel = roleCount >= 11 ? 'Admin System' : 'Akses Khusus';
-                    sel.innerHTML += `<option value="${u.username}">${u.name} (${roleLabel})</option>`;
-                });
+                if(adminData.users.length === 0) {
+                    sel.innerHTML = '<option value="">(Tidak ada pengguna di database)</option>';
+                } else {
+                    adminData.users.forEach(u => {
+                        let roleCount = (u.role || '').split(',').filter(x => x).length;
+                        let roleLabel = roleCount >= 11 ? 'Admin System' : 'Akses Khusus';
+                        sel.innerHTML += `<option value="${u.username}">${u.name} (${roleLabel})</option>`;
+                    });
+                }
+                sel.disabled = false;
             }
         }
 
