@@ -27,17 +27,36 @@
         /* === SMART PMB 2026 ELITE DESIGN SYSTEM === */
         :root {
             --bg-body: #E2E8F0;
-            --bg-main: #F4F7FE; /* Smart PMB signature light background */
+            --bg-main: #F4F7FE; 
             --bg-card: #FFFFFF;
-            --text-main: #2B3674;
-            --text-muted: #A3AED0;
-            --border-color: #E9EDF7;
-            --primary-grad: linear-gradient(135deg, #868CFF 0%, #4318FF 100%);
+            --text-main: #0F172A; /* Perbaikan 3: Warna Teks Navy Blue Gelap */
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --primary-grad: linear-gradient(135deg, #3B82F6 0%, #1E3A8A 100%); /* Perbaikan 3: Gradient Biru Navy */
             --success-grad: linear-gradient(135deg, #05CD99 0%, #04A67C 100%);
             --danger-grad: linear-gradient(135deg, #EE5D50 0%, #D43D30 100%);
             --warning-grad: linear-gradient(135deg, #FFCE20 0%, #FF9020 100%);
-            --navy-grad: linear-gradient(135deg, #1A2234 0%, #111827 100%);
+            --navy-grad: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
             --sidebar-width: 260px;
+        }
+        
+        .text-primary, h1.text-primary, h2.text-primary, span.text-primary { color: #1E3A8A !important; }
+
+        /* Perbaikan 2: Notifikasi Badge Animasi (Agar TF Masuk Sangat Jelas) */
+        #sidebar-badge-pending, #badge-verify-reg, #badge-verify-plus, #nav-badge-pending {
+            background: #EF4444 !important;
+            color: #FFFFFF !important;
+            border: 2px solid #FFFFFF !important;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4) !important;
+            animation: pulse-soft 2s infinite;
+            min-width: 24px; height: 24px; font-size: 11px !important;
+            padding: 0 6px !important; z-index: 50;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #badge-verify-reg, #badge-verify-plus { top: -8px !important; right: -8px !important; }
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
         }
 
         body { 
@@ -3093,8 +3112,8 @@
                 actContainer.classList.remove('hidden'); 
                 actContainer.innerHTML = `
                     <div class="flex gap-3">
-                        <button onclick="askUpdateTxStatus('${tx.id}', 'rejected')" class="flex-1 bg-red-50 text-danger hover:bg-red-100 font-bold py-3.5 rounded-xl border border-red-100 shadow-sm transition">Tolak</button>
-                        <button onclick="askUpdateTxStatus('${tx.id}', 'success')" class="flex-[2] bg-success text-white hover:bg-opacity-90 font-bold py-3.5 rounded-xl shadow-md transition">Konfirmasi</button>
+                        <button onclick="askUpdateTxStatus('${tx.id}', 'rejected')" class="flex-1 btn-saas font-bold py-3.5 rounded-xl shadow-sm transition" style="background: #FFF1F2 !important; color: #E11D48 !important; border: 1px solid #FFE4E6 !important;">Tolak</button>
+                        <button onclick="askUpdateTxStatus('${tx.id}', 'success')" class="flex-[2] btn-saas font-bold py-3.5 rounded-xl shadow-md transition" style="background: var(--primary-grad) !important; color: #FFFFFF !important; border: none !important; box-shadow: 0 10px 20px rgba(30, 58, 138, 0.3) !important;">Konfirmasi Valid</button>
                     </div>`; 
             }
 
