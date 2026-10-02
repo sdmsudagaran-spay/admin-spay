@@ -8,14 +8,11 @@
     <!-- Modern SaaS Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
     
@@ -37,7 +34,7 @@
             --saas-input-bg: #FFFFFF; --saas-input-border: #E2E8F0;
         }
 
-        .dark-mode {
+        body.dark-mode {
             --saas-bg: #0F172A; --saas-card: #1E293B;
             --saas-border: rgba(255,255,255,0.08);
             --saas-shadow: 0 8px 30px rgba(0,0,0,0.3);
@@ -48,28 +45,23 @@
 
         body { 
             background-color: var(--saas-bg) !important; 
-            display: flex; justify-content: center; align-items: flex-start; 
             font-family: 'Inter', sans-serif !important; color: var(--saas-text) !important;
-            margin: 0; padding: 0; transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
             -webkit-tap-highlight-color: transparent;
         }
 
         h1, h2, h3, h4, h5, h6, .font-bold { font-family: 'Plus Jakarta Sans', sans-serif !important; letter-spacing: -0.02em; color: var(--saas-text); }
 
         #app-container { 
-            width: 100%; max-width: 480px; min-height: 100vh; 
-            background-color: var(--saas-bg) !important; position: relative; 
+            background-color: var(--saas-bg) !important; 
             box-shadow: 0 0 40px rgba(0,0,0,0.03) !important; 
-            overflow-x: hidden; overflow-y: auto; scrollbar-width: none; margin: 0 auto;
             transition: background-color 0.3s ease;
         }
-        #app-container::-webkit-scrollbar { display: none; }
         
         @media (min-width: 768px) {
-            body { padding: 2vh 0; background-color: #E2E8F0 !important; }
-            .dark-mode body { background-color: #020617 !important; }
-            #app-container { max-width: 800px; height: 96vh; border-radius: 24px; box-shadow: var(--saas-shadow) !important; }
-            #bottom-nav-admin { max-width: 800px !important; left: 50% !important; transform: translateX(-50%) !important; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
+            body { background-color: #E2E8F0 !important; }
+            body.dark-mode { background-color: #020617 !important; }
+            #app-container { border-radius: 24px; box-shadow: var(--saas-shadow) !important; }
             .modal-inner-card { max-width: 500px !important; margin: 0 auto; border-radius: 24px !important; margin-bottom: auto; margin-top: auto; }
         }
 
@@ -80,6 +72,11 @@
 
         /* SaaS Components: Automatic Conversion */
         .bg-white, .bg-gray-50, .modal-inner-card { background-color: var(--saas-card) !important; border: 1px solid var(--saas-border) !important; color: var(--saas-text) !important; }
+        .bg-blue-50 { background-color: rgba(37,99,235,0.05) !important; border: 1px solid rgba(37,99,235,0.1) !important; color: #2563EB !important; }
+        .bg-orange-50 { background-color: rgba(245,158,11,0.05) !important; border: 1px solid rgba(245,158,11,0.1) !important; color: #F59E0B !important; }
+        .bg-green-50 { background-color: rgba(16,185,129,0.05) !important; border: 1px solid rgba(16,185,129,0.1) !important; color: #10B981 !important; }
+        .bg-rose-50, .bg-red-50 { background-color: rgba(244,63,94,0.05) !important; border: 1px solid rgba(244,63,94,0.1) !important; color: #E11D48 !important; }
+
         .text-gray-800, .text-gray-700 { color: var(--saas-text) !important; }
         .text-gray-600, .text-gray-500, .text-gray-400 { color: var(--saas-text-muted) !important; }
         .border-gray-100, .border-gray-200 { border-color: var(--saas-border) !important; }
@@ -89,7 +86,7 @@
         .shadow-sm, .shadow-md, .shadow-lg, .shadow-2xl, .shadow-soft { box-shadow: var(--saas-shadow) !important; }
         
         /* Micro-Interactions (Hover Lift) */
-        .hover\:bg-gray-50:hover, .hover\:bg-blue-50:hover, .hover\:bg-orange-50:hover, .hover\:bg-green-50:hover, .hover\:bg-rose-50:hover, .hover\:bg-teal-50:hover, .hover\:bg-purple-50:hover, .hover\:bg-pink-50:hover, .cursor-pointer:hover {
+        button.group:hover, .cursor-pointer:hover {
             transform: translateY(-2px); box-shadow: var(--saas-shadow-hover) !important;
             background-color: var(--saas-card) !important; border-color: #2563EB !important;
         }
@@ -97,7 +94,7 @@
         /* Standardized Buttons */
         button { transition: all 0.25s ease !important; border-radius: 14px !important; }
         button.bg-primary {
-            background-color: #2563EB !important; height: 44px;
+            background-color: #2563EB !important;
             display: flex !important; align-items: center; justify-content: center;
             box-shadow: 0 4px 15px rgba(37,99,235,0.2) !important; border: none !important; color: white !important; font-family: 'Plus Jakarta Sans', sans-serif !important;
         }
@@ -107,7 +104,7 @@
         /* Standardized Inputs */
         input, select {
             background-color: var(--saas-input-bg) !important; border: 1px solid var(--saas-input-border) !important;
-            border-radius: 14px !important; height: 44px !important; color: var(--saas-text) !important;
+            border-radius: 14px !important; color: var(--saas-text) !important;
             transition: all 0.25s ease !important; box-shadow: none !important;
         }
         input:focus, select:focus { border-color: #2563EB !important; box-shadow: 0 0 0 3px rgba(37,99,235,0.1) !important; outline: none !important; }
@@ -127,21 +124,13 @@
         input[type="checkbox"]:checked { background-color: #2563EB !important; border-color: #2563EB !important; }
         input[type="checkbox"]:checked::before { transform: scale(1); }
 
-        /* Status Badges */
-        .bg-green-50, .text-success { background-color: rgba(16, 185, 129, 0.1) !important; color: #10B981 !important; border: 1px solid rgba(16, 185, 129, 0.2) !important; }
-        .bg-red-50, .text-danger { background-color: rgba(239, 68, 68, 0.1) !important; color: #EF4444 !important; border: 1px solid rgba(239, 68, 68, 0.2) !important; }
-        .bg-orange-50, .text-accent { background-color: rgba(245, 158, 11, 0.1) !important; color: #F59E0B !important; border: 1px solid rgba(245, 158, 11, 0.2) !important; }
-        .bg-blue-50 { background-color: rgba(59, 130, 246, 0.1) !important; color: #3B82F6 !important; border: 1px solid rgba(59, 130, 246, 0.2) !important; }
-
         /* Sticky Header Glassmorphism */
         nav, .sticky { backdrop-filter: blur(12px) !important; background-color: rgba(255, 255, 255, 0.8) !important; border-color: var(--saas-border) !important; }
-        .dark-mode nav, .dark-mode .sticky { background-color: rgba(30, 41, 59, 0.8) !important; }
+        body.dark-mode nav, body.dark-mode .sticky { background-color: rgba(30, 41, 59, 0.8) !important; }
 
         .bg-gradient-primary { background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%) !important; }
-        .dark-mode .bg-gradient-primary { background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%) !important; border-bottom: 1px solid var(--saas-border); }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--saas-border); border-radius: 10px; }
+        body.dark-mode .bg-gradient-primary { background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%) !important; border-bottom: 1px solid var(--saas-border); }
+        .lucide { stroke-width: 2.25; }
     </style>
 </head>
 <body class="text-gray-800">
