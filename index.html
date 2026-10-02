@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sudagaran Pay - Admin SaaS</title>
     
-    <!-- Modern SaaS Typography -->
+    <!-- Modern SaaS Typography (Smart PMB Style) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- LineAwesome (Zero JS - Aman dari Freeze Loading) -->
+    <!-- LineAwesome Icons (Zero-JS, Ringan, Otomatis Mengganti FontAwesome Lama Menjadi Modern) -->
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/font-awesome-line-awesome/css/all.min.css">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,80 +19,169 @@
     
     <script>
         tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { colors: { primary: '#2563EB', accent: '#F59E0B', bglight: '#F8FAFC', success: '#10B981', danger: '#EF4444', cardbg: '#FFFFFF' } } }
+            theme: { extend: {} }
         }
     </script>
 
     <style>
-        /* Modern SaaS 2026 Design System */
+        /* === SMART PMB 2026 ELITE DESIGN SYSTEM === */
         :root {
-            --saas-bg: #F8FAFC; --saas-card: #FFFFFF;
-            --saas-border: rgba(15,23,42,0.06);
-            --saas-shadow: 0 8px 30px rgba(15,23,42,0.08);
-            --saas-shadow-hover: 0 12px 40px rgba(15,23,42,0.12);
-            --saas-text: #0F172A; --saas-text-muted: #64748B;
-            --saas-input-bg: #FFFFFF; --saas-input-border: #E2E8F0;
-        }
-
-        body.dark {
-            --saas-bg: #0F172A; --saas-card: #1E293B;
-            --saas-border: rgba(255,255,255,0.08);
-            --saas-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            --saas-shadow-hover: 0 12px 40px rgba(0,0,0,0.5);
-            --saas-text: #F8FAFC; --saas-text-muted: #94A3B8;
-            --saas-input-bg: #0F172A; --saas-input-border: rgba(255,255,255,0.1);
+            --bg-body: #E2E8F0;
+            --bg-main: #F4F7FE; /* Smart PMB signature light background */
+            --bg-card: #FFFFFF;
+            --text-main: #2B3674;
+            --text-muted: #A3AED0;
+            --border-color: #E9EDF7;
+            --primary-grad: linear-gradient(135deg, #868CFF 0%, #4318FF 100%);
+            --success-grad: linear-gradient(135deg, #05CD99 0%, #04A67C 100%);
+            --danger-grad: linear-gradient(135deg, #EE5D50 0%, #D43D30 100%);
+            --warning-grad: linear-gradient(135deg, #FFCE20 0%, #FF9020 100%);
+            --navy-grad: linear-gradient(135deg, #1A2234 0%, #111827 100%);
         }
 
         body { 
-            background-color: #cbd5e1 !important; 
-            font-family: 'Inter', sans-serif !important; color: var(--saas-text) !important;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            -webkit-tap-highlight-color: transparent;
+            background-color: var(--bg-body) !important; 
+            font-family: 'Plus Jakarta Sans', sans-serif !important; 
+            color: var(--text-main) !important;
+            -webkit-tap-highlight-color: transparent; 
         }
-        body.dark { background-color: #020617 !important; }
 
-        h1, h2, h3, h4, h5, h6, .font-bold { font-family: 'Plus Jakarta Sans', sans-serif !important; letter-spacing: -0.02em; color: var(--saas-text); }
-
+        h1, h2, h3, h4, h5, h6, .font-bold { color: var(--text-main); font-weight: 700 !important; letter-spacing: -0.02em; }
+        
         #app-container { 
-            background-color: var(--saas-bg) !important; 
-            box-shadow: 0 0 40px rgba(0,0,0,0.03) !important; 
-            transition: background-color 0.3s ease;
+            background-color: var(--bg-main) !important; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.05) !important; 
         }
         
         @media (min-width: 768px) {
-            #app-container { border-radius: 24px; box-shadow: var(--saas-shadow) !important; }
-            .modal-inner-card { max-width: 500px !important; margin: 0 auto; border-radius: 24px !important; margin-bottom: auto; margin-top: auto; }
+            #app-container { border-radius: 30px; box-shadow: 0 20px 60px rgba(112, 144, 176, 0.15) !important; }
+            .modal-inner-card { border-radius: 30px !important; }
         }
 
-        /* Animations */
-        .screen { display: none; animation: saasFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); padding-bottom: 90px; }
+        .screen { display: none; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1); padding-bottom: 100px; }
         .screen.active { display: block; }
-        @keyframes saasFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* General SaaS Styling */
-        .bg-white, .bg-gray-50, .modal-inner-card { background-color: var(--saas-card) !important; border: 1px solid var(--saas-border) !important; color: var(--saas-text) !important; }
-        .text-gray-800, .text-gray-700 { color: var(--saas-text) !important; }
-        .text-gray-600, .text-gray-500, .text-gray-400 { color: var(--saas-text-muted) !important; }
-        .border-gray-100, .border-gray-200 { border-color: var(--saas-border) !important; }
-        .rounded-xl, .rounded-2xl, .rounded-3xl { border-radius: 20px !important; }
-        .shadow-sm, .shadow-md, .shadow-lg, .shadow-2xl, .shadow-soft { box-shadow: var(--saas-shadow) !important; }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        button.group:hover, .cursor-pointer:hover { transform: translateY(-2px); box-shadow: var(--saas-shadow-hover) !important; background-color: var(--saas-card) !important; }
-        button { transition: all 0.25s ease !important; border-radius: 14px !important; }
-        button.bg-primary { background-color: #2563EB !important; display: flex !important; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(37,99,235,0.2) !important; border: none !important; color: white !important; font-family: 'Plus Jakarta Sans', sans-serif !important; }
-        button.bg-primary:hover { background-color: #1D4ED8 !important; box-shadow: 0 8px 25px rgba(37,99,235,0.3) !important; transform: translateY(-1px); }
-        button:active { transform: scale(0.97) !important; }
-        input, select { background-color: var(--saas-input-bg) !important; border: 1px solid var(--saas-input-border) !important; border-radius: 14px !important; height: 44px !important; color: var(--saas-text) !important; transition: all 0.25s ease !important; box-shadow: none !important; }
-        input:focus, select:focus { border-color: #2563EB !important; box-shadow: 0 0 0 3px rgba(37,99,235,0.1) !important; outline: none !important; }
-        nav, .sticky { backdrop-filter: blur(12px) !important; background-color: rgba(255, 255, 255, 0.8) !important; border-color: var(--saas-border) !important; }
-        .dark nav, .dark .sticky { background-color: rgba(30, 41, 59, 0.8) !important; }
-        .bg-gradient-primary { background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%) !important; }
-        .dark .bg-gradient-primary { background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%) !important; border-bottom: 1px solid var(--saas-border); }
+        /* OVERRIDE EXISTING CLASSES FOR SAAS LOOK */
+        .bg-white, .modal-inner-card { background-color: var(--bg-card) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; }
+        .text-gray-800, .text-gray-700 { color: var(--text-main) !important; }
+        .text-gray-600, .text-gray-500, .text-gray-400 { color: var(--text-muted) !important; font-family: 'Inter', sans-serif; font-weight: 500; }
+        .border-gray-100, .border-gray-200 { border-color: var(--border-color) !important; }
+        .bg-gray-50 { background-color: var(--bg-card) !important; border-color: var(--border-color) !important; }
+        
+        /* SHADOWS & BORDERS */
+        .shadow-sm, .shadow-md, .shadow-lg, .shadow-soft { box-shadow: 0px 10px 20px rgba(112, 144, 176, 0.08) !important; }
+        .rounded-xl, .rounded-2xl { border-radius: 20px !important; }
+        .rounded-3xl { border-radius: 24px !important; }
+
+        /* HEADER GRADIENT (Smart PMB Dark Navy/Purple feel) */
+        .bg-gradient-primary { background: var(--navy-grad) !important; border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .bg-gradient-primary p { color: #A3AED0 !important; font-family: 'Inter', sans-serif; font-weight: 500; }
+        .bg-gradient-primary h2 { color: #FFFFFF !important; }
+
+        /* MENU CARDS HOVER EFFECT */
+        button[onclick^="openScreen('screen-"] {
+            border: 1px solid var(--border-color) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            background-color: var(--bg-card) !important;
+            box-shadow: 0px 10px 20px rgba(112, 144, 176, 0.08) !important;
+        }
+        button[onclick^="openScreen('screen-"]:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 20px 40px rgba(112, 144, 176, 0.15) !important;
+            border-color: #4318FF !important;
+        }
+
+        /* ICON CONTAINERS IN CARDS (Matching Smart PMB Grid Style) */
+        /* Reguler */
+        #menu-cash > div { background: var(--primary-grad) !important; color: white !important; box-shadow: 0 8px 16px rgba(67, 24, 255, 0.3) !important; border: none !important;}
+        #menu-verify > div { background: var(--warning-grad) !important; color: white !important; box-shadow: 0 8px 16px rgba(255, 144, 32, 0.3) !important; border: none !important;}
+        #menu-history > div { background: var(--success-grad) !important; color: white !important; box-shadow: 0 8px 16px rgba(5, 205, 153, 0.3) !important; border: none !important;}
+        #menu-rekap > div { background: linear-gradient(135deg, #00B5D8 0%, #0088A3 100%) !important; color: white !important; box-shadow: 0 8px 16px rgba(0, 181, 216, 0.3) !important; border: none !important;}
+        
+        /* Plus */
+        #menu-cash-plus > div { background: linear-gradient(135deg, #FF6F91 0%, #D83B62 100%) !important; color: white !important; box-shadow: 0 8px 16px rgba(216, 59, 98, 0.3) !important; border: none !important;}
+        #menu-verify-plus > div { background: linear-gradient(135deg, #D4145A 0%, #FBB03B 100%) !important; color: white !important; box-shadow: 0 8px 16px rgba(212, 20, 90, 0.3) !important; border: none !important;}
+        #menu-history-plus > div { background: linear-gradient(135deg, #9D50BB 0%, #6E48AA 100%) !important; color: white !important; box-shadow: 0 8px 16px rgba(110, 72, 170, 0.3) !important; border: none !important;}
+        #menu-rekap-plus > div { background: var(--danger-grad) !important; color: white !important; box-shadow: 0 8px 16px rgba(238, 93, 80, 0.3) !important; border: none !important;}
+
+        /* Sistem */
+        #group-sistem button > div { background: linear-gradient(135deg, #4F46E5 0%, #312E81 100%) !important; color: white !important; box-shadow: 0 8px 16px rgba(79, 70, 229, 0.3) !important; border: none !important;}
+
+        /* MAIN BUTTONS (Lanjut Pembayaran, Simpan, dll) */
+        button.bg-primary {
+            background: var(--primary-grad) !important;
+            border-radius: 16px !important;
+            border: none !important;
+            color: white !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.5px;
+            box-shadow: 0 10px 20px rgba(67, 24, 255, 0.25) !important;
+            transition: all 0.3s ease !important;
+        }
+        button.bg-primary:hover { box-shadow: 0 14px 26px rgba(67, 24, 255, 0.4) !important; transform: translateY(-2px); }
+
+        /* INPUTS & SELECTS */
+        input[type="text"], input[type="number"], input[type="password"], input[type="date"], input[type="month"], input[type="week"], select {
+            background-color: #F8FAFC !important;
+            border: 1px solid #E9EDF7 !important;
+            border-radius: 16px !important;
+            color: var(--text-main) !important;
+            font-family: 'Inter', sans-serif !important;
+            font-weight: 500;
+            box-shadow: none !important;
+            transition: all 0.3s ease !important;
+        }
+        input:focus, select:focus { border-color: #4318FF !important; background-color: #FFFFFF !important; box-shadow: 0 0 0 4px rgba(67, 24, 255, 0.1) !important; outline: none !important; }
+
+        /* BOTTOM NAV - Glassmorphism Premium */
+        #bottom-nav-admin {
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(20px) !important;
+            border-top: 1px solid rgba(255,255,255,0.5) !important;
+            box-shadow: 0 -10px 30px rgba(112, 144, 176, 0.08) !important;
+            padding-bottom: env(safe-area-inset-bottom, 16px);
+        }
+        .nav-btn-admin i { font-size: 1.6rem; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); margin-bottom: 6px; }
+        .nav-btn-admin:hover i { transform: translateY(-4px) scale(1.1); color: #4318FF; }
+        .text-primary { color: #4318FF !important; }
+
+        /* REKAP & HISTORY CARDS ENHANCEMENT */
+        .bg-blue-50, .bg-orange-50, .bg-green-50, .bg-rose-50 { background-color: #F4F7FE !important; border: 1px solid #E9EDF7 !important; color: var(--text-main) !important; }
+        .text-blue-800, .text-orange-800, .text-green-800, .text-rose-800 { color: var(--text-main) !important; }
+        
+        /* Total Keseluruhan Banners in Rekap */
+        #screen-rekap .bg-primary, #screen-rekap .bg-accent, #screen-rekap .bg-success {
+            background: var(--primary-grad) !important;
+            border-radius: 20px !important;
+            box-shadow: 0 10px 20px rgba(67, 24, 255, 0.25) !important;
+            border: none !important;
+            color: white !important;
+        }
+
+        /* MODAL BACKGROUND BLUR */
+        .bg-black\/60 { background-color: rgba(15, 23, 42, 0.6) !important; backdrop-filter: blur(12px) !important; }
+
+        /* MODERN CHECKBOX */
+        input[type="checkbox"] {
+            appearance: none; width: 22px !important; height: 22px !important;
+            border: 2px solid #CBD5E1 !important; border-radius: 6px !important;
+            background-color: #FFFFFF !important; display: grid !important; place-content: center !important; cursor: pointer; transition: all 0.2s;
+        }
+        input[type="checkbox"]::before {
+            content: ""; width: 12px; height: 12px; transform: scale(0);
+            transition: 120ms transform ease-in-out; background-color: white;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        input[type="checkbox"]:checked { background: var(--primary-grad) !important; border-color: transparent !important; }
+        input[type="checkbox"]:checked::before { transform: scale(1); }
+
+        /* SCROLLBAR */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--saas-border); border-radius: 10px; }
-        i.fas, i.far, i.fa { font-size: 1.2em; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        
+        i.fas, i.far, i.fa { font-size: 1.15em; line-height: 1; }
     </style>
 </head>
 <body class="text-gray-800">
